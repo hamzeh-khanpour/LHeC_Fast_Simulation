@@ -45,4 +45,4 @@ The following processes are central to this project:
 For additional information or questions, contact us using the email addresses below:
 - Hamzeh Khanpour (Hamzeh.Khanpour@cern.ch)
 - Laurent Forthomme (Laurent.Forthomme@cern.ch)
-- Krzysztof Piotrzkowski@cern.ch (krzysztof.piotrzkowski@cern.ch)
+- Krzysztof Piotrzkowski (krzysztof.piotrzkowski@cern.ch)
