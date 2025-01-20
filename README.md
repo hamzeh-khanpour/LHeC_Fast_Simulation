@@ -1,6 +1,6 @@
 # LHeC Fast Simulation
 
-This repository provides simulation tools and analysis scripts for studying anomalous quartic gauge couplings (AQGCs) in electron-proton collisions at the Large Hadron-Electron Collider (LHeC). The project focuses on simulating and analyzing key processes that probe the dynamics of \( \gamma\gamma \to W^+ W^- \) interactions.
+This repository provides simulation tools and analysis scripts for studying anomalous quartic gauge couplings (AQGCs) in electron-proton collisions at the Large Hadron-Electron Collider (LHeC). The project focuses on simulating and analyzing key processes that probe the dynamics of $\gamma\gamma \to W^+ W^-$ interactions.
 
 ---
 
