@@ -38,3 +38,11 @@ The following processes are central to this project:
    ```bash
    git clone https://github.com/your-username/LHeC_Fast_Simulation.git
    cd LHeC_Fast_Simulation
+
+---
+
+## Contacts
+For additional information or questions, contact us using the email addresses below:
+- Hamzeh Khanpour (Hamzeh.Khanpour@cern.ch)
+- Laurent Forthomme (Laurent.Forthomme@cern.ch)
+- Krzysztof Piotrzkowski@cern.ch (krzysztof.piotrzkowski@cern.ch)
