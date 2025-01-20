@@ -11,16 +11,16 @@ The study of anomalous quartic gauge couplings (AQGCs) is essential for explorin
 
 ### Simulated Processes
 The following processes are central to this project:
-1. **\( \gamma\gamma \to W^+ W^- \)**
+1. **$\gamma\gamma \to W^+ W^-$**
    - Simulated to analyze photon-induced interactions in the LHeC environment.
-2. **\( e^- p \to e^- W^+ W^- p \)**
+2. **$e^- p \to e^- W^+ W^- p$**
    - A key electroweak process in electron-proton collisions, where the scattered electron and proton remain in the final state.
 
 ---
 
 ## Objectives
-- Simulate high-energy \( \gamma\gamma \) and \( e^- p \) collisions at the LHeC.
-- Analyze AQGC sensitivity through the processes \( \gamma\gamma \to W^+ W^- \) and \( e^- p \to e^- W^+ W^- p \).
+- Simulate high-energy $\gamma\gamma$ and $e^- p$ collisions at the LHeC.
+- Analyze AQGC sensitivity through the processes $\gamma\gamma \to W^+ W^-$ and $e^- p \to e^- W^+ W^- p$.
 - Provide tools for differential cross-section analysis, rapidity distributions, and invariant mass studies of the final-state particles.
 
 ---
@@ -28,7 +28,7 @@ The following processes are central to this project:
 ## Repository Contents
 - **Scripts and Tools**: Python scripts and analysis tools for parsing LHE files, generating histograms, and visualizing distributions.
 - **Simulations**: Includes configurations for MadGraph5_aMC@NLO to simulate relevant processes.
-- **Plots and Results**: Sample plots for \( P_T \), \( \eta \), rapidity, and invariant mass distributions.
+- **Plots and Results**: Sample plots for $P_T$, $\eta$, rapidity, and invariant mass distributions.
 
 ---
 
