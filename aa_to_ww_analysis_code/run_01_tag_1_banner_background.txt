@@ -76,13 +76,16 @@ define l+ = e+ mu+
 define l- = e- mu-
 define vl = ve vm vt
 define vl~ = ve~ vm~ vt~
+
+import model SM_LM0123_UFO/
+
 define l+ = e+ mu+ ta+
 define l- = e- mu- ta-
 define j = j b b~
 define p = p b b~
 generate a a > w+ w- > l+ vl j j QED=4
 add process a a > w+ w- > j j l- vl~ QED=4
-output aa_ww_semi_leptonic
+output aa_ww_semi_leptonic_SM
 ]]>
 </MG5ProcCard>
 <MGProcCard>
