@@ -129,6 +129,7 @@ np.savetxt("dsigma_background.txt", np.column_stack([pt_bins_background, dsigma_
 
 
 plt.savefig("differential_cross_section.png", dpi=300)
+
 plt.show()
 
 
