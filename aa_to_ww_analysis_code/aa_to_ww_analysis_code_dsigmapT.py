@@ -88,8 +88,8 @@ pt_leptons_signal = parse_lhe_file(signal_file)
 pt_leptons_background = parse_lhe_file(background_file)
 
 # Parameters for differential cross-section
-signal_cross_section = 2.05883  # pb
-background_cross_section = 0.0137206  # pb
+signal_cross_section = 2.05983  # pb
+background_cross_section = 0.0134802  # pb
 num_bins = 50
 pt_range = (0, 400)
 

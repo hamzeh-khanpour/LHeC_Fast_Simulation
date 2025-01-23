@@ -46,7 +46,7 @@ def parse_lhe_file(file_name):
     return pt_tau_plus, eta_tau_plus
 
 # Parse the file to get Pt and eta of tau+
-file_name = "unweighted_events.lhe"
+file_name = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_to_tautau_SM/Events/run_01/aa_to_tautau_SM.lhe"
 pt_tau_plus, eta_tau_plus = parse_lhe_file(file_name)
 
 # Plot the Pt distribution
