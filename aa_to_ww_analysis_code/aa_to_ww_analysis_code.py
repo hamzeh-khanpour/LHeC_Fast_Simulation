@@ -89,6 +89,7 @@ pt_leptons_background = parse_lhe_file(background_file)
 # Plot the transverse momentum distributions
 # plt.figure(figsize=(8, 9))
 
+
 plt.hist(pt_leptons_signal, bins=50, range=(0, 400), alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="blue", edgecolor="black")
 plt.hist(pt_leptons_background, bins=50, range=(0, 400), alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="red", edgecolor="black")
 plt.xlabel(r"$p_T^{\ell=\tau, \mu, e}$ [GeV]")
@@ -98,4 +99,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("pt_leptons_comparison.png", dpi=300)
+
 plt.show()
+
+

@@ -23,7 +23,7 @@ hep.style.use("CMS")
 
 #plt.rcParams["legend.fontsize"] = 15
 
-#plt.rcParams['legend.title_fontsize'] = 'x-large'  
+#plt.rcParams['legend.title_fontsize'] = 'x-large'
 
 
 
@@ -76,8 +76,8 @@ def parse_lhe_file(file_name):
 
     fig, ax = plt.subplots(figsize = (12.0, 10.0))
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
-    
-    
+
+
 
 
 # Parse signal and background files
