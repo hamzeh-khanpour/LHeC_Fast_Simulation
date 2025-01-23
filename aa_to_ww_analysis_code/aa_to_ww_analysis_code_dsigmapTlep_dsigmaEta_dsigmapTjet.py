@@ -99,17 +99,21 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 
 # Parse signal and background files
-signal_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_01/aa_ww_semi_leptonic_NP.lhe"
+signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
+signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_03/aa_ww_semi_leptonic_NP_FM2.lhe"
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
 
-pt_leptons_signal, eta_leptons_signal, pt_leading_jet_signal = parse_lhe_file(signal_file)
+pt_leptons_signal_0, eta_leptons_signal_0, pt_leading_jet_signal_0 = parse_lhe_file(signal_file_0)
+pt_leptons_signal_2, eta_leptons_signal_2, pt_leading_jet_signal_2 = parse_lhe_file(signal_file_2)
+
 pt_leptons_background, eta_leptons_background, pt_leading_jet_background = parse_lhe_file(background_file)
 
 
 
 # Parameters for differential cross-section
-signal_cross_section = 2.05983  # pb
+signal_cross_section_0 = 2.05983  # pb
+signal_cross_section_2 = 88.79  # pb
 background_cross_section = 0.0134802  # pb
 num_bins = 50
 pt_range_lepton = (0, 400)  # Range for lepton pT
@@ -133,13 +137,17 @@ def calculate_dsigma(data, total_cross_section, bin_width, data_range):
 
 
 # Calculate differential cross-sections for lepton pT, eta, and leading jet pT
-pt_bins_signal, dsigma_signal_pt = calculate_dsigma(pt_leptons_signal, signal_cross_section, bin_width_pt_lepton, pt_range_lepton)
+pt_bins_signal_0, dsigma_signal_pt_0 = calculate_dsigma(pt_leptons_signal_0, signal_cross_section_0, bin_width_pt_lepton, pt_range_lepton)
+pt_bins_signal_2, dsigma_signal_pt_2 = calculate_dsigma(pt_leptons_signal_2, signal_cross_section_2, bin_width_pt_lepton, pt_range_lepton)
 pt_bins_background, dsigma_background_pt = calculate_dsigma(pt_leptons_background, background_cross_section, bin_width_pt_lepton, pt_range_lepton)
 
-eta_bins_signal, dsigma_signal_eta = calculate_dsigma(eta_leptons_signal, signal_cross_section, bin_width_eta, eta_range)
+
+eta_bins_signal_0, dsigma_signal_eta_0 = calculate_dsigma(eta_leptons_signal_0, signal_cross_section_0, bin_width_eta, eta_range)
+eta_bins_signal_2, dsigma_signal_eta_2 = calculate_dsigma(eta_leptons_signal_2, signal_cross_section_2, bin_width_eta, eta_range)
 eta_bins_background, dsigma_background_eta = calculate_dsigma(eta_leptons_background, background_cross_section, bin_width_eta, eta_range)
 
-pt_jet_bins_signal, dsigma_signal_jet_pt = calculate_dsigma(pt_leading_jet_signal, signal_cross_section, bin_width_pt_jet, pt_range_jet)
+pt_jet_bins_signal_0, dsigma_signal_jet_pt_0 = calculate_dsigma(pt_leading_jet_signal_0, signal_cross_section_0, bin_width_pt_jet, pt_range_jet)
+pt_jet_bins_signal_2, dsigma_signal_jet_pt_2 = calculate_dsigma(pt_leading_jet_signal_2, signal_cross_section_2, bin_width_pt_jet, pt_range_jet)
 pt_jet_bins_background, dsigma_background_jet_pt = calculate_dsigma(pt_leading_jet_background, background_cross_section, bin_width_pt_jet, pt_range_jet)
 
 
@@ -147,8 +155,9 @@ pt_jet_bins_background, dsigma_background_jet_pt = calculate_dsigma(pt_leading_j
 # Plot the differential cross-sections
 # plt.figure(figsize=(10, 8))
 
-plt.step(pt_bins_signal, dsigma_signal_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="blue", linewidth=3)
-plt.step(pt_bins_background, dsigma_background_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="red", linewidth=3)
+plt.step(pt_bins_signal_0, dsigma_signal_pt_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(pt_bins_signal_2, dsigma_signal_pt_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(pt_bins_background, dsigma_background_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{\ell}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
@@ -156,7 +165,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 1.0)
+plt.ylim(0.000001, 10.0)
 plt.savefig("differential_cross_section_pt.png", dpi=600)
 plt.show()
 
@@ -165,13 +174,14 @@ plt.show()
 # Plot the differential cross-sections for eta
 #plt.figure(figsize=(10, 8))
 
-plt.step(eta_bins_signal, dsigma_signal_eta, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="blue", linewidth=3)
-plt.step(eta_bins_background, dsigma_background_eta, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="red", linewidth=3)
+plt.step(eta_bins_signal_0, dsigma_signal_eta_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(eta_bins_signal_2, dsigma_signal_eta_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(eta_bins_background, dsigma_background_eta, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\eta^{\ell}$")
 plt.ylabel(r"$\frac{d\sigma}{d\eta^{\ell}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.00001, 1.0)
+plt.ylim(0.000001, 10.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -183,13 +193,14 @@ plt.show()
 # Plot the differential cross-sections for leading jet pT
 #plt.figure(figsize=(10, 8))
 
-plt.step(pt_jet_bins_signal, dsigma_signal_jet_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="blue", linewidth=3)
-plt.step(pt_jet_bins_background, dsigma_background_jet_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="red", linewidth=3)
+plt.step(pt_jet_bins_signal_0, dsigma_signal_jet_pt_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(pt_jet_bins_signal_2, dsigma_signal_jet_pt_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(pt_jet_bins_background, dsigma_background_jet_pt, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{\mathrm{leading~jet}}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.00001, 1.0)
+plt.ylim(0.000001, 10.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -199,17 +210,17 @@ plt.show()
 
 
 # Save data for pT lepton
-np.savetxt("dsigma_signal_pt.txt", np.column_stack([pt_bins_signal, dsigma_signal_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+np.savetxt("dsigma_signal_pt.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
 np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
 
 
 # Save data for eta lepton
-np.savetxt("dsigma_signal_eta.txt", np.column_stack([eta_bins_signal, dsigma_signal_eta]), header="eta, dσ/deta [pb]")
+np.savetxt("dsigma_signal_eta.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
 np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
 
 
 # Save data for leading jet pT
-np.savetxt("dsigma_signal_leading_jet_pt.txt", np.column_stack([pt_jet_bins_signal, dsigma_signal_jet_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+np.savetxt("dsigma_signal_leading_jet_pt.txt", np.column_stack([pt_jet_bins_signal_0, dsigma_signal_jet_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
 np.savetxt("dsigma_background_leading_jet_pt.txt", np.column_stack([pt_jet_bins_background, dsigma_background_jet_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
 
 
