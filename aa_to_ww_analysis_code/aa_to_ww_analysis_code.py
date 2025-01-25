@@ -80,7 +80,7 @@ def parse_lhe_file(file_name):
 
 
 # Parse signal and background files
-signal_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_01/aa_ww_semi_leptonic_NP.lhe"
+signal_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
 pt_leptons_signal = parse_lhe_file(signal_file)

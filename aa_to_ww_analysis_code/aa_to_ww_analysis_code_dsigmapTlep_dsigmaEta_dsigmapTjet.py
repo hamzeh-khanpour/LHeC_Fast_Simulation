@@ -99,8 +99,8 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 
 # Parse signal and background files
-signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
-signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_03/aa_ww_semi_leptonic_NP_FM2.lhe"
+signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
+signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM2/Events/run_01/aa_ww_semi_leptonic_NP_FM2.lhe"
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
 
@@ -112,8 +112,8 @@ pt_leptons_background, eta_leptons_background, pt_leading_jet_background = parse
 
 
 # Parameters for differential cross-section
-signal_cross_section_0 = 2.05983  # pb
-signal_cross_section_2 = 88.79  # pb
+signal_cross_section_0 = 1.994  # pb
+signal_cross_section_2 = 77.86  # pb
 background_cross_section = 0.0134802  # pb
 num_bins = 50
 pt_range_lepton = (0, 400)  # Range for lepton pT

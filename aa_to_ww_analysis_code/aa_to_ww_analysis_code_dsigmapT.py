@@ -81,14 +81,14 @@ def parse_lhe_file(file_name):
 
 
 # Parse signal and background files
-signal_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP/Events/run_01/aa_ww_semi_leptonic_NP.lhe"
+signal_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
 pt_leptons_signal = parse_lhe_file(signal_file)
 pt_leptons_background = parse_lhe_file(background_file)
 
 # Parameters for differential cross-section
-signal_cross_section = 2.05983  # pb
+signal_cross_section = 1.994  # pb
 background_cross_section = 0.0134802  # pb
 num_bins = 50
 pt_range = (0, 400)
