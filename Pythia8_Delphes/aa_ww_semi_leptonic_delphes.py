@@ -31,8 +31,8 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM0.root"
-background_file_path = "aa_ww_semi_leptonic_SM.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_FM0_new.root"
+background_file_path = "aa_ww_semi_leptonic_SM_new.root"
 
 
 

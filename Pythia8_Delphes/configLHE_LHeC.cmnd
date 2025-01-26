@@ -1,0 +1,39 @@
+
+Main:numberOfEvents   = 100000     ! Number of events to generate
+Main:timesAllowErrors = 1000      ! Allow retries for problematic events
+
+Beams:frameType = 4               ! FrameType 4 for LHE file input
+Beams:eA = 7000.0                 ! Energy of the proton beam (GeV)
+Beams:eB = 50.0                   ! Energy of the electron beam (GeV)
+
+
+Beams:LHEF = /home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe
+
+
+PartonLevel:MPI = off             ! Disable MPI to simplify event handling
+SpaceShower:QEDshowerByL = on     ! Enable QED photon emission from leptons
+
+#Photon:ProcessType = 0            ! Enable DIS processes
+Photon:ProcessType = 4            ! Elastic photon-photon scattering
+
+PDF:lepton = on                   ! Enable lepton PDFs for DIS
+
+
+
+BeamRemnants:primordialKThard = 1.0 ! Set initial transverse momentum for remnants
+SpaceShower:pTmin = 1.0             ! Minimum pT for parton showers
+
+
+PhaseSpace:pTHatMin = 0.001       ! Minimum transverse momentum (GeV)
+PhaseSpace:pTHatMax = 70000.0     ! Maximum transverse momentum (GeV)
+
+
+HadronLevel:all = on              ! Enable hadronization
+
+
+Check:event = on                  ! Enable event-level error checking
+Check:history = on                ! Enable history-level error checking
+Check:levelParticleData = 2       ! Enable detailed particle-level error checking
+
+Init:showChangedSettings = on     ! Show modified settings during initialization
+Next:numberShowEvent = 10         ! Show every 10th event for debugging
