@@ -1,0 +1,22 @@
+https://cp3.irmp.ucl.ac.be/projects/delphes/wiki/WorkBook/Pythia8
+
+
+
+wget https://pythia.org/download/pythia82/pythia8235.tgz
+tar xzvf pythia8235.tgz
+cd pythia8235
+./configure --prefix=path_to_PYTHIA8_installation
+make install
+
+
+
+export PYTHIA8=path_to_PYTHIA8_installation 
+
+
+
+make HAS_PYTHIA8=true
+
+
+
+
+./DelphesPythia8 cards/delphes_card_CMS.tcl examples/Pythia8/configNoLHE.cmnd delphes_nolhe.root
