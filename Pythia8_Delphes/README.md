@@ -55,6 +55,47 @@ The framework calculates and plots the following:
    - \( \Delta R \) between lepton and leading jet.
    - \( \Delta \eta_{jj} \): Pseudorapidity difference between jets.
 
+
+## Mathematical Formulas
+
+### 1. Lepton Centrality (\( C_{\ell} \))
+The lepton centrality measures the pseudorapidity position of the lepton relative to the two jets:
+\[
+C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}
+\]
+Where:
+- \( \eta_{\ell} \): Pseudorapidity of the lepton.
+- \( \eta_{\mathrm{jet1}} \): Pseudorapidity of the first jet.
+- \( \eta_{\mathrm{jet2}} \): Pseudorapidity of the second jet.
+- \( \Delta \eta_{jj} \): Pseudorapidity difference between the two jets:
+  \[
+  \Delta \eta_{jj} = |\eta_{\mathrm{jet1}} - \eta_{\mathrm{jet2}}|
+  \]
+
+---
+
+### 2. Exponential Centrality (\( C_{\ell}^{\mathrm{exp}} \))
+The exponential centrality highlights events with small \( C_{\ell} \) values:
+\[
+C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}
+\]
+Where:
+- \( |C_{\ell}| \): Absolute value of the lepton centrality.
+
+---
+
+### 3. Jet Centrality (\( C_{\mathrm{jets}} \))
+The jet centrality quantifies the average pseudorapidity position of the two jets:
+\[
+C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}
+\]
+Where:
+- \( \eta_{\mathrm{jet1}} \): Pseudorapidity of the first jet.
+- \( \eta_{\mathrm{jet2}} \): Pseudorapidity of the second jet.
+
+
+
+
 ### Histogram Export
 - All histograms are saved in `output_histograms.root` with branches for signal and background.
 
@@ -69,6 +110,7 @@ The framework calculates and plots the following:
 - **Python 3.10+**
 - **ROOT** (with Python bindings)
 - **Delphes 3.5.0**
+
 
 ### Python Libraries
 Install required packages:
