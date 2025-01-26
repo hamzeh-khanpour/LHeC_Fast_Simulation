@@ -1,4 +1,4 @@
-# LHeC Fast Simulation: Semi-Leptonic Decay of \( W^+ W^- \)
+# LHeC Fast Simulation: Semi-Leptonic Decay of ($\gamma \gamma \to W^+ W^-$)
 
 This repository provides an analysis framework for simulating and analyzing semi-leptonic decays of \( W^+ W^- \) at the Large Hadron Electron Collider (LHeC). The project uses **Delphes** for fast detector simulation and **ROOT** for data analysis and histogramming.
 
