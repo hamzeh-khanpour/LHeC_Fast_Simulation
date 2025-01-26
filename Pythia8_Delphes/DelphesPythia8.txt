@@ -20,3 +20,11 @@ make HAS_PYTHIA8=true
 
 
 ./DelphesPythia8 cards/delphes_card_CMS.tcl examples/Pythia8/configNoLHE.cmnd delphes_nolhe.root
+
+
+
+export PYTHIA8=/home/hamzeh-khanpour/local/
+make HAS_PYTHIA8=true
+
+
+
