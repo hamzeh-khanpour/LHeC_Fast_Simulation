@@ -1,0 +1,60 @@
+# Pythia8 Input Settings for LHeC: gamma-gamma to W+W-
+# Addressing issues with remnants, DIS handling, and photon-photon collisions.
+
+# ----------------------------------------------------
+# General Setup
+# ----------------------------------------------------
+Beams:frameType = 5              ! 5 = e-p collision setup
+Beams:LHEF = events.lhe          ! Input LHE file name (replace with your file)
+
+# ----------------------------------------------------
+# Beam Configurations
+# ----------------------------------------------------
+Beams:eA = 50.0                 ! Electron beam energy in GeV
+Beams:eB = 7000.0               ! Proton beam energy in GeV
+
+# ----------------------------------------------------
+# Photon Emission Settings
+# ----------------------------------------------------
+PDF:photonPDF = on               ! Enable photon PDF for resolved photon
+Photon:ProcessType = 1           ! Elastic photon-photon interactions
+Photon:Q2max = 1e6               ! Maximum photon virtuality (elastic photons)
+Photon:Q2min = 0.0               ! Minimum photon virtuality (elastic photons)
+
+# ----------------------------------------------------
+# Event Generation
+# ----------------------------------------------------
+Main:numberOfEvents = 1000       ! Number of events to generate
+Main:timesAllowErrors = 10       ! Number of retries before aborting
+
+# ----------------------------------------------------
+# Diagnostics and Debugging
+# ----------------------------------------------------
+Init:showChangedSettings = on    ! Show settings that are changed
+Init:showChangedParticleData = on! Show particle data that is changed
+Next:numberShowEvent = 10        ! Print every 10th event to log
+
+# ----------------------------------------------------
+# Parton Showering and MPI
+# ----------------------------------------------------
+PartonLevel:MPI = off            ! Disable Multiple Parton Interactions (not relevant for gamma-gamma)
+SpaceShower:QEDshowerByL = on    ! Allow photon emissions from leptons (electron beam)
+
+# ----------------------------------------------------
+# Hadronization and Final State
+# ----------------------------------------------------
+HadronLevel:all = on             ! Enable hadronization for final states
+PartonLevel:FSR = on             ! Final-state radiation
+PartonLevel:ISR = on             ! Initial-state radiation
+
+# ----------------------------------------------------
+# Kinematic Cuts (Adjust as Needed)
+# ----------------------------------------------------
+PhaseSpace:pTHatMin = 20.0       ! Minimum pT for hard interactions
+PhaseSpace:pTHatMax = 7000.0     ! Maximum pT for hard interactions
+
+# ----------------------------------------------------
+# Output Options
+# ----------------------------------------------------
+HEPMCoutput:file = events.hepmc  ! Save events in HepMC format
+HEPMCoutput:scaling = 1e11       ! Event scaling for HepMC output
