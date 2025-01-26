@@ -63,7 +63,7 @@ def load_data(file_name):
 fm_data = {key: load_data(file_name) for key, file_name in file_names.items()}
 
 # Plot the data
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(10, 8))
 
 for key, (fm_values, cross_sections) in fm_data.items():
     plt.plot(fm_values, cross_sections, marker='o', label=labels[key], color=colors[key], linewidth=2)
@@ -84,5 +84,5 @@ plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 plt.legend()
 
 # Save the plot
-plt.savefig('cross_section_vs_coupling_1200GeV.jpg', dpi=300)
+plt.savefig('cross_section_vs_coupling_1200GeV.jpg', dpi=600)
 plt.show()
