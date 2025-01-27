@@ -1,4 +1,4 @@
-FM0 Value     Cross-section (pb)
+FT0 Value     Cross-section (pb)
 -1.0e-08       181.70
 -8.0e-09       115.40
 -6.0e-09       64.99
