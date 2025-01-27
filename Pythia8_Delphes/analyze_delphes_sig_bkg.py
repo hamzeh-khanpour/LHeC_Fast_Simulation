@@ -12,8 +12,8 @@ import mplhep as hep
 hep.style.use("CMS")
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM0.root"
-background_file_path = "aa_ww_semi_leptonic_SM.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_FM0_new.root"
+background_file_path = "aa_ww_semi_leptonic_SM_new.root"
 
 
 
@@ -77,7 +77,7 @@ def process_file(
             jet = branchJet.At(i)
             jet_vec = TLorentzVector()
             jet_vec.SetPtEtaPhiM(jet.PT, jet.Eta, jet.Phi, jet.Mass)
-            if jet.PT > 20:
+            if jet.PT > 10:
                 jets.append(jet_vec)
 
         # Apply selection criteria: exactly one lepton and exactly two jets
@@ -131,9 +131,10 @@ hist_leading_jet_background = ROOT.TH1F("hist_leading_jet_background", "Leading 
 
 
 hist_m_w_leptonic_signal = ROOT.TH1F("hist_m_w_leptonic_signal", "Leptonic W Mass Distribution (Signal); M_W^{\ell\nu} [GeV]; Entries", 50, 0, 200)
-hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 0, 200)
-
 hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Leptonic W Mass Distribution (Background); M_W^{\ell\nu} [GeV]; Entries", 50, 0, 200)
+
+
+hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 0, 200)
 hist_m_w_hadronic_background = ROOT.TH1F("hist_m_w_hadronic_background", "Hadronic W Mass Distribution (Background); M_W^{jj} [GeV]; Entries", 50, 0, 200)
 
 
@@ -214,7 +215,7 @@ y_vals_m_w_hadronic_background = [hist_m_w_hadronic_background.GetBinContent(i) 
 
 
 # Plot the histograms for leptons
-plt.figure(figsize=(8, 9))  # Create a new figure for the lepton plot
+plt.figure(figsize=(10, 12))  # Create a new figure for the lepton plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.bar(    x_vals_lepton_signal,    y_vals_lepton_signal,    width=hist_lepton_signal.GetBinWidth(1),    alpha=0.6,
@@ -223,7 +224,7 @@ plt.bar(    x_vals_lepton_background,    y_vals_lepton_background,    width=hist
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
-plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
+plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/lepton_pt_comparison.png", dpi=300)
@@ -234,7 +235,7 @@ plt.show()  # Ensure this ends the current plot properly
 
 
 # Plot the histograms for leading jets
-plt.figure(figsize=(8, 9))  # Create a new figure for the jet plot
+plt.figure(figsize=(10, 12))  # Create a new figure for the jet plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.bar(    x_vals_jet_signal,    y_vals_jet_signal,    width=hist_leading_jet_signal.GetBinWidth(1),    alpha=0.6,    label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
@@ -242,7 +243,7 @@ plt.bar(    x_vals_jet_background,    y_vals_jet_background,    width=hist_leadi
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
-plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
+plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/leading_jet_pt_comparison.png", dpi=300)
@@ -254,7 +255,7 @@ plt.show()  # Ensure the second plot is displayed
 
 
 # Plot the histograms for leptonic W boson invariant mass
-plt.figure(figsize=(8, 9))  # Create a new figure for leptonic W mass plot
+plt.figure(figsize=(10, 12))  # Create a new figure for leptonic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.bar(    x_vals_m_w_leptonic_signal,    y_vals_m_w_leptonic_signal,    width=hist_m_w_leptonic_signal.GetBinWidth(1),    alpha=0.6,
@@ -263,7 +264,7 @@ plt.bar(    x_vals_m_w_leptonic_background,    y_vals_m_w_leptonic_background,  
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
-plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
+plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/m_w_leptonic_comparison.png", dpi=300)
@@ -274,7 +275,7 @@ plt.show()
 
 
 # Plot the histograms for hadronic W boson invariant mass
-plt.figure(figsize=(8, 9))  # Create a new figure for hadronic W mass plot
+plt.figure(figsize=(10, 12))  # Create a new figure for hadronic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.bar(    x_vals_m_w_hadronic_signal,    y_vals_m_w_hadronic_signal,    width=hist_m_w_hadronic_signal.GetBinWidth(1),    alpha=0.6,
@@ -283,7 +284,7 @@ plt.bar(    x_vals_m_w_hadronic_background,    y_vals_m_w_hadronic_background,  
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\mathrm{j_1j_2}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
-plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
+plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/m_w_hadronic_comparison.png", dpi=300)
