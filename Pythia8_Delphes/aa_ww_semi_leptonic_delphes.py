@@ -1,3 +1,12 @@
+
+
+## ================================================================================
+##        Hamzeh Khanpour  --- January 2025
+## ================================================================================
+
+
+
+
 #!/usr/bin/env python
 
 import ROOT
@@ -31,8 +40,8 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM0_new.root"
-background_file_path = "aa_ww_semi_leptonic_SM_new.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_FM0_100K.root"
+background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
 
 
 
@@ -70,8 +79,12 @@ def process_file(
     numberOfEntries = treeReader.GetEntries()
 
     # Counters for efficiency calculation
+    # ✅ Initialize selection counters
     total_events = numberOfEntries
-    selected_events = 0
+
+    selected_events_pre = 0   # ✅ Fix: Initialize before use
+    selected_events_final = 0 # ✅ Fix: Initialize before use
+
 
     # Get branches for electrons, muons, jets, and MET
     branchElectron = treeReader.UseBranch("Electron")
@@ -112,16 +125,18 @@ def process_file(
             continue
 
         # Count selected events
-        selected_events += 1
+        selected_events_pre += 1
 
-        # Fill histograms
+        # Fill histogram with lepton pT
         hist_lepton.Fill(leptons[0].Pt())
-        hist_lepton_eta.Fill(leptons[0].Eta())
+        hist_lepton_eta.Fill(leptons[0].Eta())   # ✅ Fill η histogram
+
+        # Fill histogram with leading jet pT
         leading_jet = jets[0] if jets[0].Pt() > jets[1].Pt() else jets[1]
         hist_leading_jet.Fill(leading_jet.Pt())
 
 
-        # Fill optional histograms
+        # Fill optional histograms  Fill histogram with leading jet pT
         if hist_delta_r is not None:
             delta_r = leptons[0].DeltaR(leading_jet)
             hist_delta_r.Fill(delta_r)
@@ -156,17 +171,63 @@ def process_file(
             hist_m_w_hadronic.Fill(w_hadronic.M())
 
 
-        # Calculate invariant mass of the leptonic W boson (approximation using MET)
+
+        # **✅ Corrected W → ℓν Reconstruction**
         if hist_m_w_leptonic is not None and branchMissingET.GetEntries() > 0:
             missing_et = branchMissingET.At(0)
-            nu_vec = TLorentzVector()
-            nu_vec.SetPxPyPzE(missing_et.MET * np.cos(missing_et.Phi), missing_et.MET * np.sin(missing_et.Phi), 0, missing_et.MET)
-            w_leptonic = leptons[0] + nu_vec
+
+            # **Construct MET components**
+            px_nu = missing_et.MET * np.cos(missing_et.Phi)
+            py_nu = missing_et.MET * np.sin(missing_et.Phi)
+
+
+            # **W Boson Mass Constraint**
+            MW = 80.385  # W boson mass in GeV
+            A1 = 2 * (leptons[0].Px() * px_nu + leptons[0].Py() * py_nu) + MW**2
+            B1 = 4 * leptons[0].E()**2 * (px_nu**2 + py_nu**2)
+            C1 = 4 * (leptons[0].E()**2 - leptons[0].Pz()**2)
+            D1 = -A1 * 4 * leptons[0].Pz()
+            E1 = B1 - (A1**2) / 4  # ✅ Corrected denominator
+
+            # **Solve for Pz using the quadratic equation**
+            discriminant = D1**2 - 4 * C1 * E1
+            if discriminant >= 0 and C1 != 0:
+                Pz1 = (-D1 + np.sqrt(discriminant)) / (2 * C1)
+                Pz2 = (-D1 - np.sqrt(discriminant)) / (2 * C1)
+                Pz = Pz1 if abs(Pz1) < abs(Pz2) else Pz2  # Choose physical solution
+            elif C1 != 0:
+                Pz = -D1 / (2 * C1)  # Use fallback solution
+            else:
+                Pz = -E1 / D1 if D1 != 0 else 0  # Handle special case to avoid division by zero
+
+
+            # **Construct final neutrino 4-vector with corrected energy**
+            neutrino_vec = TLorentzVector()
+
+            E_nu = np.sqrt(px_nu**2 + py_nu**2 + Pz**2)  # ✅ Corrected energy calculation
+            neutrino_vec.SetPxPyPzE(px_nu, py_nu, Pz, E_nu)  # ✅ Corrected Pz
+
+
+            # **Reconstruct the W boson correctly**
+            w_leptonic = leptons[0] + neutrino_vec
             hist_m_w_leptonic.Fill(w_leptonic.M())
 
 
-    # Calculate selection efficiency
-    efficiency = selected_events / total_events if total_events > 0 else 0
+        # **✅ Final Event Selection (Corrected Indentation)**
+        if leading_jet.Pt() < 150 or leptons[0].Pt() < 150:
+            continue
+
+        # Count selected events
+        selected_events_final += 1
+
+
+
+    # **✅ Selection Efficiency Calculations**
+    efficiency_pre = selected_events_pre / total_events if total_events > 0 else 0
+
+    efficiency_final = selected_events_final / total_events if total_events > 0 else 0
+
+
 
     # Return histograms and efficiency
     return (
@@ -181,7 +242,8 @@ def process_file(
         hist_delta_eta_jj,
         hist_m_w_leptonic,
         hist_m_w_hadronic,
-        efficiency,
+        efficiency_pre,
+        efficiency_final,
     )
 
 
@@ -209,8 +271,8 @@ jet_centrality_range = (0, 5)  # Range for jet centrality
 delta_eta_jj_range = (0, 6)    # Range for Delta Eta between jets
 
 # Define ranges for invariant masses
-m_w_hadronic_range = (1, 180)  # Range for the hadronic W boson mass
-m_w_leptonic_range = (1, 180)  # Range for the leptonic W boson mass
+m_w_hadronic_range = (1, 150)  # Range for the hadronic W boson mass
+m_w_leptonic_range = (1, 150)  # Range for the leptonic W boson mass
 
 
 
@@ -310,29 +372,34 @@ hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Lepton
 # Process signal and background files and populate histograms
 (hist_lepton_signal_0, hist_leading_jet_signal_0, hist_lepton_eta_signal_0, hist_delta_r_signal_0,
  hist_missing_et_signal_0, hist_centrality_signal_0, hist_exp_centrality_signal_0, hist_jet_centrality_signal_0,
- hist_delta_eta_jj_signal_0, hist_m_w_hadronic_signal_0, hist_m_w_leptonic_signal_0, signal_efficiency) = process_file(
+ hist_delta_eta_jj_signal_0, hist_m_w_leptonic_signal_0, hist_m_w_hadronic_signal_0,
+ signal_efficiency_pre, signal_efficiency_final) = process_file(
     signal_file_path, hist_lepton_signal_0, hist_leading_jet_signal_0, hist_lepton_eta_signal_0,
     hist_delta_r_signal_0, hist_missing_et_signal_0, hist_centrality_signal_0, hist_exp_centrality_signal_0,
-    hist_jet_centrality_signal_0, hist_delta_eta_jj_signal_0, hist_m_w_hadronic_signal_0, hist_m_w_leptonic_signal_0
+    hist_jet_centrality_signal_0, hist_delta_eta_jj_signal_0, hist_m_w_leptonic_signal_0, hist_m_w_hadronic_signal_0
 )
+
 
 
 (hist_lepton_background, hist_leading_jet_background, hist_lepton_eta_background, hist_delta_r_background,
  hist_missing_et_background, hist_centrality_background, hist_exp_centrality_background, hist_jet_centrality_background,
- hist_delta_eta_jj_background, hist_m_w_hadronic_background, hist_m_w_leptonic_background, background_efficiency) = process_file(
+ hist_delta_eta_jj_background, hist_m_w_leptonic_background, hist_m_w_hadronic_background,
+ background_efficiency_pre, background_efficiency_final) = process_file(
     background_file_path, hist_lepton_background, hist_leading_jet_background, hist_lepton_eta_background,
     hist_delta_r_background, hist_missing_et_background, hist_centrality_background, hist_exp_centrality_background,
-    hist_jet_centrality_background, hist_delta_eta_jj_background, hist_m_w_hadronic_background, hist_m_w_leptonic_background
+    hist_jet_centrality_background, hist_delta_eta_jj_background, hist_m_w_leptonic_background, hist_m_w_hadronic_background
 )
-
 
 
 
 
 
 # Print selection efficiencies
-print(f"Signal Selection Efficiency: {signal_efficiency:.2%}")
-print(f"Background Selection Efficiency: {background_efficiency:.2%}")
+print(f"Signal Selection Efficiency (Pre): {signal_efficiency_pre:.2%}")
+print(f"Background Selection Efficiency (Pre): {background_efficiency_pre:.2%}")
+
+print(f"Signal Selection Efficiency (Final): {signal_efficiency_final:.2%}")
+print(f"Background Selection Efficiency (Final): {background_efficiency_final:.2%}")
 
 
 
@@ -452,9 +519,8 @@ m_w_leptonic_bins_background, dsigma_m_w_leptonic_background = calculate_dsigma(
 
 
 
-#fig, ax = plt.subplots(figsize=(12.0, 10.0))
+#plt.figure(figsize=(10, 12))  # Create a new figure for the leading jet η plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
-
 
 
 
@@ -473,6 +539,9 @@ plt.tight_layout()
 plt.ylim(0.000001, 0.1)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt.png", dpi=600)
 plt.show()
+
+
+
 
 
 
@@ -498,6 +567,7 @@ plt.show()
 
 
 
+
 # Plot the differential cross-sections for lepton η
 #plt.figure(figsize=(8, 9))  # Create a new figure for the lepton η plot
 
@@ -510,7 +580,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.0001, 10.0)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta.png", dpi=600)
 plt.show()
 
@@ -533,6 +603,9 @@ plt.tight_layout()
 plt.ylim(0.0001, 10.0)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r.png", dpi=600)
 plt.show()
+
+
+
 
 
 
@@ -602,6 +675,8 @@ plt.show()
 
 
 
+
+
 # Plot the differential cross-sections for jet centrality
 # plt.figure(figsize=(8, 9))
 
@@ -618,6 +693,7 @@ plt.text(0.5, 0.001, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_centrality.png", dpi=600)
 plt.show()
+
 
 
 
@@ -646,6 +722,8 @@ plt.show()
 
 
 
+
+
 # Plot the differential cross-sections for hadronic W boson invariant mass
 plt.step(m_w_hadronic_bins_signal_0, dsigma_m_w_hadronic_signal_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(m_w_hadronic_bins_background, dsigma_m_w_hadronic_background, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
@@ -656,8 +734,11 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
+plt.ylim(0.00001, 1.0)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_m_w_hadronic.png", dpi=600)
 plt.show()
+
+
 
 
 
@@ -677,9 +758,10 @@ plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0, 0.08)
+plt.ylim(0.0, 0.3)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic.png", dpi=600)
 plt.show()
+
 
 
 
@@ -703,9 +785,11 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.000001, 1.0)
+plt.ylim(0.00001, 1.0)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_m_w_leptonic.png", dpi=600)
 plt.show()
+
+
 
 
 
@@ -725,6 +809,7 @@ plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
+plt.ylim(0.0, 0.3)
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic.png", dpi=600)
 plt.show()
 

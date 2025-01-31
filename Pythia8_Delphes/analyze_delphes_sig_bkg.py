@@ -1,3 +1,11 @@
+
+## ================================================================================
+##        Hamzeh Khanpour  --- January 2025
+## ================================================================================
+
+
+
+
 #!/usr/bin/env python
 
 import ROOT
@@ -10,10 +18,30 @@ import numpy as np  # Import numpy for calculations
 import mplhep as hep
 
 hep.style.use("CMS")
+#plt.style.use(hep.style.ROOT)
+
+#plt.rcParams["axes.linewidth"] = 1.8
+#plt.rcParams["xtick.major.width"] = 1.8
+#plt.rcParams["xtick.minor.width"] = 1.8
+#plt.rcParams["ytick.major.width"] = 1.8
+#plt.rcParams["ytick.minor.width"] = 1.8
+
+#plt.rcParams["xtick.direction"] = "in"
+#plt.rcParams["ytick.direction"] = "in"
+
+#plt.rcParams["xtick.labelsize"] = 15
+#plt.rcParams["ytick.labelsize"] = 15
+
+#plt.rcParams["legend.fontsize"] = 15
+
+#plt.rcParams['legend.title_fontsize'] = 'x-large'
+
+
+
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM0_new.root"
-background_file_path = "aa_ww_semi_leptonic_SM_new.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_FM0_100K.root"
+background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
 
 
 
@@ -21,6 +49,9 @@ background_file_path = "aa_ww_semi_leptonic_SM_new.root"
 ROOT.gSystem.Load("libDelphes")
 ROOT.gInterpreter.Declare('#include "classes/DelphesClasses.h"')
 ROOT.gInterpreter.Declare('#include "external/ExRootAnalysis/ExRootTreeReader.h"')
+
+
+## ================================================================================
 
 
 
@@ -31,6 +62,8 @@ def process_file(
     hist_leading_jet,
     hist_m_w_leptonic,
     hist_m_w_hadronic,
+    hist_lepton_eta,
+    hist_leading_jet_eta,
 ):
     # Open the ROOT file
     chain = ROOT.TChain("Delphes")
@@ -49,8 +82,6 @@ def process_file(
     branchMuon = treeReader.UseBranch("Muon")
     branchJet = treeReader.UseBranch("Jet")
     branchMissingET = treeReader.UseBranch("MissingET")
-
-
 
     # Process each event
     for entry in range(numberOfEntries):
@@ -89,34 +120,72 @@ def process_file(
 
         # Fill histogram with lepton pT
         hist_lepton.Fill(leptons[0].Pt())
+        hist_lepton_eta.Fill(leptons[0].Eta())  # ✅ Fill η histogram
 
         # Fill histogram with leading jet pT
-        leading_jet = jets[0] if jets[0].Pt() > jets[1].Pt() else jets[1]
+        leading_jet = max(jets, key=lambda jet: jet.Pt())  # Select highest pT jet
         hist_leading_jet.Fill(leading_jet.Pt())
 
-        # Calculate invariant mass of the leptonic W boson
+        hist_leading_jet_eta.Fill(leading_jet.Eta())
+
+
+
+        # **✅ Corrected W → ℓν Reconstruction**
         if hist_m_w_leptonic is not None and branchMissingET.GetEntries() > 0:
             missing_et = branchMissingET.At(0)
+
+            # **Construct MET components**
+            px_nu = missing_et.MET * np.cos(missing_et.Phi)
+            py_nu = missing_et.MET * np.sin(missing_et.Phi)
+
+
+            # **W Boson Mass Constraint**
+            MW = 80.385  # W boson mass in GeV
+            A1 = 2 * (leptons[0].Px() * px_nu + leptons[0].Py() * py_nu) + MW**2
+            B1 = 4 * leptons[0].E()**2 * (px_nu**2 + py_nu**2)
+            C1 = 4 * (leptons[0].E()**2 - leptons[0].Pz()**2)
+            D1 = -A1 * 4 * leptons[0].Pz()
+            E1 = B1 - (A1**2) / 4  # ✅ Corrected denominator
+
+            # **Solve for Pz using the quadratic equation**
+            discriminant = D1**2 - 4 * C1 * E1
+            if discriminant >= 0 and C1 != 0:
+                Pz1 = (-D1 + np.sqrt(discriminant)) / (2 * C1)
+                Pz2 = (-D1 - np.sqrt(discriminant)) / (2 * C1)
+                Pz = Pz1 if abs(Pz1) < abs(Pz2) else Pz2  # Choose physical solution
+            elif C1 != 0:
+                Pz = -D1 / (2 * C1)  # Use fallback solution
+            else:
+                Pz = -E1 / D1 if D1 != 0 else 0  # Handle special case to avoid division by zero
+
+
+            # **Construct final neutrino 4-vector with corrected energy**
             neutrino_vec = TLorentzVector()
-            neutrino_vec.SetPxPyPzE(missing_et.MET * np.cos(missing_et.Phi),
-                                    missing_et.MET * np.sin(missing_et.Phi),
-                                    0.0,
-                                    missing_et.MET)
+
+            E_nu = np.sqrt(px_nu**2 + py_nu**2 + Pz**2)  # ✅ Corrected energy calculation
+            neutrino_vec.SetPxPyPzE(px_nu, py_nu, Pz, E_nu)  # ✅ Corrected Pz
+
+
+            # **Reconstruct the W boson correctly**
             w_leptonic = leptons[0] + neutrino_vec
             hist_m_w_leptonic.Fill(w_leptonic.M())
 
-        # Calculate invariant mass of the hadronic W boson
+
+        # **✅ Hadronic W Reconstruction**
         if hist_m_w_hadronic is not None:
             w_hadronic = jets[0] + jets[1]
             hist_m_w_hadronic.Fill(w_hadronic.M())
 
+
     # Calculate selection efficiency
     efficiency = selected_events / total_events if total_events > 0 else 0
 
-    return hist_lepton, hist_leading_jet, hist_m_w_leptonic, hist_m_w_hadronic, efficiency
+    return hist_lepton, hist_leading_jet, hist_m_w_leptonic, hist_m_w_hadronic, hist_lepton_eta, hist_leading_jet_eta, efficiency
 
 
 
+
+## ================================================================================
 
 
 
@@ -130,40 +199,61 @@ hist_leading_jet_signal = ROOT.TH1F("hist_leading_jet_signal", "Leading Jet pT D
 hist_leading_jet_background = ROOT.TH1F("hist_leading_jet_background", "Leading Jet pT Distribution; p_{T} [GeV]; Entries", 50, 0, 400)
 
 
-hist_m_w_leptonic_signal = ROOT.TH1F("hist_m_w_leptonic_signal", "Leptonic W Mass Distribution (Signal); M_W^{\ell\nu} [GeV]; Entries", 50, 0, 200)
-hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Leptonic W Mass Distribution (Background); M_W^{\ell\nu} [GeV]; Entries", 50, 0, 200)
+hist_m_w_leptonic_signal = ROOT.TH1F("hist_m_w_leptonic_signal", "Leptonic W Mass Distribution (Signal); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 150)
+hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Leptonic W Mass Distribution (Background); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 150)
 
 
-hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 0, 200)
-hist_m_w_hadronic_background = ROOT.TH1F("hist_m_w_hadronic_background", "Hadronic W Mass Distribution (Background); M_W^{jj} [GeV]; Entries", 50, 0, 200)
+hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 1, 150)
+hist_m_w_hadronic_background = ROOT.TH1F("hist_m_w_hadronic_background", "Hadronic W Mass Distribution (Background); M_W^{jj} [GeV]; Entries", 50, 1, 150)
+
+
+# ✅ NEW: Define histograms for lepton pseudorapidity (η)
+hist_lepton_eta_signal = ROOT.TH1F("hist_lepton_eta_signal", "Lepton Pseudorapidity Distribution (Signal); \eta_{\ell}; Entries", 50, -5, 5)
+hist_lepton_eta_background = ROOT.TH1F("hist_lepton_eta_background", "Lepton Pseudorapidity Distribution (Background); \eta_{\ell}; Entries", 50, -5, 5)
+
+
+# ✅ NEW: Define histograms for leading jet pseudorapidity (η)
+hist_leading_jet_eta_signal = ROOT.TH1F("hist_leading_jet_eta_signal", "Leading Jet Pseudorapidity Distribution (Signal); \eta_{\mathrm{jet}}; Entries", 50, -5, 5)
+hist_leading_jet_eta_background = ROOT.TH1F("hist_leading_jet_eta_background", "Leading Jet Pseudorapidity Distribution (Background); \eta_{\mathrm{jet}}; Entries", 50, -5, 5)
+
+
 
 
 
 
 # Process signal and background files and calculate efficiencies
 # Call the process_file function and update the unpacking to include all returned values
+
 (hist_lepton_signal,
  hist_leading_jet_signal,
  hist_m_w_leptonic_signal,
  hist_m_w_hadronic_signal,
+ hist_lepton_eta_signal,   # ✅ NEW: Lepton η histogram (Signal)
+ hist_leading_jet_eta_signal,  # ✅ NEW: Leading Jet η histogram (Signal)
  signal_efficiency) = process_file(
     signal_file_path,
     hist_lepton_signal,
     hist_leading_jet_signal,
     hist_m_w_leptonic_signal,
-    hist_m_w_hadronic_signal
+    hist_m_w_hadronic_signal,
+    hist_lepton_eta_signal,   # ✅ Pass to function
+    hist_leading_jet_eta_signal  # ✅ Pass to function
 )
 
 (hist_lepton_background,
  hist_leading_jet_background,
  hist_m_w_leptonic_background,
  hist_m_w_hadronic_background,
+ hist_lepton_eta_background,   # ✅ NEW: Lepton η histogram (Background)
+ hist_leading_jet_eta_background,  # ✅ NEW: Leading Jet η histogram (Background)
  background_efficiency) = process_file(
     background_file_path,
     hist_lepton_background,
     hist_leading_jet_background,
     hist_m_w_leptonic_background,
-    hist_m_w_hadronic_background
+    hist_m_w_hadronic_background,
+    hist_lepton_eta_background,   # ✅ Pass to function
+    hist_leading_jet_eta_background  # ✅ Pass to function
 )
 
 
@@ -209,6 +299,24 @@ y_vals_m_w_hadronic_signal = [hist_m_w_hadronic_signal.GetBinContent(i) for i in
 x_vals_m_w_hadronic_background = [hist_m_w_hadronic_background.GetBinCenter(i) for i in range(1, hist_m_w_hadronic_background.GetNbinsX() + 1)]
 y_vals_m_w_hadronic_background = [hist_m_w_hadronic_background.GetBinContent(i) for i in range(1, hist_m_w_hadronic_background.GetNbinsX() + 1)]
 
+
+
+
+# ✅ NEW: Convert ROOT histograms for lepton pseudorapidity (η)
+x_vals_lepton_eta_signal = [hist_lepton_eta_signal.GetBinCenter(i) for i in range(1, hist_lepton_eta_signal.GetNbinsX() + 1)]
+y_vals_lepton_eta_signal = [hist_lepton_eta_signal.GetBinContent(i) for i in range(1, hist_lepton_eta_signal.GetNbinsX() + 1)]
+
+x_vals_lepton_eta_background = [hist_lepton_eta_background.GetBinCenter(i) for i in range(1, hist_lepton_eta_background.GetNbinsX() + 1)]
+y_vals_lepton_eta_background = [hist_lepton_eta_background.GetBinContent(i) for i in range(1, hist_lepton_eta_background.GetNbinsX() + 1)]
+
+
+
+# ✅ NEW: Convert ROOT histograms for leading jet pseudorapidity (η)
+x_vals_leading_jet_eta_signal = [hist_leading_jet_eta_signal.GetBinCenter(i) for i in range(1, hist_leading_jet_eta_signal.GetNbinsX() + 1)]
+y_vals_leading_jet_eta_signal = [hist_leading_jet_eta_signal.GetBinContent(i) for i in range(1, hist_leading_jet_eta_signal.GetNbinsX() + 1)]
+
+x_vals_leading_jet_eta_background = [hist_leading_jet_eta_background.GetBinCenter(i) for i in range(1, hist_leading_jet_eta_background.GetNbinsX() + 1)]
+y_vals_leading_jet_eta_background = [hist_leading_jet_eta_background.GetBinContent(i) for i in range(1, hist_leading_jet_eta_background.GetNbinsX() + 1)]
 
 
 
@@ -258,10 +366,8 @@ plt.show()  # Ensure the second plot is displayed
 plt.figure(figsize=(10, 12))  # Create a new figure for leptonic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(    x_vals_m_w_leptonic_signal,    y_vals_m_w_leptonic_signal,    width=hist_m_w_leptonic_signal.GetBinWidth(1),    alpha=0.6,
-    label="LHeC@1.2 TeV : Signal ($w^+ w^-$)", color="red",)
-plt.bar(    x_vals_m_w_leptonic_background,    y_vals_m_w_leptonic_background,    width=hist_m_w_leptonic_background.GetBinWidth(1),    alpha=0.6,
-    label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
+plt.bar(    x_vals_m_w_leptonic_signal,    y_vals_m_w_leptonic_signal,    width=hist_m_w_leptonic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+plt.bar(    x_vals_m_w_leptonic_background,    y_vals_m_w_leptonic_background,    width=hist_m_w_leptonic_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
@@ -278,10 +384,8 @@ plt.show()
 plt.figure(figsize=(10, 12))  # Create a new figure for hadronic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(    x_vals_m_w_hadronic_signal,    y_vals_m_w_hadronic_signal,    width=hist_m_w_hadronic_signal.GetBinWidth(1),    alpha=0.6,
-    label="LHeC@1.2 TeV : Signal ($w^+ w^-$)", color="red",)
-plt.bar(    x_vals_m_w_hadronic_background,    y_vals_m_w_hadronic_background,    width=hist_m_w_hadronic_background.GetBinWidth(1),    alpha=0.6,
-    label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
+plt.bar(    x_vals_m_w_hadronic_signal,    y_vals_m_w_hadronic_signal,    width=hist_m_w_hadronic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+plt.bar(    x_vals_m_w_hadronic_background,    y_vals_m_w_hadronic_background,    width=hist_m_w_hadronic_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\mathrm{j_1j_2}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
@@ -289,6 +393,48 @@ plt.legend()
 plt.grid()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/m_w_hadronic_comparison.png", dpi=300)
 plt.show()
+
+
+
+
+
+# ✅ NEW: Plot the histograms for lepton pseudorapidity (η)
+plt.figure(figsize=(10, 12))  # Create a new figure for the lepton η plot
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+plt.bar(x_vals_lepton_eta_signal, y_vals_lepton_eta_signal, width=hist_lepton_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red")
+plt.bar(x_vals_lepton_eta_background, y_vals_lepton_eta_background, width=hist_lepton_eta_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue")
+plt.xlabel(r"$\eta_{\ell}$")
+plt.ylabel("Entries")
+plt.title(r"Lepton Pseudorapidity Distribution: $e^- p \to e^- w^+ w^- p$", fontsize=18)
+plt.legend()
+plt.grid()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/lepton_eta_comparison.png", dpi=300)
+plt.show()
+
+
+
+
+
+
+# ✅ NEW: Plot the histograms for leading jet pseudorapidity (η)
+plt.figure(figsize=(10, 12))  # Create a new figure for the leading jet η plot
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+plt.bar(x_vals_leading_jet_eta_signal, y_vals_leading_jet_eta_signal, width=hist_leading_jet_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red")
+plt.bar(x_vals_leading_jet_eta_background, y_vals_leading_jet_eta_background, width=hist_leading_jet_eta_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue")
+plt.xlabel(r"$\eta_{\mathrm{leading~jet}}$")
+plt.ylabel("Entries")
+plt.title(r"Leading Jet Pseudorapidity Distribution: $e^- p \to e^- w^+ w^- p$", fontsize=18)
+plt.legend()
+plt.grid()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/leading_jet_eta_comparison.png", dpi=300)
+plt.show()
+
+
+
+
+
 
 
 
