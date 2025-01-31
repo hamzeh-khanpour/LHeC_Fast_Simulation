@@ -31,7 +31,6 @@ hep.style.use("CMS")
 
 
 # Function to parse the LHE file and extract lepton transverse momentum (pT), leading jet pT, Delta R, Missing Transverse Energy, and Centrality
-# Function to parse the LHE file and extract relevant distributions
 def parse_lhe_file(file_name):
     pt_leptons = []
     eta_leptons = []
@@ -47,8 +46,6 @@ def parse_lhe_file(file_name):
 
     with open(file_name, "r") as file:
         in_event = False
-        total_px = 0.0  # Initialize MET calculation
-        total_py = 0.0
 
         for line in file:
             line = line.strip()
@@ -58,14 +55,15 @@ def parse_lhe_file(file_name):
                 in_event = True
                 jets = []  # Temporary list to store jet 4-momenta
                 leptons = []  # Temporary list to store lepton 4-momenta
-                total_px = 0.0  # Reset per event
-                total_py = 0.0
+                neutrinos = []  # Store neutrino 4-momenta for MET calculation
                 continue
             if "</event>" in line:
                 in_event = False
 
-                # Compute MET (Missing Transverse Energy)
-                met = np.sqrt(total_px**2 + total_py**2)
+                # Compute MET from neutrinos' pT
+                met_x = sum(nu.Px() for nu in neutrinos)
+                met_y = sum(nu.Py() for nu in neutrinos)
+                met = np.sqrt(met_x**2 + met_y**2)
                 missing_transverse_energy.append(met)
 
                 # Identify the leading jet in this event (if available)
@@ -96,10 +94,9 @@ def parse_lhe_file(file_name):
                         w_hadronic = jets[0] + jets[1]  # Sum of two jets (4-vectors)
                         m_w_hadronic_values.append(w_hadronic.M())  # Store mass
 
-                # Compute leptonic W boson mass if one lepton and MET are present
-                if len(leptons) == 1 and met > 0:
-                    neutrino_vec = ROOT.TLorentzVector()
-                    neutrino_vec.SetPtEtaPhiM(met, 0.0, 0.0, 0.0)  # Assume zero mass for neutrino
+                # Compute leptonic W boson mass if one lepton and at least one neutrino exist
+                if len(leptons) == 1 and len(neutrinos) > 0:
+                    neutrino_vec = sum(neutrinos, ROOT.TLorentzVector())  # Sum of all neutrinos
                     w_leptonic = leptons[0] + neutrino_vec
                     m_w_leptonic_values.append(w_leptonic.M())  # Store mass
 
@@ -126,10 +123,6 @@ def parse_lhe_file(file_name):
                 pz = float(parts[8])
                 energy = float(parts[9])
 
-                # Accumulate px and py for MET calculation
-                total_px += px
-                total_py += py
-
                 # Check if particle is a lepton (electron, muon, tau)
                 if abs(pdg_id) in [11, 13, 15]:
                     lepton = ROOT.TLorentzVector()
@@ -148,9 +141,20 @@ def parse_lhe_file(file_name):
                     # Store jet information
                     jets.append(jet)
 
+                # Check if the particle is a neutrino (νe, νμ, ντ)
+                if abs(pdg_id) in [12, 14, 16]:  # Neutrinos
+                    neutrino = ROOT.TLorentzVector()
+                    neutrino.SetPxPyPzE(px, py, pz, energy)
+
+                    # Store neutrino 4-momentum for MET calculation
+                    neutrinos.append(neutrino)
+
+
+
     return (pt_leptons, eta_leptons, pt_leading_jet, delta_r_values,
             missing_transverse_energy, centrality_values, exp_centrality_values,
             jet_centrality_values, delta_eta_jj_values, m_w_hadronic_values, m_w_leptonic_values)
+
 
 
 
@@ -165,8 +169,6 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
 signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM2/Events/run_01/aa_ww_semi_leptonic_NP_FM2.lhe"
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
-
-
 
 
 
@@ -195,6 +197,7 @@ signal_cross_section_2 = 77.86  # pb
 background_cross_section = 0.0134802  # pb
 
 num_bins = 50
+
 pt_range_lepton = (0, 500)     # Range for lepton pT
 pt_range_jet = (0, 500)        # Range for leading jet pT (adjusted for higher jet momenta)
 eta_range = (-10, 10)          # Range for pseudorapidity
@@ -715,9 +718,6 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_leptonic.png", dpi=600)
 plt.show()
-
-
-
 
 
 
