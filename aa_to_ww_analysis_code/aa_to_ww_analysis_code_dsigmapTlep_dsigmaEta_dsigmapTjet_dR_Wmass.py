@@ -1,5 +1,8 @@
 
-# Hamzeh khanpour -- 2025
+# =======================================================================
+#     Hamzeh khanpour -- 2025
+# =======================================================================
+
 
 import ROOT
 import matplotlib.pyplot as plt
@@ -28,6 +31,8 @@ hep.style.use("CMS")
 
 #plt.rcParams['legend.title_fontsize'] = 'x-large'
 
+
+# =======================================================================
 
 
 # Function to parse the LHE file and extract lepton transverse momentum (pT), leading jet pT, Delta R, Missing Transverse Energy, and Centrality
@@ -159,6 +164,11 @@ def parse_lhe_file(file_name):
 
 
 
+# =======================================================================
+
+
+
+
 
 #fig, ax = plt.subplots(figsize=(12.0, 10.0))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
@@ -168,6 +178,7 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 # Parse signal and background files
 signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
 signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM2/Events/run_01/aa_ww_semi_leptonic_NP_FM2.lhe"
+
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
 
@@ -190,11 +201,25 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/E
 
 
 
+# =======================================================================
+
+
 
 # Parameters for differential cross-section
-signal_cross_section_0 = 1.994  # pb
-signal_cross_section_2 = 77.86  # pb
-background_cross_section = 0.0134802  # pb
+
+signal_cross_section_0   = 1.99216      # pb  FM0
+#signal_cross_section_1   = 0.17783      # pb  FM1
+signal_cross_section_2   = 77.8809      # pb  FM2
+#signal_cross_section_3   = 5.95386      # pb  FM3
+
+#signal_cross_section_FT0   = 58.8643      # pb  FT0
+#signal_cross_section_FT1   = 6.53478      # pb  FT1
+#signal_cross_section_FT2   = 4.57082      # pb  FT2
+
+background_cross_section = 0.0134936    # pb
+
+
+
 
 num_bins = 50
 
@@ -316,6 +341,8 @@ m_w_leptonic_bins_background, dsigma_background_m_w_leptonic = calculate_dsigma(
 
 
 # =======================================================================
+
+
 
 
 # Plot the differential cross-sections

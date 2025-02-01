@@ -6,7 +6,6 @@
 
 
 
-
 #!/usr/bin/env python
 
 import ROOT
@@ -17,6 +16,7 @@ import matplotlib.pyplot as plt
 
 # Matplotlib configuration for publication-quality plots
 import mplhep as hep
+
 
 hep.style.use("CMS")
 #plt.style.use(hep.style.ROOT)
@@ -257,8 +257,21 @@ def process_file(
 
 
 # Parameters for differential cross-section
-signal_cross_section_0   = 1.994      # pb
-background_cross_section = 0.0134802  # pb
+
+signal_cross_section_0   = 1.99216      # pb  FM0
+#signal_cross_section_0   = 0.17783      # pb  FM1
+#signal_cross_section_0   = 77.8809      # pb  FM2
+#signal_cross_section_0   = 5.95386      # pb  FM3
+
+#signal_cross_section_0   = 58.8643      # pb  FT0
+#signal_cross_section_0   = 6.53478      # pb  FT1
+#signal_cross_section_0   = 4.57082      # pb  FT2
+
+background_cross_section = 0.0134936    # pb
+
+
+
+
 num_bins = 50
 pt_range_lepton = (0, 500)     # Range for lepton pT
 pt_range_jet = (0, 500)        # Range for leading jet pT (adjusted for higher jet momenta)
