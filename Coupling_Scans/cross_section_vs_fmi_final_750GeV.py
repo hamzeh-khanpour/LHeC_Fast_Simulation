@@ -83,5 +83,5 @@ plt.grid(True, which="both", linestyle="--", linewidth=0.5)
 plt.legend()
 
 # Save the plot
-plt.savefig('cross_section_vs_FMI_coupling_750GeV.jpg', dpi=300)
+plt.savefig('cross_section_vs_FMI_coupling_750GeV.pdf', dpi=300)
 plt.show()

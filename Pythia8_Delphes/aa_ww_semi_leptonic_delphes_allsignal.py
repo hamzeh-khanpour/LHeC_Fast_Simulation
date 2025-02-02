@@ -526,7 +526,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -565,7 +565,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_pt_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_pt_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -607,7 +607,7 @@ plt.tight_layout()
 plt.ylim(0.0001, 1000.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -647,7 +647,7 @@ plt.tight_layout()
 plt.ylim(0.0001, 1000.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -687,7 +687,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_met_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_met_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -727,7 +727,7 @@ plt.tight_layout()
 plt.ylim(0.0, 0.3)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -771,7 +771,7 @@ plt.tight_layout()
 plt.ylim(0.0, 0.3)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic_allsignal.png", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic_allsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
