@@ -205,14 +205,15 @@ def plot_weighted_distribution_with_cross_section(data1, data2, cross_section_x,
         return
 
     bin_width = (range[1] - range[0]) / bins
+
     event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(num_entries1, 1)
     event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(num_entries2, 1)
 
     plt.hist(data1, bins=bins, range=range, color=color1, alpha=0.6, label=f"{label1}",
-             weights=[event_weight1] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
+             weights=[event_weight1 / bin_width] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
 
     plt.hist(data2, bins=bins, range=range, color=color2, alpha=0.6, label=f"{label2}",
-             weights=[event_weight2] * num_entries2, edgecolor="blue", histtype="step", linestyle="dashed", linewidth=2)
+             weights=[event_weight2 / bin_width] * num_entries2, edgecolor="blue", histtype="step", linestyle="dashed", linewidth=2)
 
     # ✅ Overlay elastic cross-section
     plt.plot(cross_section_x, cross_section_y, color=color3, linestyle="dashdot", linewidth=2, label=label3)
@@ -254,16 +255,17 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
     bin_width = (range[1] - range[0]) / bins
+
     event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(num_entries1, 1)
     event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(num_entries2, 1)
 
 
 
     plt.hist(data1, bins=bins, range=range, color=color1, alpha=0.6, label=f"{label1}",
-             weights=[event_weight1] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
+             weights=[event_weight1 / bin_width] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
 
     plt.hist(data2, bins=bins, range=range, color=color2, alpha=0.6, label=f"{label2}",
-             weights=[event_weight2] * num_entries2, edgecolor="blue", histtype="step", linestyle="dashed", linewidth=2)
+             weights=[event_weight2 / bin_width] * num_entries2, edgecolor="blue", histtype="step", linestyle="dashed", linewidth=2)
 
     # ✅ Overlay elastic cross-section
     plt.plot(cross_section_x, cross_section_y, color=color3, linestyle="dashdot", linewidth=2, label=label3)
@@ -329,12 +331,14 @@ plot_weighted_distribution_with_cross_section(invariant_mass_tau_pair_1, invaria
                                               bins=490, range=(10, 500), color1="blue", color2="red", color3="teal",  # ✅ Changed from black for better contrast
                                               xlabel=r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$",
                                               ylabel=r"$d\sigma/dM_{\tau^+ \tau^-} \quad \mathrm{[pb/GeV]}$",
-                                              title="LHeC@1.2 TeV", filename="Invariant_mass_tau_pair_SM_atau_EPA.jpg",
+                                              title="LHeC @ 1.2 TeV", filename="Invariant_mass_tau_pair_SM_atau_EPA.jpg",
                                               label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.0042)$",
                                               label3=r"EPA",
                                               integrated_cross_section_SM=integrated_cross_section_SM,
                                               integrated_cross_section_a_tau=integrated_cross_section_a_tau,
                                               integrated_luminosity=integrated_luminosity, log_scale=True)
+
+
 
 
 
@@ -348,7 +352,7 @@ plot_weighted_distribution_with_rapidity(rapidity_tau_pair_1, rapidity_tau_pair_
                                          bins=20, range=(-10, 10), color1="purple", color2="green", color3="teal",  # ✅ Changed from black for better contrast
                                          xlabel=r"$Y_{\tau^+ \tau^-}$",
                                          ylabel=r"$d\sigma/dY_{\tau^+ \tau^-} \quad \mathrm{[pb]}$",  # ✅ Used subscript instead of superscript for consistency
-                                         title="LHeC@1.2 TeV", filename="Rapidity_tau_pair_SM_atau_EPA.jpg",
+                                         title="LHeC @ 1.2 TeV", filename="Rapidity_tau_pair_SM_atau_EPA.jpg",
                                          label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.0042)$",
                                          label3=r"EPA",
                                          integrated_cross_section_SM=integrated_cross_section_SM,
@@ -360,6 +364,7 @@ plot_weighted_distribution_with_rapidity(rapidity_tau_pair_1, rapidity_tau_pair_
 
 
 #======================================================================
+
 
 
 
@@ -396,13 +401,13 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
 
-    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", markersize=5, label="Ratio NP/SM")
+    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", markersize=5, label="Ratio $(a_{\\tau}/SM)$")
 
     # ✅ Add shaded uncertainty band centered on ratio
 #    ax.fill_between(bin_centers, ratio - ratio_err, ratio + ratio_err, color="blue", alpha=0.3, label="Uncertainty Band")
 
     # ✅ Reference line at ratio = 1
-    ax.axhline(y=1, color="red", linestyle="--", linewidth=2)
+    ax.axhline(y=1, color="red", linestyle="--", linewidth=2, label="y=1")
 
     # ✅ Format plot
     ax.set_xlabel(xlabel)
@@ -414,8 +419,10 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = max(0, np.nanpercentile(ratio, 5))  # Lower 5% percentile
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
-    ax.set_ylim(-5, 5)  # Adjust y-axis limits based on the reference image
-#    ax.set_ylim(ymin, ymax)
+    ymin = -5.0
+    ymax =  5.0
+
+    ax.set_ylim(ymin, ymax)
 
     ax.legend()
     ax.grid(True, linestyle="--", alpha=0.5)
@@ -427,12 +434,12 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 100
+bins = 50
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
 title = "LHeC @ 1.2 TeV"
-output_filename = "Ratio_NP_SM_Plot.png"
+output_filename = "Ratio_NP_SM_Plot.jpg"
 
 # ✅ Call function to plot ratio
 plot_ratio(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits, xlabel, ylabel, title, output_filename)
@@ -480,7 +487,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
 
 #    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", markersize=5, label="Ratio $(a_{\\tau}/SM)$")
-    ax.errorbar(bin_centers, complementary_ratio, yerr=complementary_ratio_err, fmt="o", color="green", markersize=5, label="1 - $(a_{\\tau}/SM)$")
+    ax.errorbar(bin_centers, complementary_ratio, yerr=complementary_ratio_err, fmt="o", color="blue", markersize=5, label="1 - $(a_{\\tau}/SM)$")
 
     # ✅ Add shaded uncertainty band centered on ratio
 #    ax.fill_between(bin_centers, ratio - ratio_err, ratio + ratio_err, color="blue", alpha=0.3, label="Uncertainty Band")
@@ -488,7 +495,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
     # ✅ Reference line at ratio = 1
 #    ax.axhline(y=1, color="red", linestyle="--", linewidth=2, label="Ref: Ratio = 1")
-    ax.axhline(y=0, color="black", linestyle="--", linewidth=2, label="Ref")
+    ax.axhline(y=0, color="red", linestyle="--", linewidth=2, label="y=0")
 
     # ✅ Format plot
     ax.set_xlabel(xlabel)
@@ -497,8 +504,12 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     ax.set_title(title)
 
     # ✅ Adjust y-limits dynamically
-    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
-    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.5
+#    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
+#    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
+
+    ymin = -5.0
+    ymax =  5.0
+
     ax.set_ylim(ymin, ymax)
 
     ax.legend()
@@ -511,15 +522,21 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 100
+bins = 50
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
 title = "LHeC @ 1.2 TeV"
-output_filename = "Ratio_NP_SM_Plot.png"
+output_filename = "Ratio_1_NP_SM_Plot.jpg"
 
 # ✅ Call function to plot ratio
 plot_ratio(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits, xlabel, ylabel, title, output_filename)
+
+
+
+#======================================================================
+
+
 
 
 
