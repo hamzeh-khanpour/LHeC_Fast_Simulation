@@ -142,6 +142,8 @@ def plot_weighted_distribution(data, bins, range, color, xlabel, ylabel, title, 
 
 # Parse the file to get Pt, eta of tau+ and tau-, and rapidity of tau+ tau- pair
 file_name = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/aa_to_tautau_SM.lhe"
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/a_tau-unweighted_events.lhe"
+
 pt_tau_plus, eta_tau_plus, pt_tau_minus, eta_tau_minus, rapidity_tau_pair = parse_lhe_file(file_name)
 
 # Define integrated luminosity and cross-section
