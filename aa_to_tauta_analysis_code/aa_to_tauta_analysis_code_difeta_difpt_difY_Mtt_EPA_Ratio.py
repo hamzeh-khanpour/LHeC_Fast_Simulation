@@ -293,8 +293,8 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 # ✅ Parse both files
-file_name_SM = "/home/hamzeh-khanpour/aa_tautau_SM.lhe"
-file_name_a_tau = "/home/hamzeh-khanpour/aa_tautau_a_tau.lhe"
+file_name_SM = "pwd/home/hamzeh-khanpour/MG5_aMC_v2_5_5/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe"
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v2_5_5/aa_tautau_SM_a_tau/Events/run_01/aa_tautau_SM_a_tau.lhe"
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -312,8 +312,8 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 
 # ✅ Define integrated luminosity and separate cross-sections for each file
 integrated_luminosity = 1.0  # fb^-1
-integrated_cross_section_SM = 47.27  # pb
-integrated_cross_section_a_tau = 50.72  # pb
+integrated_cross_section_SM = 50.699012668  # pb
+integrated_cross_section_a_tau = 50.432011089  # pb
 
 
 
