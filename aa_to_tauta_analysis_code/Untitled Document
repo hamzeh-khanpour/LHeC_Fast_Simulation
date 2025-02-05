@@ -4,3 +4,18 @@ Traceback (most recent call last):
     import matplotlib.pyplot as plt
 ModuleNotFoundError: No module named 'matplotlib'
 
+
+
+python3.6 -m ensurepip --default-pip
+
+
+
+python3.6 -m pip install matplotlib
+
+
+
+
+python3.6 -m pip list | grep matplotlib
+
+
+sudo apt install python3.6 python3.6-venv python3.6-dev -y
