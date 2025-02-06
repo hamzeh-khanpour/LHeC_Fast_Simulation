@@ -294,8 +294,8 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 # ✅ Parse both files
-file_name_SM = "aa_tautau_SM_NP_0.lhe"
-file_name_a_tau = "aa_tautau_a_tau.lhe"
+file_name_SM = "/home/hamzeh-khanpour/aa_tautau_SM_NP_0.lhe"
+file_name_a_tau = "/home/hamzeh-khanpour/aa_tautau_a_tau.lhe"
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
