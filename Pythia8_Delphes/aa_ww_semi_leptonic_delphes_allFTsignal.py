@@ -41,10 +41,9 @@ hep.style.use("CMS")
 
 # Path to the ROOT files : signal and background
 signal_files = {
-    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM0_100K.root",
-    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM1_100K.root",
-    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM2_100K.root",
-    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM3_100K.root",
+    "$FT_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FT0_100K.root",
+    "$FT_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FT1_100K.root",
+    "$FT_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FT2_100K.root",
 }
 background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
 
@@ -267,10 +266,9 @@ def process_file(
 # Parameters for differential cross-section
 
 signal_cross_sections = {
-    "$FM_{0} / \Lambda^4$": 1.99216,   # pb
-    "$FM_{1} / \Lambda^4$": 0.17783,   # pb
-    "$FM_{2} / \Lambda^4$": 77.8809,   # pb
-    "$FM_{3} / \Lambda^4$": 5.95386    # pb
+    "$FT_{0} / \Lambda^4$": 58.8643,   # pb
+    "$FT_{1} / \Lambda^4$": 6.53478,   # pb
+    "$FT_{2} / \Lambda^4$": 4.57082,   # pb
 }
 
 background_cross_section = 0.0134936  # pb
@@ -492,10 +490,9 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Define colors for each signal
 signal_colors = {
-    "$FM_{0} / \Lambda^4$": "red",
-    "$FM_{1} / \Lambda^4$": "purple",
-    "$FM_{2} / \Lambda^4$": "green",
-    "$FM_{3} / \Lambda^4$": "orange"
+    "$FT_{0} / \Lambda^4$": "red",
+    "$FT_{1} / \Lambda^4$": "purple",
+    "$FT_{2} / \Lambda^4$": "green",
 }
 
 
@@ -526,7 +523,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -565,7 +562,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_pt_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_pt_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -607,7 +604,7 @@ plt.tight_layout()
 plt.ylim(0.0001, 1000.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -647,7 +644,7 @@ plt.tight_layout()
 plt.ylim(0.0001, 1000.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -687,7 +684,7 @@ plt.tight_layout()
 plt.ylim(0.00001, 10.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_met_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_met_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -727,7 +724,7 @@ plt.tight_layout()
 plt.ylim(0.0, 0.3)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -771,7 +768,7 @@ plt.tight_layout()
 plt.ylim(0.0, 0.3)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic_allsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic_allFTsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -786,7 +783,7 @@ plt.show()
 #=========================================================================
 
 # Open the output ROOT file (use "UPDATE" if you want to append)
-output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/output_histograms.root", "RECREATE")
+output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/output_histograms_FT.root", "RECREATE")
 
 try:
     # ✅ Fix 1: Rename signal names to be ROOT-compatible (remove LaTeX)

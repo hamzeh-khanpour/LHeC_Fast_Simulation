@@ -16,25 +16,24 @@ hep.style.use("CMS")
 # Cross-section values (in pb)
 sigma_SM    = 0.0134936  # Standard Model cross-section
 
-sigma_FM0_1 = 1.99216    # Cross-section for FM0 = 10^-8
-sigma_FM1_1 = 0.17783    # Cross-section for FM1 = 10^-8
-sigma_FM2_1 = 77.8809    # Cross-section for FM2 = 10^-8
-sigma_FM3_1 = 5.95386    # Cross-section for FM3 = 10^-8
+sigma_FT0_1 = 58.8643    # Cross-section for FT0 = 10^-8
+sigma_FT1_1 = 6.53478    # Cross-section for FT1 = 10^-8
+sigma_FT2_1 = 4.57082    # Cross-section for FT2 = 10^-8
 
 
 # Given parameters
 luminosity = 0.10  # in pb^-1
 
 
-# FM0 value from anoinputs file in MG
-FM0_value = 10**-8  # The input value for FM0 in the cross-section calculation in MG.
+# FT0 value from anoinputs file in MG
+FT0_value = 10**-8  # The input value for FT0 in the cross-section calculation in MG.
 
 
 # Compute A coefficient for anomalous contribution with correct scaling
-A = (sigma_FM0_1 - sigma_SM) / FM0_value**2  # Proper scaling for FM0
+A = (sigma_FT0_1 - sigma_SM) / FT0_value**2  # Proper scaling for FT0
 
 
-signal_efficiency = 26.11 / 100.0  # Efficiency for signal as decimal
+signal_efficiency = 23.00 / 100.0  # Efficiency for signal as decimal
 background_efficiency = 0.99 / 100.0  # Efficiency for background as decimal
 
 
@@ -120,17 +119,17 @@ N_S_values = (sigma_SM + A * F_i_values**2) * luminosity * signal_efficiency
 plt.figure(figsize=(9, 10))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.plot(F_i_values, N_S_values, label=r'$N_S(f_{M_0} / \Lambda^4)$', linewidth=3)
+plt.plot(F_i_values, N_S_values, label=r'$N_S(f_{T_0} / \Lambda^4)$', linewidth=3)
 plt.axhline(sigma_CL * luminosity * signal_efficiency, color='r', linestyle='--', label=r'$S_{95}$ limit', linewidth=3)
-plt.axvline(F_i_limit, color='g', linestyle='--', label=r'$(f_{M_0} / \Lambda^4)^{lim}$', linewidth=3)
+plt.axvline(F_i_limit, color='g', linestyle='--', label=r'$(f_{T_0} / \Lambda^4)^{lim}$', linewidth=3)
 
-plt.xlabel(r'95% CL on $f_{M_0} / \Lambda^4$', labelpad=15, loc='center')
+plt.xlabel(r'95% CL on $f_{T_0} / \Lambda^4$', labelpad=15, loc='center')
 plt.ylabel(r'Expected Signal Events $N_S$', labelpad=15, loc='center')
 plt.legend()
 plt.title(r'Preliminary : LHeC@1.2 TeV (100 fb$^{-1}$)')
 plt.grid()
 
 # Save the figure as a JPG file  
-plt.savefig("LHeC_FM0_Limit_FM0.jpg", dpi=300, bbox_inches='tight', format='jpg')
+plt.savefig("LHeC_Limit_FT0.jpg", dpi=300, bbox_inches='tight', format='jpg')
 
 plt.show()
