@@ -1,4 +1,5 @@
 
+# Hamzeh Khanpour -- 2025
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -36,7 +37,7 @@ plt.rcParams['legend.title_fontsize'] = 'x-large' '''
 # ✅ Function to parse the LHE file and extract kinematic distributions
 def parse_lhe_file(file_name):
     if not os.path.exists(file_name):
-        print(f"❌ Error: File {file_name} not found!")
+        print(f"❌❌❌❌ Error: File {file_name} not found!")
         return [], [], [], [], [], []
 
     pt_tau_plus = []
@@ -119,7 +120,7 @@ def parse_lhe_file(file_name):
 # ✅ Function to load cross-section data from a txt file
 def load_cross_section(file_name):
     if not os.path.exists(file_name):
-        print(f"❌ Error: File {file_name} not found!")
+        print(f"❌❌❌❌ Error: File {file_name} not found!")
         return [], []
 
     W_values = []
@@ -156,7 +157,7 @@ def load_cross_section(file_name):
 # ✅ Function to load rapidity cross-section data from a txt file
 def load_rapidity_cross_section(file_name):
     if not os.path.exists(file_name):
-        print(f"❌ Error: File {file_name} not found!")
+        print(f"❌❌❌❌ Error: File {file_name} not found!")
         return [], []
 
     Yll_values = []
@@ -169,14 +170,14 @@ def load_rapidity_cross_section(file_name):
 
             parts = line.split()
             if len(parts) < 3:
-                print(f"⚠️ Warning: Skipping malformed line: {line.strip()}")
+                print(f"⚠️⚠️⚠️⚠️ Warning: Skipping malformed line: {line.strip()}")
                 continue
 
             try:
                 Yll_values.append(float(parts[0]))  # Yll_MPL (rapidity)
                 Elastic_xsec.append(float(parts[1]))  # Elastic cross-section [pb]
             except ValueError as e:
-                print(f"⚠️ Error parsing line: {line.strip()}, error: {e}")
+                print(f"⚠️⚠️⚠️⚠️ Error parsing line: {line.strip()}, error: {e}")
                 continue
 
     # ✅ Ensure data is sorted by Yll values for proper plotting
@@ -201,7 +202,7 @@ def plot_weighted_distribution_with_cross_section(data1, data2, cross_section_x,
     num_entries2 = len(data2)
 
     if num_entries1 == 0 or num_entries2 == 0:
-        print(f"⚠️ Warning: No entries found for {label1} or {label2}. Skipping plot.")
+        print(f"⚠️⚠️⚠️⚠️ Warning: No entries found for {label1} or {label2}. Skipping plot.")
         return
 
     bin_width = (range[1] - range[0]) / bins
@@ -248,7 +249,7 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
     num_entries2 = len(data2)
 
     if num_entries1 == 0 or num_entries2 == 0:
-        print(f"⚠️ Warning: No entries found for {label1} or {label2}. Skipping plot.")
+        print(f"⚠️⚠️⚠️⚠️ Warning: No entries found for {label1} or {label2}. Skipping plot.")
         return
 
 
@@ -293,8 +294,8 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 # ✅ Parse both files
-file_name_SM = "pwd/home/hamzeh-khanpour/MG5_aMC_v2_5_5/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe"
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v2_5_5/aa_tautau_SM_a_tau/Events/run_01/aa_tautau_SM_a_tau.lhe"
+file_name_SM = "aa_tautau_SM_NP_0.lhe"
+file_name_a_tau = "aa_tautau_a_tau.lhe"
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -310,10 +311,13 @@ W_values, Elastic_xsec = load_cross_section(cross_section_file)
 # ✅ Load rapidity cross-section data
 Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_section_file)
 
+
 # ✅ Define integrated luminosity and separate cross-sections for each file
+
 integrated_luminosity = 1.0  # fb^-1
-integrated_cross_section_SM = 50.699012668  # pb
-integrated_cross_section_a_tau = 50.432011089  # pb
+
+integrated_cross_section_SM = 50.714012668  # pb
+integrated_cross_section_a_tau = 50.674011089  # pb
 
 
 
@@ -371,7 +375,7 @@ plot_weighted_distribution_with_rapidity(rapidity_tau_pair_1, rapidity_tau_pair_
 # ✅ Function to plot the ratio of two distributions with statistical uncertainties
 def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     if len(data1) == 0 or len(data2) == 0:
-        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        print("⚠️⚠️⚠️⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
         return
 
     # ✅ Compute histograms
@@ -419,8 +423,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = max(0, np.nanpercentile(ratio, 5))  # Lower 5% percentile
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
-    ymin = -5.0
-    ymax =  5.0
+    ymin = -1.0
+    ymax =  1.0
 
     ax.set_ylim(ymin, ymax)
 
@@ -455,7 +459,7 @@ plot_ratio(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_lim
 # ✅ Function to plot the ratio of two distributions with statistical uncertainties
 def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     if len(data1) == 0 or len(data2) == 0:
-        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        print("⚠️⚠️⚠️⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
         return
 
     # ✅ Compute histograms
@@ -507,8 +511,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -5.0
-    ymax =  5.0
+    ymin = -1.0
+    ymax =  1.0
 
     ax.set_ylim(ymin, ymax)
 
