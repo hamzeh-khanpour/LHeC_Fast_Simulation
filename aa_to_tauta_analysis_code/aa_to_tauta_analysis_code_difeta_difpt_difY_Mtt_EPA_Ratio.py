@@ -295,10 +295,17 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 # ✅ Parse both files
 
-file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe" #47.27
+#file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_0_SMEFTsim_top_alphaScheme_UFO/Events/run_01/aa_tautau_SM_NP_0_SMEFTsim_top_alphaScheme_UFO.lhe" # 50.697
+
+file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe" # 47.27
 #file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_0/Events/run_01/aa_tautau_SM_NP_0.lhe" #50.693012698
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_1/Events/run_01/aa_tautau_SM_NP_1.lhe" #50.742011090999995
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2/Events/run_03/aa_tautau_SM_NP_2.lhe" #54.305011766
+
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_01/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #57.27
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_02/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #53.42
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_03/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_04/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.28
+
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -319,8 +326,8 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 
 integrated_luminosity = 1.0  # fb^-1
 
-integrated_cross_section_SM = 47.27  # pb
-integrated_cross_section_a_tau = 54.259  # pb
+integrated_cross_section_SM    = 47.27  # pb
+integrated_cross_section_a_tau = 53.42  # pb
 
 
 
@@ -426,8 +433,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = max(0, np.nanpercentile(ratio, 5))  # Lower 5% percentile
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
-    ymin =   0.05
-    ymax =   2.05
+    ymin =   -0.1
+    ymax =    3.0
 
     ax.set_ylim(ymin, ymax)
 
@@ -441,7 +448,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 20
+bins = 10
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
@@ -514,8 +521,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -0.55
-    ymax =  0.55
+    ymin = -1.1
+    ymax =  1.1
 
     ax.set_ylim(ymin, ymax)
 
@@ -529,7 +536,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 20
+bins = 10
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
@@ -547,6 +554,87 @@ plot_ratio(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_lim
 
 
 
+# ✅ Function to plot the ratio of two distributions with statistical uncertainties
+def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
+    if len(data1) == 0 or len(data2) == 0:
+        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        return
+
+    # ✅ Compute histograms
+    hist1, bin_edges = np.histogram(data1, bins=bins, range=range)
+    hist2, _ = np.histogram(data2, bins=bins, range=range)
+
+    # ✅ Compute ratio while avoiding division by zero
+    ratio = np.divide(hist2, hist1, out=np.full_like(hist1, np.nan, dtype=float), where=hist1 != 0)
+
+    # ✅ Compute bin centers
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # ✅ Compute Poisson statistical uncertainties
+    err1 = np.sqrt(hist1)
+    err2 = np.sqrt(hist2)
+    ratio_err = ratio * np.sqrt((err1 / hist1) ** 2 + (err2 / hist2) ** 2)  # Error propagation
+
+    # ✅ Handle NaN values (from division by zero)
+    valid_idx = hist1 != 0
+    ratio[~valid_idx] = np.nan
+
+    # ✅ Plot ratio with error bars
+    fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
+    plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
+
+    # ✅ Shaded uncertainty band around ratio = 1
+#    ax.fill_between(bin_centers, 1 - ratio_err, 1 + ratio_err, color="gray", alpha=0.3, label="Uncertainty Band")
+
+    # ✅ Plot **continuous ratio line**
+    ax.plot(bin_centers, ratio, drawstyle="steps-mid", linestyle="-", linewidth=3, label="Ratio $(a_{\\tau}/SM)$")
+
+    # ✅ Overlay statistical error bars
+#    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="black", markersize=5, label="Stat. Uncertainty")
+
+    # ✅ Reference line at ratio = 1
+    ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
+
+    # ✅ Format plot
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+
+
+    # ✅ Adjust y-limits dynamically
+
+    ymin =   -0.1
+    ymax =    3.0
+
+    ax.set_ylim(ymin, ymax)
+
+
+
+    ax.legend(loc="upper right")
+    ax.grid(True, linestyle="--", alpha=0.5)
+    plt.tight_layout()
+
+    # ✅ Save plot
+    plt.savefig(filename, dpi=300)
+    plt.show()
+
+
+# ✅ Define parameters
+# ✅ Define parameters
+bins = 10
+range_limits = (10, 500)  # Adjust based on data
+xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
+ylabel = "Ratio $(a_{\\tau}/SM)$"
+title = "LHeC @ 1.2 TeV"
+output_filename = "Ratio_Obs_Exp.jpg"
+
+# ✅ Call function to plot ratio
+plot_ratio(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits, xlabel, ylabel, title, output_filename)
+
+
+
+
+#======================================================================
 
 
 
