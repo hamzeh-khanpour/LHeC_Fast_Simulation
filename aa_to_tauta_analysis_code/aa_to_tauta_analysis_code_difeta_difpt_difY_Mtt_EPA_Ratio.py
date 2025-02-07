@@ -294,8 +294,11 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 # ✅ Parse both files
-file_name_SM = "/mnt/hgfs/C/Users/Hamzeh/Documents/GitHub/aa_tautau_SM_NP.lhe"
-file_name_a_tau = "/mnt/hgfs/C/Users/Hamzeh/Documents/GitHub/aa_tautau_SM.lhe"
+
+file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe" #47.27
+#file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_0/Events/run_01/aa_tautau_SM_NP_0.lhe" #50.693012698
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_1/Events/run_01/aa_tautau_SM_NP_1.lhe" #50.742011090999995
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2/Events/run_03/aa_tautau_SM_NP_2.lhe" #54.305011766
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -316,8 +319,8 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 
 integrated_luminosity = 1.0  # fb^-1
 
-integrated_cross_section_SM = 50.714012668  # pb
-integrated_cross_section_a_tau = 50.674011089  # pb
+integrated_cross_section_SM = 47.27  # pb
+integrated_cross_section_a_tau = 54.259  # pb
 
 
 
@@ -405,13 +408,13 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
 
-    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", markersize=5, label="Ratio $(a_{\\tau}/SM)$")
+    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", linewidth=3, markersize=8, markerfacecolor="magenta", markeredgecolor="red", label="Ratio $(a_{\\tau}/SM)$")
 
     # ✅ Add shaded uncertainty band centered on ratio
 #    ax.fill_between(bin_centers, ratio - ratio_err, ratio + ratio_err, color="blue", alpha=0.3, label="Uncertainty Band")
 
     # ✅ Reference line at ratio = 1
-    ax.axhline(y=1, color="red", linestyle="--", linewidth=2, label="y=1")
+    ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
 
     # ✅ Format plot
     ax.set_xlabel(xlabel)
@@ -423,8 +426,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = max(0, np.nanpercentile(ratio, 5))  # Lower 5% percentile
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
-    ymin =   0.01
-    ymax =   2.01
+    ymin =   0.05
+    ymax =   2.05
 
     ax.set_ylim(ymin, ymax)
 
@@ -491,7 +494,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
 
 #    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="blue", markersize=5, label="Ratio $(a_{\\tau}/SM)$")
-    ax.errorbar(bin_centers, complementary_ratio, yerr=complementary_ratio_err, fmt="o", color="blue", markersize=5, label="1 - $(a_{\\tau}/SM)$")
+    ax.errorbar(bin_centers, complementary_ratio, yerr=complementary_ratio_err, fmt="o", color="blue", linewidth=3, markersize=8, markerfacecolor="magenta", markeredgecolor="red", label="1 - $(a_{\\tau}/SM)$")
 
     # ✅ Add shaded uncertainty band centered on ratio
 #    ax.fill_between(bin_centers, ratio - ratio_err, ratio + ratio_err, color="blue", alpha=0.3, label="Uncertainty Band")
@@ -499,7 +502,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
     # ✅ Reference line at ratio = 1
 #    ax.axhline(y=1, color="red", linestyle="--", linewidth=2, label="Ref: Ratio = 1")
-    ax.axhline(y=0, color="red", linestyle="--", linewidth=2, label="y=0")
+    ax.axhline(y=0, color="green", linestyle="--", linewidth=2, label="y=0")
 
     # ✅ Format plot
     ax.set_xlabel(xlabel)
@@ -511,8 +514,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -1.01
-    ymax =  1.01
+    ymin = -0.55
+    ymax =  0.55
 
     ax.set_ylim(ymin, ymax)
 
@@ -526,7 +529,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 20 
+bins = 20
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
