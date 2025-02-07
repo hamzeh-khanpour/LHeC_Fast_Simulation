@@ -294,8 +294,8 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 # ✅ Parse both files
-file_name_SM = "/home/hamzeh-khanpour/aa_tautau_SM_NP_0.lhe"
-file_name_a_tau = "/home/hamzeh-khanpour/aa_tautau_a_tau.lhe"
+file_name_SM = "/mnt/hgfs/C/Users/Hamzeh/Documents/GitHub/aa_tautau_SM_NP.lhe"
+file_name_a_tau = "/mnt/hgfs/C/Users/Hamzeh/Documents/GitHub/aa_tautau_SM.lhe"
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -423,8 +423,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = max(0, np.nanpercentile(ratio, 5))  # Lower 5% percentile
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
-    ymin = -1.0
-    ymax =  1.0
+    ymin =   0.01
+    ymax =   2.01
 
     ax.set_ylim(ymin, ymax)
 
@@ -438,7 +438,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 50
+bins = 20
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
@@ -511,8 +511,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -1.0
-    ymax =  1.0
+    ymin = -1.01
+    ymax =  1.01
 
     ax.set_ylim(ymin, ymax)
 
@@ -526,7 +526,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 
 
 # ✅ Define parameters
-bins = 50
+bins = 20 
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
 ylabel = "Ratio $(a_{\\tau}/SM)$"
