@@ -306,8 +306,9 @@ file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_03/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_04/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.28
 
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_05/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_06/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #50.978
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_05/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_06/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #50.978
+
 
 cross_section_file = "cross_section_results.txt"
 rapidity_cross_section_file = "Yll_elas_inel_data.txt"
@@ -329,7 +330,7 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 integrated_luminosity = 1.0  # fb^-1
 
 integrated_cross_section_SM    = 47.27  # pb
-integrated_cross_section_a_tau = 51.92  # pb
+integrated_cross_section_a_tau = 50.978  # pb
 
 
 
@@ -687,7 +688,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV (${{\cal L}} = 20.20$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\cal L}} = 20.20$ fb$^{{-1}}$)")
 
 
     # ✅ Adjust y-limits dynamically
@@ -705,7 +706,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.92 * 1000  # Convert to fb
+sigma_bsm = 50.978 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 1000000  # Number of BSM events
 n_events_sm = 1000000  # Number of SM events
