@@ -295,19 +295,9 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 # ✅ Parse both files
 
-#file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_0_SMEFTsim_top_alphaScheme_UFO/Events/run_01/aa_tautau_SM_NP_0_SMEFTsim_top_alphaScheme_UFO.lhe" # 50.697
 
-file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/Events/run_01/aa_tautau_SM.lhe" # 47.27
-#file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_0/Events/run_01/aa_tautau_SM_NP_0.lhe" #50.693012698
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_1/Events/run_01/aa_tautau_SM_NP_1.lhe" #50.742011090999995
-
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_01/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #57.27
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_02/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #53.42
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_03/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_04/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.28
-
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_05/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #51.92
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_06/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe" #50.978
+file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/merged_aa_tautau_SM.lhe" # 47.27
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001.lhe" #50.978
 
 
 cross_section_file = "cross_section_results.txt"
@@ -437,7 +427,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymax = np.nanpercentile(ratio, 95) * 1.5   # Upper 95% percentile
 
     ymin =   -0.1
-    ymax =    3.0
+    ymax =    2.0
 
     ax.set_ylim(ymin, ymax)
 
@@ -524,8 +514,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -1.1
-    ymax =  1.1
+    ymin = -0.55
+    ymax =  0.55
 
     ax.set_ylim(ymin, ymax)
 
@@ -607,7 +597,7 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
     # ✅ Adjust y-limits dynamically
 
     ymin =   -0.1
-    ymax =    3.0
+    ymax =    2.0
 
     ax.set_ylim(ymin, ymax)
 
@@ -693,7 +683,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
-    ymax = 3.0
+    ymax = 2.0
     ax.set_ylim(ymin, ymax)
 
     ax.legend(loc="upper right")
@@ -801,7 +791,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
-    ymax = 3.0
+    ymax = 2.0
     ax.set_ylim(ymin, ymax)
 
     ax.legend(loc="upper right")
@@ -908,7 +898,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
-    ymax = 3.0
+    ymax = 2.0
     ax.set_ylim(ymin, ymax)
 
     ax.legend(loc="upper right")
