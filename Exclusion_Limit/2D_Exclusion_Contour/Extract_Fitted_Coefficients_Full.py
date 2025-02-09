@@ -2,7 +2,7 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 # Load data from text file
-data = np.loadtxt("xs_Table_FM0_FM1.txt", skiprows=1)  # Skip header row
+data = np.loadtxt("xs_Table_FM0_FM1_xs.txt", skiprows=1)  # Skip header row
 
 # Extract first row separately (Standard Model cross-section)
 sigma_SM_value = data[0, 2]  # Third column, first row (σ_SM)

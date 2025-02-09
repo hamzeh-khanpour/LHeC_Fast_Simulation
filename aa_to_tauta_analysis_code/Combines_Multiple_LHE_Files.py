@@ -2,15 +2,15 @@ import os
 
 # ✅ List of LHE files to merge
 lhe_files = [
-    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_06/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_1.lhe",
-    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_07/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_2.lhe",
-    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_08/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_3.lhe",
-    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_09/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_4.lhe",
-    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_10/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_5.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_20/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_20.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_21/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_21.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_22/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_22.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_23/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_23.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/Events/run_24/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_24.lhe",
 ]
 
 # ✅ Output file name
-output_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO.lhe"
+output_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe"
 
 # ✅ Function to merge LHE files
 def merge_lhe_files(lhe_files, output_file):

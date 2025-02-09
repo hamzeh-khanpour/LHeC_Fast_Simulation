@@ -297,7 +297,13 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 
 file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/merged_aa_tautau_SM.lhe" # 47.27
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001.lhe" #50.978
+
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 51.994
+
+
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_2TeV.lhe" # 51.276
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
 
 
 cross_section_file = "cross_section_results.txt"
@@ -320,7 +326,7 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 integrated_luminosity = 1.0  # fb^-1
 
 integrated_cross_section_SM    = 47.27  # pb
-integrated_cross_section_a_tau = 50.978  # pb
+integrated_cross_section_a_tau = 51.994  # pb
 
 
 
@@ -514,8 +520,8 @@ def plot_ratio(data1, data2, bins, range, xlabel, ylabel, title, filename):
 #    ymin = min(np.nanmin(ratio), np.nanmin(complementary_ratio)) * 0.8
 #    ymax = max(np.nanmax(ratio), np.nanmax(complementary_ratio)) * 1.2
 
-    ymin = -0.55
-    ymax =  0.55
+    ymin = -1.1
+    ymax =  1.1
 
     ax.set_ylim(ymin, ymax)
 
@@ -678,7 +684,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\cal L}} = 20.20$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\cal L}} = 100.0$ fb$^{{-1}}$)")
 
 
     # ✅ Adjust y-limits dynamically
@@ -696,10 +702,10 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 50.978 * 1000  # Convert to fb
+sigma_bsm = 51.994 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
-n_events_bsm = 1000000  # Number of BSM events
-n_events_sm = 1000000  # Number of SM events
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
 
 
 # ✅ Define parameters
@@ -779,7 +785,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Plot linear fit line
     fit_x = np.linspace(range_limits[0], range_limits[1], 100)
     fit_y = linear_fit(fit_x, *popt)
-    ax.plot(fit_x, fit_y, linestyle="--", color="blue", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$")
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$")
 
     # ✅ Reference line at ratio = 1
     ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
@@ -787,7 +793,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = {avg_luminosity:.2e}$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\\cal L}} = {avg_luminosity:.2e}$ fb$^{{-1}}$)")
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
@@ -803,10 +809,10 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     plt.show()
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 50.978 * 1000  # Convert to fb
+sigma_bsm = 51.994 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
-n_events_bsm = 1000000  # Number of BSM events
-n_events_sm = 1000000  # Number of SM events
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
 
 # ✅ Define parameters
 bins = 10
@@ -886,7 +892,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Plot linear fit line
     fit_x = np.linspace(range_limits[0], range_limits[1], 100)
     fit_y = linear_fit(fit_x, *popt)
-    ax.plot(fit_x, fit_y, linestyle="--", color="blue", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$")
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$")
 
     # ✅ Reference line at ratio = 1
     ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
@@ -894,7 +900,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = {avg_luminosity:.2e}$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\\cal L}} = 100$ fb$^{{-1}}$)")
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
@@ -913,10 +919,10 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     return slope, intercept
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 50.978 * 1000  # Convert to fb
+sigma_bsm = 51.994 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
-n_events_bsm = 1000000  # Number of BSM events
-n_events_sm = 1000000  # Number of SM events
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
 
 # ✅ Define parameters
 bins = 10
