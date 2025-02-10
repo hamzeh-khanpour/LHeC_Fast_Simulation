@@ -100,6 +100,10 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 contour = plt.contour(FM0_grid, FM1_grid, sigma_values, levels=[0], colors='green', linewidths=2)
 #plt.contourf(FM0_grid, FM1_grid, sigma_values, levels=[-5, 0, 5], colors=['yellow', 'green', 'white'], alpha=0.5)
 
+# Fill inside the contour with yellow
+plt.contourf(FM0_grid, FM1_grid, sigma_values, levels=[-5, 0], colors=['yellow'], alpha=0.5)
+
+
 # Mark the Standard Model point at (0,0)
 plt.scatter(0, 0, color='red', s=30, label="Standard Model")
 
