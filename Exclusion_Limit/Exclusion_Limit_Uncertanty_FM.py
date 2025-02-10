@@ -17,9 +17,9 @@ hep.style.use("CMS")
 sigma_SM    = 0.0134936  # Standard Model cross-section
 
 sigma_FM0_1 = 1.99216    # Cross-section for FM0 = 10^-8
-sigma_FM1_1 = 0.17783    # Cross-section for FM1 = 10^-8
-sigma_FM2_1 = 77.8809    # Cross-section for FM2 = 10^-8
-sigma_FM3_1 = 5.95386    # Cross-section for FM3 = 10^-8
+#sigma_FM1_1 = 0.17783    # Cross-section for FM1 = 10^-8
+#sigma_FM2_1 = 77.8809    # Cross-section for FM2 = 10^-8
+#sigma_FM3_1 = 5.95386    # Cross-section for FM3 = 10^-8
 
 
 # Given parameters
@@ -106,6 +106,13 @@ print(f"Computed A coefficient: {A:.4e}")
 print(f"📌 95% CL upper limit on cross-section: {sigma_CL:.6f} pb")
 print(f"📌 95% CL exclusion limit on F_M0: {F_i_limit:.4e}")
 print("==================================\n")
+
+F_i_lower = -F_i_limit
+F_i_upper = F_i_limit
+
+print(f"📌 95% CL two-sided exclusion limit on F_M0: {F_i_lower:.4e} < F_M0 / Λ⁴ < {F_i_upper:.4e}")
+
+
 
 
 # Compute expected signal events for F_i values
