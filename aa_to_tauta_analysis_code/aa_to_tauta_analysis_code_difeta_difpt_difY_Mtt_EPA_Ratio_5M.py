@@ -298,12 +298,13 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
 file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/merged_aa_tautau_SM.lhe" # 47.27
 
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
+
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 51.994
 
 
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_2TeV.lhe" # 51.276
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
 
 
 cross_section_file = "cross_section_results.txt"
@@ -832,7 +833,6 @@ plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2,
 #======================================================================
 
 
-
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
@@ -879,6 +879,11 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     slope_err = np.sqrt(pcov[0, 0])
     intercept_err = np.sqrt(pcov[1, 1])
 
+    # ✅ Compute chi-squared statistic
+    chi2 = np.sum(((ratio[valid_idx] - linear_fit(bin_centers[valid_idx], *popt)) / ratio_err[valid_idx])**2)
+    dof = len(valid_idx) - 2  # Degrees of freedom (data points - fit parameters)
+    reduced_chi2 = chi2 / dof
+
     # ✅ Plot ratio with error bars
     fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
@@ -892,7 +897,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Plot linear fit line
     fit_x = np.linspace(range_limits[0], range_limits[1], 100)
     fit_y = linear_fit(fit_x, *popt)
-    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$")
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/dof = {reduced_chi2:.2f}$")
 
     # ✅ Reference line at ratio = 1
     ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
@@ -900,7 +905,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\\cal L}} = 100$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = 100$ fb$^{{-1}}$)")
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
@@ -915,8 +920,8 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     plt.savefig(filename, dpi=300)
     plt.show()
 
-    # ✅ Return the fitted parameters for further use
-    return slope, intercept
+    # ✅ Return the fitted parameters and chi-squared value for further use
+    return slope, intercept, reduced_chi2
 
 # ✅ Given values for cross-sections and event counts
 sigma_bsm = 51.994 * 1000  # Convert to fb
@@ -932,9 +937,11 @@ ylabel = "Ratio $(a_{\tau}/SM)$"
 output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final.jpg"
 
 # ✅ Call function to plot ratio
-plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits,
+slope, intercept, reduced_chi2 = plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits,
                            xlabel, ylabel, output_filename, sigma_bsm, sigma_sm,
                            n_events_bsm, n_events_sm)
+
+print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof = {reduced_chi2:.2f}")
 
 
 
