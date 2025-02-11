@@ -2,6 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
+import mplhep as hep
+
+# Matplotlib configuration for publication-quality plots
+hep.style.use("CMS")
+
 # Load data from text file (skip header row)
 data = np.loadtxt("xs_Table_FM0_FM1.txt", skiprows=1, dtype=str)
 
@@ -40,7 +45,8 @@ for i in range(len(FM0_vals)):
     exclusion_matrix[f1_idx, f0_idx] = excluded[i]
 
 # Generate contour plot
-plt.figure(figsize=(8,6))
+plt.figure(figsize=(11, 11))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.contourf(FM0_mesh, FM1_mesh, exclusion_matrix, levels=[-0.1, 0.1, 1.1], colors=['yellow', 'green'], alpha=0.6)
 contour = plt.contour(FM0_mesh, FM1_mesh, exclusion_matrix, levels=[0.5], colors='black', linewidths=2)

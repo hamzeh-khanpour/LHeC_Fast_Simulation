@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import mplhep as hep
 from matplotlib.lines import Line2D  # Import for custom legend elements
+
+import mplhep as hep
 
 # Matplotlib configuration for publication-quality plots
 hep.style.use("CMS")
