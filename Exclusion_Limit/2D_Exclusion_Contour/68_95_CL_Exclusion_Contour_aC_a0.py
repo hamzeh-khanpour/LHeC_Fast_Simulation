@@ -43,7 +43,7 @@ sigma_SM = sigma_vals_table[0]
 eff_background = efficiencies_table[0]  # Background efficiency
 
 # Compute expected background events
-luminosity = 0.1  # pb^-1
+luminosity = 1  # pb^-1
 N_bkg = sigma_SM * luminosity * eff_background
 
 # Compute uncertainties
@@ -72,6 +72,10 @@ c0 = 2.001086     # Coefficient for FM0^2
 c1 = 0.150223     # Coefficient for FM1^2
 c01 = -1.004603   # Mixed interference term
 
+# Constants for transformation
+g = 0.628  # Weak coupling constant (example value)
+v = 246  # Higgs vacuum expectation value in GeV
+
 # Define the quadratic function for the exclusion limit
 def exclusion_contour(FM0, FM1, sigma_limit):
     return c0 * FM0**2 + c1 * FM1**2 + c01 * FM0 * FM1 - (sigma_limit - sigma_SM)
@@ -85,28 +89,39 @@ FM0_grid, FM1_grid = np.meshgrid(FM0_vals, FM1_vals)
 sigma_values_95 = exclusion_contour(FM0_grid, FM1_grid, sigma_limit_95)
 sigma_values_68 = exclusion_contour(FM0_grid, FM1_grid, sigma_limit_68)
 
+# Define the energy scale of new physics (TeV)
+Lambda = 1  # Ensure this value is correctly defined in your analysis
+
+# Convert FM0 and FM1 to a_0^W and a_C^W using given relations
+# Take care of 10^{-8} scaling from the data file
+scale_factor = 1e-8  # Apply the correct scaling
+
+a0W_grid = FM0_grid * scale_factor * (Lambda**2 * g**2 * v**2)
+aCW_grid = -FM1_grid * scale_factor * (Lambda**2 * g**2 * v**2)
+
+
 # ===============================
 #   Plot the 68% & 95% CL Contours
 # ===============================
 
-plt.figure(figsize=(9, 10))
+plt.figure(figsize=(11, 11))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # 95% CL Contour (Outer)
-contour_95 = plt.contour(FM0_grid, FM1_grid, sigma_values_95, levels=[0], colors='blue', linewidths=2)
-plt.contourf(FM0_grid, FM1_grid, sigma_values_95, levels=[-5, 0], colors=['blue'], alpha=0.3)
+contour_95 = plt.contour(a0W_grid, aCW_grid, sigma_values_95, levels=[0], colors='blue', linewidths=2)
+plt.contourf(a0W_grid, aCW_grid, sigma_values_95, levels=[-5, 0], colors=['blue'], alpha=0.3)
 
 # 68% CL Contour (Inner)
-contour_68 = plt.contour(FM0_grid, FM1_grid, sigma_values_68, levels=[0], colors='magenta', linewidths=2)
-plt.contourf(FM0_grid, FM1_grid, sigma_values_68, levels=[-5, 0], colors=['magenta'], alpha=0.5)
+contour_68 = plt.contour(a0W_grid, aCW_grid, sigma_values_68, levels=[0], colors='magenta', linewidths=2)
+plt.contourf(a0W_grid, aCW_grid, sigma_values_68, levels=[-5, 0], colors=['magenta'], alpha=0.5)
 
 # Mark the Standard Model point at (0,0)
 plt.scatter(0, 0, color='red', s=30, label="Standard Model")
 
 # Labels and Title
-plt.xlabel(r"$F_{M0}/\Lambda^4$ [TeV$^{-4}$]")
-plt.ylabel(r"$F_{M1}/\Lambda^4$ [TeV$^{-4}$]")
-plt.title(r"LHeC @ 1.2 TeV  (100 fb$^{-1}$)", pad=15)  # Adjusted title position
+plt.xlabel(r"$a_0^W/\Lambda^2$ [GeV$^{-2}$]")
+plt.ylabel(r"$a_C^W/\Lambda^2$ [GeV$^{-2}$]")
+plt.title(r"LHeC @ 1.2 TeV", pad=15)  # Adjusted title position     (100 fb$^{-1}$)
 
 # Add legend using proper formatting
 legend_elements = [
@@ -120,5 +135,5 @@ plt.legend(handles=legend_elements, loc="upper left", frameon=False, edgecolor='
 plt.grid()
 
 # Save and show the plot
-plt.savefig("68_95CL_Exclusion_Contour.jpg", dpi=300)
+plt.savefig("a0W_aCW_Exclusion_Contour.jpg", dpi=300)
 plt.show()
