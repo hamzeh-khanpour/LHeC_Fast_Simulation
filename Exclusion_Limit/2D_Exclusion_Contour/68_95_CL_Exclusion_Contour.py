@@ -43,7 +43,7 @@ sigma_SM = sigma_vals_table[0]
 eff_background = efficiencies_table[0]  # Background efficiency
 
 # Compute expected background events
-luminosity = 0.1  # pb^-1
+luminosity = 1  # pb^-1
 N_bkg = sigma_SM * luminosity * eff_background
 
 # Compute uncertainties
@@ -89,7 +89,7 @@ sigma_values_68 = exclusion_contour(FM0_grid, FM1_grid, sigma_limit_68)
 #   Plot the 68% & 95% CL Contours
 # ===============================
 
-plt.figure(figsize=(9, 10))
+plt.figure(figsize=(11, 11))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # 95% CL Contour (Outer)
@@ -106,7 +106,7 @@ plt.scatter(0, 0, color='red', s=30, label="Standard Model")
 # Labels and Title
 plt.xlabel(r"$F_{M0}/\Lambda^4$ [TeV$^{-4}$]")
 plt.ylabel(r"$F_{M1}/\Lambda^4$ [TeV$^{-4}$]")
-plt.title(r"LHeC @ 1.2 TeV  (100 fb$^{-1}$)", pad=15)  # Adjusted title position
+plt.title(r"LHeC @ 1.2 TeV)", pad=15)  # Adjusted title position
 
 # Add legend using proper formatting
 legend_elements = [
