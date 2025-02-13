@@ -34,11 +34,14 @@ plt.rcParams['legend.title_fontsize'] = 'x-large' '''
 #======================================================================
 
 
+import os
+import numpy as np
+
 # ✅ Function to parse the LHE file and extract kinematic distributions
 def parse_lhe_file(file_name):
     if not os.path.exists(file_name):
         print(f"❌❌❌❌ Error: File {file_name} not found!")
-        return [], [], [], [], [], []
+        return [], [], [], [], [], [], 0.0
 
     pt_tau_plus = []
     eta_tau_plus = []
@@ -46,6 +49,9 @@ def parse_lhe_file(file_name):
     eta_tau_minus = []
     rapidity_tau_pair = []
     invariant_mass_tau_pair = []
+
+    total_events = 0
+    accepted_events = 0
 
     with open(file_name, "r") as file:
         in_event = False
@@ -58,23 +64,26 @@ def parse_lhe_file(file_name):
                 in_event = True
                 tau_plus = None
                 tau_minus = None
+                total_events += 1  # Count total events
                 continue
             if "</event>" in line:
                 in_event = False
                 if tau_plus and tau_minus:
-                    px_pair = tau_plus["px"] + tau_minus["px"]
-                    py_pair = tau_plus["py"] + tau_minus["py"]
-                    pz_pair = tau_plus["pz"] + tau_minus["pz"]
-                    energy_pair = tau_plus["energy"] + tau_minus["energy"]
+                    # ✅ Apply selection cut: -4 <= tau_eta <= 4
+                    if -4 <= tau_plus["eta"] <= 4 and -4 <= tau_minus["eta"] <= 4:
+                        accepted_events += 1  # Count accepted events
+                        px_pair = tau_plus["px"] + tau_minus["px"]
+                        py_pair = tau_plus["py"] + tau_minus["py"]
+                        pz_pair = tau_plus["pz"] + tau_minus["pz"]
+                        energy_pair = tau_plus["energy"] + tau_minus["energy"]
 
-                    if abs(energy_pair - abs(pz_pair)) > 1e-6:
-                        rapidity = 0.5 * np.log((energy_pair + pz_pair) / (energy_pair - pz_pair))
-                        rapidity_tau_pair.append(rapidity)
+                        if abs(energy_pair - abs(pz_pair)) > 1e-6:
+                            rapidity = 0.5 * np.log((energy_pair + pz_pair) / (energy_pair - pz_pair))
+                            rapidity_tau_pair.append(rapidity)
 
-                    # ✅ More robust invariant mass calculation
-                    mass_squared = energy_pair**2 - (px_pair**2 + py_pair**2 + pz_pair**2)
-                    invariant_mass_tau_pair.append(np.sqrt(max(0, mass_squared)))  # Ensures no NaN values
-
+                        # ✅ More robust invariant mass calculation
+                        mass_squared = energy_pair**2 - (px_pair**2 + py_pair**2 + pz_pair**2)
+                        invariant_mass_tau_pair.append(np.sqrt(max(0, mass_squared)))  # Ensures no NaN values
                 continue
 
             if in_event:
@@ -99,19 +108,24 @@ def parse_lhe_file(file_name):
                         if pdg_id == 15:
                             pt_tau_plus.append(pt)
                             eta_tau_plus.append(eta)
-                            tau_plus = {"px": px, "py": py, "pz": pz, "energy": energy}
+                            tau_plus = {"px": px, "py": py, "pz": pz, "energy": energy, "eta": eta}
 
                         if pdg_id == -15:
                             pt_tau_minus.append(pt)
                             eta_tau_minus.append(eta)
-                            tau_minus = {"px": px, "py": py, "pz": pz, "energy": energy}
+                            tau_minus = {"px": px, "py": py, "pz": pz, "energy": energy, "eta": eta}
 
                 except ValueError as e:
                     print(f"Error parsing line: {line}, error: {e}")
                     continue
 
+    efficiency = accepted_events / total_events if total_events > 0 else 0.0
+    print(f"✅ Selection Efficiency: {efficiency:.4f} ({accepted_events}/{total_events} events passed)")
 
-    return pt_tau_plus, eta_tau_plus, pt_tau_minus, eta_tau_minus, rapidity_tau_pair, invariant_mass_tau_pair
+
+
+    return pt_tau_plus, eta_tau_plus, pt_tau_minus, eta_tau_minus, rapidity_tau_pair, invariant_mass_tau_pair, efficiency
+
 
 
 
@@ -198,7 +212,8 @@ def load_rapidity_cross_section(file_name):
 def plot_weighted_distribution_with_cross_section(data1, data2, cross_section_x, cross_section_y,
                                                   bins, range, color1, color2, color3, xlabel, ylabel, title, filename,
                                                   label1, label2, label3, integrated_cross_section_SM,
-                                                  integrated_cross_section_a_tau, integrated_luminosity, log_scale=False):
+                                                  integrated_cross_section_a_tau, integrated_luminosity,
+                                                  efficiency_1, efficiency_2, log_scale=False):
     num_entries1 = len(data1)
     num_entries2 = len(data2)
 
@@ -208,8 +223,12 @@ def plot_weighted_distribution_with_cross_section(data1, data2, cross_section_x,
 
     bin_width = (range[1] - range[0]) / bins
 
-    event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(num_entries1, 1)
-    event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(num_entries2, 1)
+    # ✅ Apply selection efficiency
+    effective_entries1 = num_entries1 * efficiency_1
+    effective_entries2 = num_entries2 * efficiency_2
+
+    event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(effective_entries1, 1)
+    event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(effective_entries2, 1)
 
     plt.hist(data1, bins=bins, range=range, color=color1, alpha=0.6, label=f"{label1}",
              weights=[event_weight1 / bin_width] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
@@ -241,11 +260,13 @@ def plot_weighted_distribution_with_cross_section(data1, data2, cross_section_x,
 #======================================================================
 
 
+
 # ✅ Function to plot weighted distributions with rapidity cross-section overlay
 def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cross_section_y,
                                              bins, range, color1, color2, color3, xlabel, ylabel, title, filename,
                                              label1, label2, label3, integrated_cross_section_SM,
-                                             integrated_cross_section_a_tau, integrated_luminosity, log_scale=False):
+                                             integrated_cross_section_a_tau, integrated_luminosity,
+                                             efficiency_1, efficiency_2, log_scale=False):
     num_entries1 = len(data1)
     num_entries2 = len(data2)
 
@@ -253,15 +274,14 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
         print(f"⚠️⚠️⚠️⚠️ Warning: No entries found for {label1} or {label2}. Skipping plot.")
         return
 
-
-
-
     bin_width = (range[1] - range[0]) / bins
 
-    event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(num_entries1, 1)
-    event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(num_entries2, 1)
+    # ✅ Apply selection efficiency
+    effective_entries1 = num_entries1 * efficiency_1
+    effective_entries2 = num_entries2 * efficiency_2
 
-
+    event_weight1 = (integrated_cross_section_SM * integrated_luminosity) / max(effective_entries1, 1)
+    event_weight2 = (integrated_cross_section_a_tau * integrated_luminosity) / max(effective_entries2, 1)
 
     plt.hist(data1, bins=bins, range=range, color=color1, alpha=0.6, label=f"{label1}",
              weights=[event_weight1 / bin_width] * num_entries1, edgecolor="red", histtype="step", linewidth=2)
@@ -287,7 +307,6 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 
     plt.savefig(filename, dpi=300)
     plt.show()
-
 
 
 #======================================================================
@@ -301,11 +320,12 @@ file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/merged_aa_taut
 
 
 file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 51.994
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 50.975
 
 
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 50.975
 #file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_2TeV.lhe" # 51.276
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
+
 
 
 cross_section_file = "cross_section_results.txt"
@@ -313,8 +333,9 @@ rapidity_cross_section_file = "Yll_elas_inel_data.txt"
 
 
 
-pt_tau_plus_1, eta_tau_plus_1, pt_tau_minus_1, eta_tau_minus_1, rapidity_tau_pair_1, invariant_mass_tau_pair_1 = parse_lhe_file(file_name_SM)
-pt_tau_plus_2, eta_tau_plus_2, pt_tau_minus_2, eta_tau_minus_2, rapidity_tau_pair_2, invariant_mass_tau_pair_2 = parse_lhe_file(file_name_a_tau)
+pt_tau_plus_1, eta_tau_plus_1, pt_tau_minus_1, eta_tau_minus_1, rapidity_tau_pair_1, invariant_mass_tau_pair_1, efficiency_1 = parse_lhe_file(file_name_SM)
+pt_tau_plus_2, eta_tau_plus_2, pt_tau_minus_2, eta_tau_minus_2, rapidity_tau_pair_2, invariant_mass_tau_pair_2, efficiency_2 = parse_lhe_file(file_name_a_tau)
+
 
 # ✅ Load cross-section data
 W_values, Elastic_xsec = load_cross_section(cross_section_file)
@@ -328,7 +349,7 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 integrated_luminosity = 1.0  # fb^-1
 
 integrated_cross_section_SM    = 47.27  # pb
-integrated_cross_section_a_tau = 51.994  # pb
+integrated_cross_section_a_tau = 50.975  # pb
 
 
 
@@ -347,11 +368,13 @@ plot_weighted_distribution_with_cross_section(invariant_mass_tau_pair_1, invaria
                                               xlabel=r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$",
                                               ylabel=r"$d\sigma/dM_{\tau^+ \tau^-} \quad \mathrm{[pb/GeV]}$",
                                               title="LHeC @ 1.2 TeV", filename="Invariant_mass_tau_pair_SM_atau_EPA.jpg",
-                                              label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.0042)$",
+                                              label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.001)$",
                                               label3=r"EPA",
                                               integrated_cross_section_SM=integrated_cross_section_SM,
                                               integrated_cross_section_a_tau=integrated_cross_section_a_tau,
-                                              integrated_luminosity=integrated_luminosity, log_scale=True)
+                                              integrated_luminosity=integrated_luminosity,
+                                              efficiency_1=efficiency_1, efficiency_2=efficiency_2, log_scale=True)
+
 
 
 
@@ -368,11 +391,12 @@ plot_weighted_distribution_with_rapidity(rapidity_tau_pair_1, rapidity_tau_pair_
                                          xlabel=r"$Y_{\tau^+ \tau^-}$",
                                          ylabel=r"$d\sigma/dY_{\tau^+ \tau^-} \quad \mathrm{[pb]}$",  # ✅ Used subscript instead of superscript for consistency
                                          title="LHeC @ 1.2 TeV", filename="Rapidity_tau_pair_SM_atau_EPA.jpg",
-                                         label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.0042)$",
+                                         label1=r"$\tau^+ \tau^-$ (SM)", label2=r"$\tau^+ \tau^- (a_{\tau} = 0.001)$",
                                          label3=r"EPA",
                                          integrated_cross_section_SM=integrated_cross_section_SM,
                                          integrated_cross_section_a_tau=integrated_cross_section_a_tau,
-                                         integrated_luminosity=integrated_luminosity)
+                                         integrated_luminosity=integrated_luminosity,
+                                         efficiency_1=efficiency_1, efficiency_2=efficiency_2)
 
 
 
@@ -686,7 +710,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\cal L}} = 100.0$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\cal L}} = 100.0$ fb$^{{-1}}$)")
 
 
     # ✅ Adjust y-limits dynamically
@@ -704,7 +728,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 50.975 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
@@ -795,7 +819,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\\cal L}} = {avg_luminosity:.2e}$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = {avg_luminosity:.2e}$ fb$^{{-1}}$)")
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
@@ -811,7 +835,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     plt.show()
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 50.975 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
@@ -890,7 +914,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
 
     # ✅ Plot **continuous ratio line**
-    ax.plot(bin_centers, ratio, drawstyle="steps-mid", linestyle="-", linewidth=3, label="Ratio $(a_{\\tau}/SM)$")
+#    ax.plot(bin_centers, ratio, drawstyle="steps-mid", linestyle="-", linewidth=3, label="Ratio $(a_{\\tau}/SM)$")
 
     # ✅ Overlay statistical error bars
     ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="red", markersize=8, label="Stat. Uncertainty")
@@ -898,7 +922,9 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Plot linear fit line
     fit_x = np.linspace(range_limits[0], range_limits[1], 100)
     fit_y = linear_fit(fit_x, *popt)
-    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2, label=f"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/dof = {reduced_chi2:.2f}$")
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2,
+        label=rf"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/\text{{dof}} = {reduced_chi2:.2f}$")
+
 
     # ✅ Reference line at ratio = 1
     ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
@@ -906,14 +932,16 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = 100$ fb$^{{-1}}$)")
+    ax.set_title("LHeC @ 1.2 TeV ($a_{\\tau}=0.001, \\mathcal{L} = 100$ fb$^{-1}$, $-4 < \\eta < 4$)")
+
+
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
-    ymax = 2.0
+    ymax = 3.0
     ax.set_ylim(ymin, ymax)
 
-    ax.legend(loc="upper right")
+    ax.legend(loc="lower left")
     ax.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
 
@@ -925,7 +953,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     return slope, intercept, reduced_chi2
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 50.975 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
@@ -934,8 +962,8 @@ n_events_sm = 5000000  # Number of SM events
 bins = 10
 range_limits = (10, 500)  # Adjust based on data
 xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
-ylabel = "Ratio $(a_{\tau}/SM)$"
-output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final.jpg"
+ylabel = "Ratio $(a_{\\tau}/SM)$"
+output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final_0.001.jpg"
 
 # ✅ Call function to plot ratio
 slope, intercept, reduced_chi2 = plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits,
@@ -951,6 +979,128 @@ print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof 
 #======================================================================
 
 
+
+
+
+
+#======================================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# ✅ Linear function for fitting
+def linear_fit(x, a, b):
+    return a * x + b
+
+# ✅ Function to plot the ratio of two distributions with statistical uncertainties and effective luminosity
+def plot_ratio_with_luminosity(data1, data2, bin_edges, xlabel, ylabel, filename,
+                               sigma_bsm, sigma_sm, n_events_bsm, n_events_sm):
+    if len(data1) == 0 or len(data2) == 0:
+        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        return
+
+    # ✅ Compute histograms with custom bin edges
+    hist1, _ = np.histogram(data1, bins=bin_edges)
+    hist2, _ = np.histogram(data2, bins=bin_edges)
+
+    # ✅ Compute ratio while avoiding division by zero
+    ratio = np.divide(hist2, hist1, out=np.full_like(hist1, np.nan, dtype=float), where=hist1 != 0)
+
+    # ✅ Compute bin centers
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # ✅ Compute Poisson statistical uncertainties
+    err1 = np.sqrt(hist1)
+    err2 = np.sqrt(hist2)
+    ratio_err = ratio * np.sqrt((err1 / hist1) ** 2 + (err2 / hist2) ** 2)  # Error propagation
+
+    # ✅ Compute effective luminosity for BSM and SM
+    luminosity_bsm = n_events_bsm / sigma_bsm
+    luminosity_sm = n_events_sm / sigma_sm
+
+    # ✅ Compute the average effective luminosity
+    avg_luminosity = (luminosity_bsm + luminosity_sm) / 2
+
+    # ✅ Handle NaN values (from division by zero)
+    valid_idx = np.isfinite(ratio)  # Ensures only valid values are used
+
+    # ✅ Perform a linear fit to the ratio
+    popt, pcov = curve_fit(linear_fit, bin_centers[valid_idx], ratio[valid_idx], sigma=ratio_err[valid_idx])
+    slope, intercept = popt
+    slope_err = np.sqrt(pcov[0, 0])
+    intercept_err = np.sqrt(pcov[1, 1])
+
+    # ✅ Compute chi-squared statistic
+    chi2 = np.sum(((ratio[valid_idx] - linear_fit(bin_centers[valid_idx], *popt)) / ratio_err[valid_idx])**2)
+    dof = len(valid_idx) - 2  # Degrees of freedom (data points - fit parameters)
+    reduced_chi2 = chi2 / dof
+
+    # ✅ Plot ratio with error bars
+    fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
+    plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
+
+    # ✅ Overlay statistical error bars
+    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="red", markersize=8, label="Stat. Uncertainty")
+
+    # ✅ Plot linear fit line
+    fit_x = np.linspace(bin_edges[0], bin_edges[-1], 100)
+    fit_y = linear_fit(fit_x, *popt)
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2,
+        label=rf"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/\text{{dof}} = {reduced_chi2:.2f}$, $-4 < \eta < 4$")
+
+
+    # ✅ Reference line at ratio = 1
+    ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
+
+    # ✅ Format plot
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title("LHeC @ 1.2 TeV ($a_{\\tau}=0.001, \\mathcal{L} = 100$ fb$^{-1}$, $-4 < \\eta < 4$)")
+
+
+
+    # ✅ Adjust y-limits dynamically
+    ymin = -0.1
+    ymax = 2.0
+    ax.set_ylim(ymin, ymax)
+
+    ax.legend(loc="lower left")
+    ax.grid(True, linestyle="--", alpha=0.5)
+    plt.tight_layout()
+
+    # ✅ Save plot
+    plt.savefig(filename, dpi=300)
+    plt.show()
+
+    # ✅ Return the fitted parameters and chi-squared value for further use
+    return slope, intercept, reduced_chi2
+
+# ✅ Given values for cross-sections and event counts
+sigma_bsm = 50.975 * 1000  # Convert to fb
+sigma_sm = 47.27 * 1000  # Convert to fb
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
+
+# ✅ Define custom bin edges for non-uniform binning
+bin_edges = np.concatenate([
+    np.linspace(10,  100, 5),   # More bins in [10, 100] GeV
+    np.linspace(100, 300, 10),   # Medium bins in [100, 300] GeV
+    np.linspace(300, 500, 5)    # Larger bins in [300, 500] GeV
+])
+
+xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
+ylabel = "Ratio $(a_{\\tau}/SM)$"
+output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final_bins_0.001.jpg"
+
+# ✅ Call function to plot ratio
+slope, intercept, reduced_chi2 = plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bin_edges,
+                           xlabel, ylabel, output_filename, sigma_bsm, sigma_sm,
+                           n_events_bsm, n_events_sm)
+
+print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof = {reduced_chi2:.2f}")
+
+#======================================================================
 
 
 
