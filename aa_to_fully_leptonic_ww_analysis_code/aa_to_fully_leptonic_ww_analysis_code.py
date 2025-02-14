@@ -200,7 +200,82 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/
 
 
 
+
+
 # =======================================================================
+# =======================================================================
+
+
+import pandas as pd
+
+# Function to find the minimum length of all arrays
+def min_length(*arrays):
+    return min(map(len, arrays))
+
+# Find minimum length for each dataset
+min_len_signal_0 = min_length(pt_lepton_1_signal_0, pt_lepton_2_signal_0, eta_leptons_signal_0,
+                              delta_r_signal_0, met_signal_0, rapidity_lepton_pair_signal_0,
+                              invariant_mass_lepton_pair_signal_0, pt_lepton_pair_signal_0)
+
+min_len_signal_2 = min_length(pt_lepton_1_signal_2, pt_lepton_2_signal_2, eta_leptons_signal_2,
+                              delta_r_signal_2, met_signal_2, rapidity_lepton_pair_signal_2,
+                              invariant_mass_lepton_pair_signal_2, pt_lepton_pair_signal_2)
+
+min_len_background = min_length(pt_lepton_1_background, pt_lepton_2_background, eta_leptons_background,
+                                delta_r_background, met_background, rapidity_lepton_pair_background,
+                                invariant_mass_lepton_pair_background, pt_lepton_pair_background)
+
+# Trim all lists to ensure equal length
+df_signal_0 = pd.DataFrame({
+    'pt_lepton_1': pt_lepton_1_signal_0[:min_len_signal_0],
+    'pt_lepton_2': pt_lepton_2_signal_0[:min_len_signal_0],
+    'eta_lepton': eta_leptons_signal_0[:min_len_signal_0],
+    'delta_R': delta_r_signal_0[:min_len_signal_0],
+    'MET': met_signal_0[:min_len_signal_0],
+    'rapidity_lepton_pair': rapidity_lepton_pair_signal_0[:min_len_signal_0],
+    'M_ll': invariant_mass_lepton_pair_signal_0[:min_len_signal_0],
+    'pt_ll': pt_lepton_pair_signal_0[:min_len_signal_0],
+    'label': 1  # Signal label
+})
+
+df_signal_2 = pd.DataFrame({
+    'pt_lepton_1': pt_lepton_1_signal_2[:min_len_signal_2],
+    'pt_lepton_2': pt_lepton_2_signal_2[:min_len_signal_2],
+    'eta_lepton': eta_leptons_signal_2[:min_len_signal_2],
+    'delta_R': delta_r_signal_2[:min_len_signal_2],
+    'MET': met_signal_2[:min_len_signal_2],
+    'rapidity_lepton_pair': rapidity_lepton_pair_signal_2[:min_len_signal_2],
+    'M_ll': invariant_mass_lepton_pair_signal_2[:min_len_signal_2],
+    'pt_ll': pt_lepton_pair_signal_2[:min_len_signal_2],
+    'label': 1  # Signal label
+})
+
+df_background = pd.DataFrame({
+    'pt_lepton_1': pt_lepton_1_background[:min_len_background],
+    'pt_lepton_2': pt_lepton_2_background[:min_len_background],
+    'eta_lepton': eta_leptons_background[:min_len_background],
+    'delta_R': delta_r_background[:min_len_background],
+    'MET': met_background[:min_len_background],
+    'rapidity_lepton_pair': rapidity_lepton_pair_background[:min_len_background],
+    'M_ll': invariant_mass_lepton_pair_background[:min_len_background],
+    'pt_ll': pt_lepton_pair_background[:min_len_background],
+    'label': 0  # Background label
+})
+
+# Merge all data and shuffle
+df = pd.concat([df_signal_0, df_signal_2, df_background], ignore_index=True)
+df = df.sample(frac=1).reset_index(drop=True)  # Shuffle the dataset
+
+# Save to CSV for Machine Learning
+df.to_csv("lhe_events_dataset.csv", index=False)
+print("Dataset saved successfully!")
+
+
+
+
+# =======================================================================
+# =======================================================================
+
 
 
 
