@@ -32,18 +32,20 @@ hep.style.use("CMS")
 #plt.rcParams['legend.title_fontsize'] = 'x-large'
 
 
-# =======================================================================
 
 
-# Function to parse the LHE file and extract lepton transverse momentum (pT), eta, and Delta R
+# Function to parse the LHE file and extract kinematic distributions
 # Jets are vetoed, meaning only pure leptonic events are considered.
-
 def parse_lhe_file(file_name):
     pt_leptons = []
     eta_leptons = []
     delta_r_values = []  # Delta R between leptons
     missing_transverse_energy = []  # MET (Missing Transverse Energy)
     rapidity_lepton_pair = []  # Rapidity of lepton pair
+    invariant_mass_lepton_pair = []  # Dilepton invariant mass
+    pt_lepton_pair = []  # Dilepton transverse momentum
+    pt_lepton_1 = []  # Leading lepton transverse momentum
+    pt_lepton_2 = []  # Subleading lepton transverse momentum
 
     with open(file_name, "r") as file:
         in_event = False
@@ -82,17 +84,34 @@ def parse_lhe_file(file_name):
                             delta_r = leptons[i].DeltaR(leptons[j])
                             delta_r_values.append(delta_r)
 
-                # Compute rapidity of the lepton pair if both leptons exist
+                # Compute rapidity, invariant mass, and transverse momentum of the lepton pair if both leptons exist
                 if lepton_plus and lepton_minus:
-                    px_pair = lepton_plus["px"] + lepton_minus["px"]
-                    py_pair = lepton_plus["py"] + lepton_minus["py"]
-                    pz_pair = lepton_plus["pz"] + lepton_minus["pz"]
-                    energy_pair = lepton_plus["energy"] + lepton_minus["energy"]
+                    # Define TLorentzVector for the lepton pair
+                    lepton_plus_vec = ROOT.TLorentzVector()
+                    lepton_plus_vec.SetPxPyPzE(
+                        lepton_plus["px"], lepton_plus["py"], lepton_plus["pz"], lepton_plus["energy"]
+                    )
 
-                    # Compute rapidity and store it
-                    if abs(energy_pair - abs(pz_pair)) > 1e-6:
-                        rapidity = 0.5 * np.log((energy_pair + pz_pair) / (energy_pair - pz_pair))
-                        rapidity_lepton_pair.append(rapidity)
+                    lepton_minus_vec = ROOT.TLorentzVector()
+                    lepton_minus_vec.SetPxPyPzE(
+                        lepton_minus["px"], lepton_minus["py"], lepton_minus["pz"], lepton_minus["energy"]
+                    )
+
+                    # Construct the lepton pair system
+                    lepton_pair = lepton_plus_vec + lepton_minus_vec
+
+                    # Store invariant mass of the dilepton system
+                    invariant_mass_lepton_pair.append(lepton_pair.M())
+
+                    # Store transverse momentum of the dilepton system
+                    pt_lepton_pair.append(lepton_pair.Pt())
+
+                    # Store rapidity of the lepton pair
+                    rapidity_lepton_pair.append(lepton_pair.Rapidity())
+
+                    # Store leading and subleading lepton pT
+                    pt_lepton_1.append(max(lepton_plus_vec.Pt(), lepton_minus_vec.Pt()))  # Leading lepton
+                    pt_lepton_2.append(min(lepton_plus_vec.Pt(), lepton_minus_vec.Pt()))  # Subleading lepton
 
                 continue
 
@@ -146,9 +165,7 @@ def parse_lhe_file(file_name):
                     # Store jet information (for vetoing)
                     jets.append(jet)
 
-    return pt_leptons, eta_leptons, delta_r_values, missing_transverse_energy, rapidity_lepton_pair
-
-
+    return pt_leptons, eta_leptons, delta_r_values, missing_transverse_energy, rapidity_lepton_pair, invariant_mass_lepton_pair, pt_lepton_pair, pt_lepton_1, pt_lepton_2
 
 
 # =======================================================================
@@ -168,12 +185,18 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/
 
 
 
-
-
 # Parse LHE files, keeping only leptonic events (jets are vetoed)
-(pt_leptons_signal_0, eta_leptons_signal_0, delta_r_signal_0, met_signal_0, rapidity_lepton_pair_signal_0) = parse_lhe_file(signal_file_0)
-(pt_leptons_signal_2, eta_leptons_signal_2, delta_r_signal_2, met_signal_2, rapidity_lepton_pair_signal_2) = parse_lhe_file(signal_file_2)
-(pt_leptons_background, eta_leptons_background, delta_r_background, met_background, rapidity_lepton_pair_background) = parse_lhe_file(background_file)
+(pt_leptons_signal_0, eta_leptons_signal_0, delta_r_signal_0, met_signal_0,
+ rapidity_lepton_pair_signal_0, invariant_mass_lepton_pair_signal_0, pt_lepton_pair_signal_0,
+ pt_lepton_1_signal_0, pt_lepton_2_signal_0) = parse_lhe_file(signal_file_0)
+
+(pt_leptons_signal_2, eta_leptons_signal_2, delta_r_signal_2, met_signal_2,
+ rapidity_lepton_pair_signal_2, invariant_mass_lepton_pair_signal_2, pt_lepton_pair_signal_2,
+ pt_lepton_1_signal_2, pt_lepton_2_signal_2) = parse_lhe_file(signal_file_2)
+
+(pt_leptons_background, eta_leptons_background, delta_r_background, met_background,
+ rapidity_lepton_pair_background, invariant_mass_lepton_pair_background, pt_lepton_pair_background,
+ pt_lepton_1_background, pt_lepton_2_background) = parse_lhe_file(background_file)
 
 
 
@@ -199,8 +222,10 @@ eta_range = (-10, 10)          # Range for pseudorapidity
 delta_r_range = (0, 10)        # Range for Delta R between leptons
 met_range = (1, 500)           # Define range for MET (adjust as needed)
 rapidity_range = (-5, 5)       # Define range for lepton pair rapidity
-
-
+m_ll_range = (0, 1000)         # Define range for dilepton invariant mass M(ll)
+pt_ll_range = (0, 500)         # Define range for dilepton transverse momentum pT(ll)
+pt_lepton_1_range = (0, 500)   # Define range for leading lepton transverse momentum
+pt_lepton_2_range = (0, 500)   # Define range for subleading lepton transverse momentum
 
 # Calculate bin widths
 bin_width_pt_lepton = (pt_range_lepton[1] - pt_range_lepton[0]) / num_bins
@@ -208,6 +233,11 @@ bin_width_eta = (eta_range[1] - eta_range[0]) / num_bins
 bin_width_delta_r = (delta_r_range[1] - delta_r_range[0]) / num_bins
 bin_width_met = (met_range[1] - met_range[0]) / num_bins  # Bin width for MET
 bin_width_rapidity = (rapidity_range[1] - rapidity_range[0]) / num_bins  # Bin width for lepton pair rapidity
+bin_width_m_ll = (m_ll_range[1] - m_ll_range[0]) / num_bins  # Bin width for dilepton invariant mass M(ll)
+bin_width_pt_ll = (pt_ll_range[1] - pt_ll_range[0]) / num_bins  # Bin width for dilepton transverse momentum pT(ll)
+bin_width_pt_lepton_1 = (pt_lepton_1_range[1] - pt_lepton_1_range[0]) / num_bins  # Bin width for leading lepton pT
+bin_width_pt_lepton_2 = (pt_lepton_2_range[1] - pt_lepton_2_range[0]) / num_bins  # Bin width for subleading lepton pT
+
 
 
 
@@ -226,9 +256,11 @@ pt_bins_signal_0, dsigma_signal_pt_0 = calculate_dsigma(pt_leptons_signal_0, sig
 pt_bins_signal_2, dsigma_signal_pt_2 = calculate_dsigma(pt_leptons_signal_2, signal_cross_section_2, bin_width_pt_lepton, pt_range_lepton)
 pt_bins_background, dsigma_background_pt = calculate_dsigma(pt_leptons_background, background_cross_section, bin_width_pt_lepton, pt_range_lepton)
 
+
 eta_bins_signal_0, dsigma_signal_eta_0 = calculate_dsigma(eta_leptons_signal_0, signal_cross_section_0, bin_width_eta, eta_range)
 eta_bins_signal_2, dsigma_signal_eta_2 = calculate_dsigma(eta_leptons_signal_2, signal_cross_section_2, bin_width_eta, eta_range)
 eta_bins_background, dsigma_background_eta = calculate_dsigma(eta_leptons_background, background_cross_section, bin_width_eta, eta_range)
+
 
 # Normalize Delta R histograms
 delta_r_bins_signal_0, dsigma_signal_delta_r_0 = calculate_dsigma(delta_r_signal_0, signal_cross_section_0, bin_width_delta_r, delta_r_range)
@@ -242,11 +274,36 @@ met_bins_signal_2, dsigma_signal_met_2 = calculate_dsigma(met_signal_2, signal_c
 met_bins_background, dsigma_background_met = calculate_dsigma(met_background, background_cross_section, bin_width_met, met_range)
 
 
-
 # Calculate differential cross-sections for Lepton Pair Rapidity
 rapidity_bins_signal_0, dsigma_signal_rapidity_0 = calculate_dsigma(rapidity_lepton_pair_signal_0, signal_cross_section_0, bin_width_rapidity, rapidity_range)
 rapidity_bins_signal_2, dsigma_signal_rapidity_2 = calculate_dsigma(rapidity_lepton_pair_signal_2, signal_cross_section_2, bin_width_rapidity, rapidity_range)
 rapidity_bins_background, dsigma_background_rapidity = calculate_dsigma(rapidity_lepton_pair_background, background_cross_section, bin_width_rapidity, rapidity_range)
+
+
+# Calculate differential cross-sections for Dilepton Invariant Mass M(ll)
+m_ll_bins_signal_0, dsigma_signal_m_ll_0 = calculate_dsigma(invariant_mass_lepton_pair_signal_0, signal_cross_section_0, bin_width_m_ll, m_ll_range)
+m_ll_bins_signal_2, dsigma_signal_m_ll_2 = calculate_dsigma(invariant_mass_lepton_pair_signal_2, signal_cross_section_2, bin_width_m_ll, m_ll_range)
+m_ll_bins_background, dsigma_background_m_ll = calculate_dsigma(invariant_mass_lepton_pair_background, background_cross_section, bin_width_m_ll, m_ll_range)
+
+
+# Calculate differential cross-sections for Dilepton Transverse Momentum pT(ll)
+pt_ll_bins_signal_0, dsigma_signal_pt_ll_0 = calculate_dsigma(pt_lepton_pair_signal_0, signal_cross_section_0, bin_width_pt_ll, pt_ll_range)
+pt_ll_bins_signal_2, dsigma_signal_pt_ll_2 = calculate_dsigma(pt_lepton_pair_signal_2, signal_cross_section_2, bin_width_pt_ll, pt_ll_range)
+pt_ll_bins_background, dsigma_background_pt_ll = calculate_dsigma(pt_lepton_pair_background, background_cross_section, bin_width_pt_ll, pt_ll_range)
+
+
+# Calculate differential cross-sections for Leading Lepton Transverse Momentum pT(l1)
+pt_lepton_1_bins_signal_0, dsigma_signal_pt_lepton_1_0 = calculate_dsigma(pt_lepton_1_signal_0, signal_cross_section_0, bin_width_pt_lepton_1, pt_lepton_1_range)
+pt_lepton_1_bins_signal_2, dsigma_signal_pt_lepton_1_2 = calculate_dsigma(pt_lepton_1_signal_2, signal_cross_section_2, bin_width_pt_lepton_1, pt_lepton_1_range)
+pt_lepton_1_bins_background, dsigma_background_pt_lepton_1 = calculate_dsigma(pt_lepton_1_background, background_cross_section, bin_width_pt_lepton_1, pt_lepton_1_range)
+
+
+# Calculate differential cross-sections for Subleading Lepton Transverse Momentum pT(l2)
+pt_lepton_2_bins_signal_0, dsigma_signal_pt_lepton_2_0 = calculate_dsigma(pt_lepton_2_signal_0, signal_cross_section_0, bin_width_pt_lepton_2, pt_lepton_2_range)
+pt_lepton_2_bins_signal_2, dsigma_signal_pt_lepton_2_2 = calculate_dsigma(pt_lepton_2_signal_2, signal_cross_section_2, bin_width_pt_lepton_2, pt_lepton_2_range)
+pt_lepton_2_bins_background, dsigma_background_pt_lepton_2 = calculate_dsigma(pt_lepton_2_background, background_cross_section, bin_width_pt_lepton_2, pt_lepton_2_range)
+
+
 
 
 
@@ -358,21 +415,107 @@ plt.show()
 
 
 
+
+
+# Plot the differential cross-sections for Dilepton Invariant Mass M(ll)
+plt.step(m_ll_bins_signal_0, dsigma_signal_m_ll_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(m_ll_bins_signal_2, dsigma_signal_m_ll_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(m_ll_bins_background, dsigma_background_m_ll, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$M_{\ell^+\ell^-} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dM_{\ell^+\ell^-}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.00001, 1.0)
+plt.savefig("differential_cross_section_m_ll_fully_leptonic.png", dpi=600)
+plt.show()
+
+
+
+
+
+
+# Plot the differential cross-sections for Dilepton Transverse Momentum pT(ll)
+plt.step(pt_ll_bins_signal_0, dsigma_signal_pt_ll_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(pt_ll_bins_signal_2, dsigma_signal_pt_ll_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(pt_ll_bins_background, dsigma_background_pt_ll, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$p_T^{\ell^+\ell^-} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dp_T^{\ell^+\ell^-}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.00001, 10.0)
+plt.savefig("differential_cross_section_pt_ll_fully_leptonic.png", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+# Plot the differential cross-sections for Leading Lepton Transverse Momentum pT(l1)
+plt.step(pt_lepton_1_bins_signal_0, dsigma_signal_pt_lepton_1_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(pt_lepton_1_bins_signal_2, dsigma_signal_pt_lepton_1_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(pt_lepton_1_bins_background, dsigma_background_pt_lepton_1, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$p_T^{leading  \;  \ell} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dp_T^{leading  \;  \ell}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.00001, 10.0)
+plt.savefig("differential_cross_section_pt_lepton_1_fully_leptonic.png", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+
+# Plot the differential cross-sections for Subleading Lepton Transverse Momentum pT(l2)
+plt.step(pt_lepton_2_bins_signal_0, dsigma_signal_pt_lepton_2_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(pt_lepton_2_bins_signal_2, dsigma_signal_pt_lepton_2_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(pt_lepton_2_bins_background, dsigma_background_pt_lepton_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$p_T^{subleading  \;  \ell} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dp_T^{subleading  \;  \ell}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.00001, 10.0)
+plt.savefig("differential_cross_section_pt_lepton_2_fully_leptonic.png", dpi=600)
+plt.show()
+
+
+
+
+
+
+
 # =======================================================================
 
 
 
 
 # Save data for pT lepton
-np.savetxt("dsigma_signal_pt_0.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_signal_pt_2.txt", np.column_stack([pt_bins_signal_2, dsigma_signal_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_signal_pt_0.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_signal_pt_2.txt", np.column_stack([pt_bins_signal_2, dsigma_signal_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
 
 
 # Save data for eta lepton
-np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
-np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
-np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
+#np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
+#np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
+#np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
 
 
 
