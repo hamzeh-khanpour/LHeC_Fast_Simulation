@@ -67,10 +67,10 @@ print(f"🔹 68% CL Upper Limit on Cross-Section: {sigma_limit_68:.6f} pb")
 #   Define the Exclusion Contour
 # ===============================
 
-# Example coefficients from Monte Carlo fits
-c0 = 2.001086     # Coefficient for FM0^2
-c1 = 0.150223     # Coefficient for FM1^2
-c01 = -1.004603   # Mixed interference term
+# Example quadratic coefficients from Monte Carlo fits
+c0 = 0.504645     # Coefficient for FM0^2
+c1 = 0.037965     # Coefficient for FM1^2
+c01 = -0.251724   # Mixed interference term
 
 # Define the quadratic function for the exclusion limit
 def exclusion_contour(FM0, FM1, sigma_limit):
@@ -106,7 +106,7 @@ plt.scatter(0, 0, color='red', s=30, label="Standard Model")
 # Labels and Title
 plt.xlabel(r"$F_{M0}/\Lambda^4$ [TeV$^{-4}$]")
 plt.ylabel(r"$F_{M1}/\Lambda^4$ [TeV$^{-4}$]")
-plt.title(r"LHeC@1.2 TeV : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$", pad=15)  # Adjusted title position     (100 fb$^{-1}$)
+plt.title(r"LHeC@1.2 TeV : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", pad=15)  # Adjusted title position     (100 fb$^{-1}$)
 
 # Add legend using proper formatting
 legend_elements = [
@@ -120,5 +120,5 @@ plt.legend(handles=legend_elements, loc="upper left", frameon=False, edgecolor='
 plt.grid()
 
 # Save and show the plot
-plt.savefig("68_95CL_Exclusion_Contour.jpg", dpi=300)
+plt.savefig("68_95CL_Exclusion_Contour_fully_leptonic.jpg", dpi=300)
 plt.show()

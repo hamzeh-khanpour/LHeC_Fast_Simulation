@@ -122,7 +122,7 @@ plt.scatter(0, 0, color='red', s=30, label="Standard Model")
 # Labels and Title
 plt.xlabel(r"$a_0^W/\Lambda^2$ [GeV$^{-2}$]")
 plt.ylabel(r"$a_C^W/\Lambda^2$ [GeV$^{-2}$]")
-plt.title(r"LHeC @ 1.2 TeV", pad=15)  # Adjusted title position     (100 fb$^{-1}$)
+plt.title(r"LHeC@1.2 TeV : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$", pad=15)  # Adjusted title position     (100 fb$^{-1}$)
 
 # Add legend using proper formatting
 legend_elements = [
