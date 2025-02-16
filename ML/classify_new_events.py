@@ -4,10 +4,10 @@ import tensorflow as tf
 from sklearn.preprocessing import StandardScaler
 
 # Load new event data (replace with actual new LHE extracted data)
-df_new = pd.read_csv("new_lhe_events.csv")  # Ensure new events are in the same format as training data
+df_new = pd.read_csv("/home/hamzeh-khanpour/new_lhe_events.csv")  # Ensure new events are in the same format as training data
 
 # Load the trained model
-model = tf.keras.models.load_model("lhe_event_classifier.h5")
+model = tf.keras.models.load_model("/home/hamzeh-khanpour/lhe_event_classifier.h5")
 
 # Load the scaler
 scaler = StandardScaler()

@@ -12,7 +12,7 @@ import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 # Load dataset
-df = pd.read_csv("lhe_events_dataset.csv")
+df = pd.read_csv("/home/hamzeh-khanpour/lhe_events_dataset.csv")
 
 # Separate features and labels
 X = df.drop(columns=['label']).values
@@ -56,7 +56,7 @@ test_loss, test_auc = model.evaluate(X_test, y_test)
 print(f"Test AUC: {test_auc:.4f}")
 
 # Save the trained model
-model.save("lhe_event_classifier.h5")
+model.save("/home/hamzeh-khanpour/lhe_event_classifier.h5")
 print("Trained model saved successfully!")
 
 # Plot training history
