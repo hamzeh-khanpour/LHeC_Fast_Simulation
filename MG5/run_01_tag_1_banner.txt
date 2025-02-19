@@ -164,7 +164,7 @@ SM_LM0123_UFO
 #*********************************************************************
      2        = lpp1    ! beam 1 type 
      3        = lpp2    ! beam 2 type
-     7000.0     = ebeam1  ! beam 1 total energy in GeV
+     7000.0   = ebeam1  ! beam 1 total energy in GeV
      50.0     = ebeam2  ! beam 2 total energy in GeV
 # To see polarised beam options: type "update beam_pol"
 
