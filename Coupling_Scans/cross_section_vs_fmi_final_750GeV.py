@@ -73,7 +73,7 @@ plt.xscale('linear')
 plt.yscale('log')
 #plt.ylim(1e-2, 1e3)  # Set y-axis limits
 
-plt.xlabel('Coupling Values: $f_{M_i} / \Lambda^4$', fontsize=16)
+plt.xlabel('Coupling Values: $f_{M_i} / \Lambda^4$ (GeV$^{-4}$)', fontsize=16)
 plt.ylabel('$\sigma$ (pb)  LHeC@0.750 TeV', fontsize=16)
 
 plt.title('The total cross-section of the process $e^- p \\to e^- W^+ W^- p$ as a function of $f_{M_i} / \Lambda^4$', fontsize=16)
