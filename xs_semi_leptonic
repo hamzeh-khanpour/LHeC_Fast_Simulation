@@ -11,11 +11,30 @@ FM0
 
 
 
+aa_ww_semi_leptonic_NP_FM0_10
+#  Number of Events        :       100000
+#  Integrated weight (pb)  :       0.0134491
+
+
+
+
+
+
 
 FM1
 
 #  Number of Events        :       100000
 #  Integrated weight (pb)  :       0.177835
+
+
+aa_ww_semi_leptonic_NP_FM1_10
+#  Number of Events        :       100000
+#  Integrated weight (pb)  :       0.0135167
+
+
+
+
+
 
 
 
@@ -25,12 +44,23 @@ FM2
 #  Integrated weight (pb)  :       77.8809
 
 
+aa_ww_semi_leptonic_NP_FM2_10
+#  Number of Events        :       100000
+#  Integrated weight (pb)  :       0.0134367
+
+
+
 
 
 FM3 
 
 #  Number of Events        :       100000
 #  Integrated weight (pb)  :       5.95386
+
+
+aa_ww_semi_leptonic_NP_FM3_10
+#  Number of Events        :       100000
+#  Integrated weight (pb)  :       0.0135803
 
 
 
