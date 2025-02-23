@@ -300,12 +300,12 @@ def plot_weighted_distribution_with_rapidity(data1, data2, cross_section_x, cros
 file_name_SM = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM/merged_aa_tautau_SM.lhe" # 47.27
 
 
-file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 51.994
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_1TeV.lhe" # 50.975
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_001_2TeV.lhe" # 53.419
 
 
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_2TeV.lhe" # 51.276
-#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
+#file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_2TeV.lhe" # 53.419
+file_name_a_tau = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO/merged_aa_tautau_SM_NP_2_SMEFTsim_top_alphaScheme_UFO_at_0_004_1TeV.lhe" # 53.419
 
 
 cross_section_file = "cross_section_results.txt"
@@ -328,7 +328,7 @@ Yll_values, Elastic_xsec_rapidity = load_rapidity_cross_section(rapidity_cross_s
 integrated_luminosity = 1.0  # fb^-1
 
 integrated_cross_section_SM    = 47.27  # pb
-integrated_cross_section_a_tau = 51.994  # pb
+integrated_cross_section_a_tau = 53.419  # pb
 
 
 
@@ -704,7 +704,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
 
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 53.419 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
@@ -811,7 +811,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     plt.show()
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 53.419 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
@@ -906,7 +906,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     # ✅ Format plot
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
-    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.001, {{\\cal L}} = 100$ fb$^{{-1}}$)")
+    ax.set_title(f"LHeC @ 1.2 TeV ($a_t=0.0042, {{\\cal L}} = 100$ fb$^{{-1}}$)")
 
     # ✅ Adjust y-limits dynamically
     ymin = -0.1
@@ -925,7 +925,7 @@ def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel,
     return slope, intercept, reduced_chi2
 
 # ✅ Given values for cross-sections and event counts
-sigma_bsm = 51.994 * 1000  # Convert to fb
+sigma_bsm = 53.419 * 1000  # Convert to fb
 sigma_sm = 47.27 * 1000  # Convert to fb
 n_events_bsm = 5000000  # Number of BSM events
 n_events_sm = 5000000  # Number of SM events
