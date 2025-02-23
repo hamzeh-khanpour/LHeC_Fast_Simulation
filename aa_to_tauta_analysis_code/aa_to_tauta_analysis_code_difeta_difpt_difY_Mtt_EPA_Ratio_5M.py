@@ -952,5 +952,253 @@ print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof 
 
 
 
+#======================================================================
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# ✅ Linear function for fitting
+def linear_fit(x, a, b):
+    return a * x + b
+
+# ✅ Function to plot the ratio of two distributions with statistical uncertainties and effective luminosity
+def plot_ratio_with_luminosity(data1, data2, bins, range_limits, xlabel, ylabel, filename,
+                               sigma_bsm, sigma_sm, n_events_bsm, n_events_sm):
+    if len(data1) == 0 or len(data2) == 0:
+        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        return
+
+    # ✅ Compute histograms
+    hist1, bin_edges = np.histogram(data1, bins=bins, range=range_limits)
+    hist2, _ = np.histogram(data2, bins=bins, range=range_limits)
+
+    # ✅ Compute ratio while avoiding division by zero
+    ratio = np.divide(hist2, hist1, out=np.full_like(hist1, np.nan, dtype=float), where=hist1 != 0)
+
+    # ✅ Compute bin centers
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # ✅ Compute Poisson statistical uncertainties
+    err1 = np.sqrt(hist1)
+    err2 = np.sqrt(hist2)
+    ratio_err = ratio * np.sqrt((err1 / hist1) ** 2 + (err2 / hist2) ** 2)  # Error propagation
+
+    # ✅ Compute effective luminosity for BSM and SM
+    luminosity_bsm = n_events_bsm / sigma_bsm
+    luminosity_sm = n_events_sm / sigma_sm
+
+    # ✅ Compute the average effective luminosity
+    avg_luminosity = (luminosity_bsm + luminosity_sm) / 2
+
+    # ✅ Handle NaN values (from division by zero)
+    valid_idx = np.isfinite(ratio)  # Ensures only valid values are used
+
+    # ✅ Perform a linear fit to the ratio
+    popt, pcov = curve_fit(linear_fit, bin_centers[valid_idx], ratio[valid_idx], sigma=ratio_err[valid_idx])
+    slope, intercept = popt
+    slope_err = np.sqrt(pcov[0, 0])
+    intercept_err = np.sqrt(pcov[1, 1])
+
+    # ✅ Compute chi-squared statistic
+    chi2 = np.sum(((ratio[valid_idx] - linear_fit(bin_centers[valid_idx], *popt)) / ratio_err[valid_idx])**2)
+    dof = len(valid_idx) - 2  # Degrees of freedom (data points - fit parameters)
+    reduced_chi2 = chi2 / dof
+
+    # ✅ Plot ratio with error bars
+    fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
+    plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
+
+    # ✅ Plot **continuous ratio line**
+#    ax.plot(bin_centers, ratio, drawstyle="steps-mid", linestyle="-", linewidth=3, label="Ratio $(a_{\\tau}/SM)$")
+
+    # ✅ Overlay statistical error bars
+    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="red", markersize=8, label="Stat. Uncertainty")
+
+    # ✅ Plot linear fit line
+    fit_x = np.linspace(range_limits[0], range_limits[1], 100)
+    fit_y = linear_fit(fit_x, *popt)
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2,
+        label=rf"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/\text{{dof}} = {reduced_chi2:.2f}$")
+
+
+    # ✅ Reference line at ratio = 1
+    ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
+
+    # ✅ Format plot
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title("LHeC @ 1.2 TeV ($a_{\\tau}=0.0042, \\mathcal{L} = 100$ fb$^{-1}$)")
+
+
+
+    # ✅ Adjust y-limits dynamically
+    ymin = -0.1
+    ymax = 3.0
+    ax.set_ylim(ymin, ymax)
+
+    ax.legend(loc="lower left")
+    ax.grid(True, linestyle="--", alpha=0.5)
+    plt.tight_layout()
+
+    # ✅ Save plot
+    plt.savefig(filename, dpi=300)
+    plt.show()
+
+    # ✅ Return the fitted parameters and chi-squared value for further use
+    return slope, intercept, reduced_chi2
+
+# ✅ Given values for cross-sections and event counts
+sigma_bsm = 53.419 * 1000  # Convert to fb
+sigma_sm = 47.27 * 1000  # Convert to fb
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
+
+# ✅ Define parameters
+bins = 10
+range_limits = (10, 500)  # Adjust based on data
+xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
+ylabel = "Ratio $(a_{\\tau}/SM)$"
+output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final_0.0042.jpg"
+
+# ✅ Call function to plot ratio
+slope, intercept, reduced_chi2 = plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bins, range_limits,
+                           xlabel, ylabel, output_filename, sigma_bsm, sigma_sm,
+                           n_events_bsm, n_events_sm)
+
+print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof = {reduced_chi2:.2f}")
+
+
+
+
+
+
+
+#======================================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
+# ✅ Linear function for fitting
+def linear_fit(x, a, b):
+    return a * x + b
+
+# ✅ Function to plot the ratio of two distributions with statistical uncertainties and effective luminosity
+def plot_ratio_with_luminosity(data1, data2, bin_edges, xlabel, ylabel, filename,
+                               sigma_bsm, sigma_sm, n_events_bsm, n_events_sm):
+    if len(data1) == 0 or len(data2) == 0:
+        print("⚠️ Warning: One or both datasets are empty. Cannot compute ratio.")
+        return
+
+    # ✅ Compute histograms with custom bin edges
+    hist1, _ = np.histogram(data1, bins=bin_edges)
+    hist2, _ = np.histogram(data2, bins=bin_edges)
+
+    # ✅ Compute ratio while avoiding division by zero
+    ratio = np.divide(hist2, hist1, out=np.full_like(hist1, np.nan, dtype=float), where=hist1 != 0)
+
+    # ✅ Compute bin centers
+    bin_centers = (bin_edges[:-1] + bin_edges[1:]) / 2
+
+    # ✅ Compute Poisson statistical uncertainties
+    err1 = np.sqrt(hist1)
+    err2 = np.sqrt(hist2)
+    ratio_err = ratio * np.sqrt((err1 / hist1) ** 2 + (err2 / hist2) ** 2)  # Error propagation
+
+    # ✅ Compute effective luminosity for BSM and SM
+    luminosity_bsm = n_events_bsm / sigma_bsm
+    luminosity_sm = n_events_sm / sigma_sm
+
+    # ✅ Compute the average effective luminosity
+    avg_luminosity = (luminosity_bsm + luminosity_sm) / 2
+
+    # ✅ Handle NaN values (from division by zero)
+    valid_idx = np.isfinite(ratio)  # Ensures only valid values are used
+
+    # ✅ Perform a linear fit to the ratio
+    popt, pcov = curve_fit(linear_fit, bin_centers[valid_idx], ratio[valid_idx], sigma=ratio_err[valid_idx])
+    slope, intercept = popt
+    slope_err = np.sqrt(pcov[0, 0])
+    intercept_err = np.sqrt(pcov[1, 1])
+
+    # ✅ Compute chi-squared statistic
+    chi2 = np.sum(((ratio[valid_idx] - linear_fit(bin_centers[valid_idx], *popt)) / ratio_err[valid_idx])**2)
+    dof = len(valid_idx) - 2  # Degrees of freedom (data points - fit parameters)
+    reduced_chi2 = chi2 / dof
+
+    # ✅ Plot ratio with error bars
+    fig, ax = plt.subplots(figsize=(14, 5))  # CMS-style wide ratio plot
+    plt.subplots_adjust(left=0.15, right=0.95, bottom=0.25, top=0.95)  # More space at bottom
+
+    # ✅ Overlay statistical error bars
+    ax.errorbar(bin_centers, ratio, yerr=ratio_err, fmt="o", color="red", markersize=8, label="Stat. Uncertainty")
+
+    # ✅ Plot linear fit line
+    fit_x = np.linspace(bin_edges[0], bin_edges[-1], 100)
+    fit_y = linear_fit(fit_x, *popt)
+    ax.plot(fit_x, fit_y, linestyle="--", color="magenta", linewidth=2,
+        label=rf"Fit: $y = ({slope:.4f} \pm {slope_err:.4f})x + ({intercept:.4f} \pm {intercept_err:.4f})$, $\chi^2/\text{{dof}} = {reduced_chi2:.2f}$")
+
+
+    # ✅ Reference line at ratio = 1
+    ax.axhline(y=1, color="green", linestyle="--", linewidth=2, label="y=1")
+
+    # ✅ Format plot
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title("LHeC @ 1.2 TeV ($a_{\\tau}=0.0042, \\mathcal{L} = 100$ fb$^{-1}$)")
+
+
+
+    # ✅ Adjust y-limits dynamically
+    ymin = -0.1
+    ymax = 2.0
+    ax.set_ylim(ymin, ymax)
+
+    ax.legend(loc="lower left")
+    ax.grid(True, linestyle="--", alpha=0.5)
+    plt.tight_layout()
+
+    # ✅ Save plot
+    plt.savefig(filename, dpi=300)
+    plt.show()
+
+    # ✅ Return the fitted parameters and chi-squared value for further use
+    return slope, intercept, reduced_chi2
+
+# ✅ Given values for cross-sections and event counts
+sigma_bsm = 53.419 * 1000  # Convert to fb
+sigma_sm = 47.27 * 1000  # Convert to fb
+n_events_bsm = 5000000  # Number of BSM events
+n_events_sm = 5000000  # Number of SM events
+
+# ✅ Define custom bin edges for non-uniform binning
+bin_edges = np.concatenate([
+    np.linspace(10,  100, 5),   # More bins in [10, 100] GeV
+    np.linspace(100, 300, 10),   # Medium bins in [100, 300] GeV
+    np.linspace(300, 500, 5)    # Larger bins in [300, 500] GeV
+])
+
+xlabel = r"$M_{\tau^+ \tau^-} \ \mathrm{[GeV]}$"
+ylabel = "Ratio $(a_{\\tau}/SM)$"
+output_filename = "Ratio_Obs_Exp_with_Luminosity_Fit_Final_bins_0.0042.jpg"
+
+# ✅ Call function to plot ratio
+slope, intercept, reduced_chi2 = plot_ratio_with_luminosity(invariant_mass_tau_pair_1, invariant_mass_tau_pair_2, bin_edges,
+                           xlabel, ylabel, output_filename, sigma_bsm, sigma_sm,
+                           n_events_bsm, n_events_sm)
+
+print(f"Fit Results: Slope = {slope:.4f}, Intercept = {intercept:.4f}, Chi2/dof = {reduced_chi2:.2f}")
+
+#======================================================================
+
+
+
+
+
+
+
 
 
