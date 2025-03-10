@@ -181,6 +181,7 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 # Define LHE file paths for signals and background
 signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM0/Events/run_01/aa_ww_fully_leptonic_NP_FM0.lhe"
 signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM2/Events/run_01/aa_ww_fully_leptonic_NP_FM2.lhe"
+
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/Events/run_01/aa_ww_fully_leptonic_SM.lhe"
 
 
@@ -281,10 +282,10 @@ print("Dataset saved successfully!")
 
 # Parameters for differential cross-section
 
-signal_cross_section_0    =  0.503747      # pb  FM0
-#signal_cross_section_1   =  0.0451322    # pb  FM1
-signal_cross_section_2    =  19.66510      # pb  FM2
-#signal_cross_section_3   =  1.505529     # pb  FM3
+signal_cross_section_0    =  0.00780461    # pb  FM0
+#signal_cross_section_1   =  0.00412265    # pb  FM1
+signal_cross_section_2    =  0.192811      # pb  FM2
+#signal_cross_section_3   =  0.0201263     # pb  FM3
 
 
 background_cross_section  =  0.00351599    # pb
@@ -401,7 +402,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -418,7 +419,7 @@ plt.xlabel(r"$\eta^{\ell}$")
 plt.ylabel(r"$\frac{d\sigma}{d\eta^{\ell}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 100.0)
+plt.ylim(0.0001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -440,7 +441,7 @@ plt.ylabel(r"$\frac{d\sigma}{d\Delta R} \ \mathrm{[pb]}$")
 # Updated plot title to reflect the fully leptonic process
 plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.0001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -462,7 +463,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.000001, 1.0)
+plt.ylim(0.000001, 0.01)
 plt.savefig("differential_cross_section_met_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -482,7 +483,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0001, 100.0)
+plt.ylim(0.0001, 0.01)
 plt.savefig("differential_cross_section_rapidity_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -503,7 +504,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 1.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_m_ll_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -523,7 +524,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt_ll_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -544,7 +545,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt_lepton_1_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -566,7 +567,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt_lepton_2_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -591,5 +592,6 @@ plt.show()
 #np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
 #np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
 #np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
+
 
 
