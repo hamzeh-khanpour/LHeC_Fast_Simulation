@@ -593,4 +593,3 @@ plt.show()
 #np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
 
 
-
