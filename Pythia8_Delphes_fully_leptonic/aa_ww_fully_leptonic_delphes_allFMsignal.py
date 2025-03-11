@@ -41,10 +41,10 @@ hep.style.use("CMS")
 
 # Path to the ROOT files : signal and background
 signal_files = {
-    "$FM_{0} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM0.root",
-    "$FM_{1} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM1.root",
-    "$FM_{2} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM2.root",
-    "$FM_{3} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM3.root",
+    "$FM_{0} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM0_100.root",
+    "$FM_{1} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM1_100.root",
+    "$FM_{2} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM2_100.root",
+    "$FM_{3} / \Lambda^4$": "aa_ww_fully_leptonic_NP_FM3_100.root",
 }
 background_file_path = "aa_ww_fully_leptonic_SM.root"
 
@@ -192,7 +192,7 @@ def process_file(
 
 
         # **✅ Final Event Selection **
-        if leading_lepton.Pt() < 100.0  or  subleading_lepton.Pt() < 50.0:
+        if leading_lepton.Pt() < 1.0  or  subleading_lepton.Pt() < 1.0:
             continue
 
         # Count selected events
@@ -237,13 +237,13 @@ def process_file(
 # Parameters for differential cross-section
 
 signal_cross_sections = {
-    "$FM_{0} / \Lambda^4$": 0.502618,   # pb
-    "$FM_{1} / \Lambda^4$": 0.0450877,   # pb
-    "$FM_{2} / \Lambda^4$": 19.6545,   # pb
-    "$FM_{3} / \Lambda^4$": 1.50549    # pb
+    "$FM_{0} / \Lambda^4$": 0.00338968,   # pb
+    "$FM_{1} / \Lambda^4$": 0.00343213,   # pb
+    "$FM_{2} / \Lambda^4$": 0.00498621,   # pb
+    "$FM_{3} / \Lambda^4$": 0.00376192    # pb
 }
 
-background_cross_section = 0.00351424  # pb
+background_cross_section = 0.00357101  # pb
 
 
 
@@ -254,14 +254,14 @@ background_cross_section = 0.00351424  # pb
 num_bins = 50
 
 # ✅ Leading & Subleading Lepton Kinematics
-pt_range_leading_lepton = (0, 500)     # Range for leading lepton pT
-pt_range_subleading_lepton = (0, 500)  # Range for subleading lepton pT
+pt_range_leading_lepton = (0, 200)     # Range for leading lepton pT
+pt_range_subleading_lepton = (0, 200)  # Range for subleading lepton pT
 eta_range_leading_lepton = (-5, 5)     # Range for leading lepton pseudorapidity
 eta_range_subleading_lepton = (-5, 5)  # Range for subleading lepton pseudorapidity
 
 # ✅ Dilepton System Kinematics
-m_ll_range = (0, 1000)         # Range for dilepton invariant mass M(ll)
-pt_ll_range = (0, 500)         # Range for dilepton transverse momentum pT(ll)
+m_ll_range = (0, 200)         # Range for dilepton invariant mass M(ll)
+pt_ll_range = (0, 200)         # Range for dilepton transverse momentum pT(ll)
 rapidity_ll_range = (-5, 5)    # Range for dilepton system rapidity Y(ll)
 
 # ✅ Angular Separations
@@ -270,12 +270,14 @@ delta_phi_range = (0, np.pi)   # Range for Δφ between leptons
 delta_y_range = (0, 5)         # Range for rapidity difference Δy between leptons
 
 # ✅ Missing Energy & Neutrino Variables
-met_range = (0, 500)           # Range for Missing Transverse Energy (MET)
+met_range = (0, 200)           # Range for Missing Transverse Energy (MET)
 
 # ✅ W Boson & Diboson System
 mT_W_range = (0, 200)          # Range for transverse mass of W boson
-m_WW_range = (0, 1000)         # Range for diboson system mass M(WW)
-pT_WW_range = (0, 500)         # Range for transverse momentum of diboson system pT(WW)
+m_WW_range = (0, 200)         # Range for diboson system mass M(WW)
+pT_WW_range = (0, 200)         # Range for transverse momentum of diboson system pT(WW)
+
+
 
 # ✅ Calculate Bin Widths
 bin_width_pt_leading_lepton = (pt_range_leading_lepton[1] - pt_range_leading_lepton[0]) / num_bins
@@ -526,7 +528,14 @@ signal_colors = {
     "$FM_{3} / \Lambda^4$": "orange"
 }
 
-# ✅ Plot Leading Lepton \( p_T \) Differential Cross-Section
+
+
+
+
+# ===================================================
+# ✅ Leading Lepton \( p_T \) Differential Cross-Section
+# ===================================================
+
 for signal_name, dsigma_data in signal_dsigma.items():
     pt_bins, dsigma = dsigma_data["pt_bins_leading_lepton"]
     plt.step(pt_bins, dsigma, where="mid", alpha=0.7,
@@ -548,13 +557,15 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_leading_lepton_pt_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
+
+
 
 
 # ===================================================
@@ -586,7 +597,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_subleading_lepton_pt_allFMsignal.pdf", dpi=600)
@@ -626,7 +637,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_m_ll_allFMsignal.pdf", dpi=600)
@@ -664,7 +675,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_pt_ll_allFMsignal.pdf", dpi=600)
@@ -704,7 +715,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 1.0)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_rapidity_ll_allFMsignal.pdf", dpi=600)
@@ -742,7 +753,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 1.0)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_deltaR_ll_allFMsignal.pdf", dpi=600)
@@ -849,8 +860,8 @@ plt.step(met_bins_background, dsigma_background, where="mid", alpha=0.7,
          label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
 
 # Set labels and title
-plt.xlabel(r"$E_T^{\text{miss}} \ \mathrm{[GeV]}$")
-plt.ylabel(r"$\frac{d\sigma}{dE_T^{\text{miss}}} \ \mathrm{[pb/GeV]}$")
+plt.xlabel(r"$E_T^{miss} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dE_T^{miss}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 
@@ -858,7 +869,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_MET_allFMsignal.pdf", dpi=600)
@@ -896,7 +907,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_mT_W_allFMsignal.pdf", dpi=600)
@@ -974,7 +985,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.001)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_pT_WW_allFMsignal.pdf", dpi=600)
@@ -983,8 +994,9 @@ plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8
 plt.show()
 
 
+
 # ===================================================
-# ✅ Leading Lepton Pseudorapidity \( \eta_{\ell_1} \) Differential Cross-Section
+# ✅ Leading Lepton Pseudorapidity \( \eta_{\mathrm{leading}~\ell} \) Differential Cross-Section
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # Create a new figure for leading lepton eta plot
@@ -1003,14 +1015,15 @@ plt.step(eta_leading_bins_background, dsigma_background, where="mid", alpha=0.7,
          label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
 
 # Set labels and title
-plt.xlabel(r"$\eta_{\ell_1}$")
-plt.ylabel(r"$\frac{d\sigma}{d\eta_{\ell_1}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\eta_{\mathrm{leading}~\ell}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_{\mathrm{leading}~\ell}} \ \mathrm{[pb]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 
 # Grid, legend, and layout adjustments
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
+plt.ylim(0.0005, 0.003)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_eta_leading_lepton_allFMsignal.pdf", dpi=600)
@@ -1019,8 +1032,9 @@ plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8
 plt.show()
 
 
+
 # ===================================================
-# ✅ Subleading Lepton Pseudorapidity \( \eta_{\ell_2} \) Differential Cross-Section
+# ✅ Subleading Lepton Pseudorapidity \( \eta_^{\mathrm{subleading}~\ell} \) Differential Cross-Section
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # Create a new figure for subleading lepton eta plot
@@ -1039,14 +1053,16 @@ plt.step(eta_subleading_bins_background, dsigma_background, where="mid", alpha=0
          label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
 
 # Set labels and title
-plt.xlabel(r"$\eta_{\ell_2}$")
-plt.ylabel(r"$\frac{d\sigma}{d\eta_{\ell_2}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\eta_{\mathrm{subleading}~\ell}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_{\mathrm{subleading}~\ell}} \ \mathrm{[pb]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 
 # Grid, legend, and layout adjustments
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
+plt.ylim(0.0005, 0.003)
+
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/differential_cross_section_eta_subleading_lepton_allFMsignal.pdf", dpi=600)

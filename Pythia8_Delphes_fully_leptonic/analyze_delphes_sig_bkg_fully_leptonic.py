@@ -40,7 +40,7 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_fully_leptonic_NP_FM0.root"
+signal_file_path = "aa_ww_fully_leptonic_NP_FM0_100.root"
 background_file_path = "aa_ww_fully_leptonic_SM.root"
 
 
@@ -566,7 +566,7 @@ plt.ylabel("Entries")
 plt.title(r"Leading Lepton Transverse Momentum : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/leading_lepton_pt_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/leading_lepton_pt_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -583,7 +583,7 @@ plt.ylabel("Entries")
 plt.title(r"Subleading Lepton Transverse Momentum : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/subleading_lepton_pt_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/subleading_lepton_pt_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -600,7 +600,7 @@ plt.ylabel("Entries")
 plt.title(r"Dilepton Invariant Mass Distribution : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_mass_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_mass_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -617,7 +617,7 @@ plt.ylabel("Entries")
 plt.title(r"Dilepton Transverse Momentum Distribution : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_pt_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_pt_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -634,7 +634,7 @@ plt.ylabel("Entries")
 plt.title(r"Dilepton System Rapidity : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_rapidity_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/dilepton_rapidity_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -651,7 +651,7 @@ plt.ylabel("Entries")
 plt.title(r"Leading Lepton Pseudorapidity : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/leading_lepton_eta_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/leading_lepton_eta_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -669,7 +669,7 @@ plt.ylabel("Entries")
 plt.title(r"Subleading Lepton Pseudorapidity : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/subleading_lepton_eta_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/subleading_lepton_eta_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -687,7 +687,7 @@ plt.ylabel("Entries")
 plt.title(r"Lepton Separation (ΔR) : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/lepton_separation_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/lepton_separation_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -705,7 +705,7 @@ plt.ylabel("Entries")
 plt.title(r"Azimuthal Angle Separation (Δφ) : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/azimuthal_angle_separation_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/azimuthal_angle_separation_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -723,7 +723,7 @@ plt.ylabel("Entries")
 plt.title(r"Rapidity Difference (Δy) : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/rapidity_difference_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/rapidity_difference_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -741,7 +741,7 @@ plt.ylabel("Entries")
 plt.title(r"Missing Transverse Energy (MET) : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/met_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/met_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -760,7 +760,7 @@ plt.ylabel("Entries")
 plt.title(r"Transverse Mass of W Boson : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/mT_W_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/mT_W_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -778,7 +778,7 @@ plt.ylabel("Entries")
 plt.title(r"Reconstructed Diboson System Mass : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/m_WW_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/m_WW_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -795,7 +795,7 @@ plt.ylabel("Entries")
 plt.title(r"Diboson Transverse Momentum : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/pT_WW_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic/pT_WW_comparison.pdf", dpi=300)
 plt.show()
 
 
