@@ -176,8 +176,11 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 
 # Parse signal and background files
-signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_01/aa_ww_semi_leptonic_NP_FM0.lhe"
-signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM2/Events/run_01/aa_ww_semi_leptonic_NP_FM2.lhe"
+signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM0/Events/run_02/aa_ww_semi_leptonic_NP_FM0.lhe"
+#signal_file_1 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM1/Events/run_02/aa_ww_semi_leptonic_NP_FM1.lhe"
+signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM2/Events/run_02/aa_ww_semi_leptonic_NP_FM2.lhe"
+#signal_file_3 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_NP_FM3/Events/run_02/aa_ww_semi_leptonic_NP_FM3.lhe"
+
 
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/Events/run_01/aa_ww_semi_leptonic_SM.lhe"
 
@@ -207,33 +210,40 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_semi_leptonic_SM/E
 
 # Parameters for differential cross-section
 
-signal_cross_section_0   = 1.99216      # pb  FM0
+# 1000
+#signal_cross_section_0   = 1.99216      # pb  FM0
 #signal_cross_section_1   = 0.17783      # pb  FM1
-signal_cross_section_2   = 77.8809      # pb  FM2
+#signal_cross_section_2   = 77.8809      # pb  FM2
 #signal_cross_section_3   = 5.95386      # pb  FM3
 
-#signal_cross_section_FT0   = 58.8643      # pb  FT0
-#signal_cross_section_FT1   = 6.53478      # pb  FT1
-#signal_cross_section_FT2   = 4.57082      # pb  FT2
 
-background_cross_section = 0.0134936    # pb
+
+# 100
+signal_cross_section_0   = 0.0134836      # pb  FM0
+#signal_cross_section_1   = 0.0136291      # pb  FM1
+signal_cross_section_2   = 0.0200421      # pb  FM2
+#signal_cross_section_3   = 0.0149315      # pb  FM3
+
+
+
+background_cross_section = 0.0137276    # pb
 
 
 
 
 num_bins = 50
 
-pt_range_lepton = (0, 500)     # Range for lepton pT
-pt_range_jet = (0, 500)        # Range for leading jet pT (adjusted for higher jet momenta)
+pt_range_lepton = (0, 300)     # Range for lepton pT
+pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)
 eta_range = (-10, 10)          # Range for pseudorapidity
 delta_r_range = (0, 10)        # Range for Delta R is between 0 and 5
-met_range = (1, 500)           # Define range for MET (adjust as needed)
+met_range = (1, 400)           # Define range for MET (adjust as needed)
 centrality_range = (-5, 5)     # Centrality typically ranges from -5 to 5
 exp_centrality_range = (0, 2)  # Centrality typically ranges from 0 to 2
 jet_centrality_range = (0, 6) # Centrality typically ranges of jet from 0 to 10
 delta_eta_jj_range  = (0, 5)   # Pseudorapidity difference between jets from 0 to 5
-m_w_hadronic_range = (1, 180)  # Range for the hadronic W boson mass
-m_w_leptonic_range = (1, 180)  # Range for the leptonic W boson mass
+m_w_hadronic_range = (1, 140)  # Range for the hadronic W boson mass
+m_w_leptonic_range = (1, 140)  # Range for the leptonic W boson mass
 
 
 # Calculate bin width
@@ -358,7 +368,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt.png", dpi=600)
 plt.show()
 
@@ -375,7 +385,7 @@ plt.xlabel(r"$\eta^{\ell}$")
 plt.ylabel(r"$\frac{d\sigma}{d\eta^{\ell}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 100.0)
+plt.ylim(0.0001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -395,7 +405,7 @@ plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{\mathrm{leading~jet}}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -413,7 +423,7 @@ plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
 plt.ylabel(r"$\frac{d\sigma}{d\Delta R} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.0001, 1.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -673,7 +683,7 @@ plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 T
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("normalized_cross_section_m_w_hadronic.png", dpi=600)
+plt.savefig("normalized_cross_section_m_w_hadronic.pdf", dpi=600)
 plt.show()
 
 
@@ -688,11 +698,11 @@ plt.xlabel(r"$M_W^{jj} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dM_W^{jj}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.00001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_m_w_hadronic.png", dpi=600)
+plt.savefig("differential_cross_section_m_w_hadronic.pdf", dpi=600)
 plt.show()
 
 
@@ -724,7 +734,7 @@ plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 T
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("normalized_cross_section_m_w_leptonic.png", dpi=600)
+plt.savefig("normalized_cross_section_m_w_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -739,11 +749,11 @@ plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dM_W^{\ell\nu_{\ell}}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.00001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_m_w_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_m_w_leptonic.pdf", dpi=600)
 plt.show()
 
 
