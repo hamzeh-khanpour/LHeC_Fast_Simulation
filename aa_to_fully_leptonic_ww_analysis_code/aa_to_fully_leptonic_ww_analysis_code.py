@@ -46,6 +46,8 @@ def parse_lhe_file(file_name):
     pt_lepton_pair = []  # Dilepton transverse momentum
     pt_lepton_1 = []  # Leading lepton transverse momentum
     pt_lepton_2 = []  # Subleading lepton transverse momentum
+    eta_lepton_1 = []  # Leading lepton pseudorapidity
+    eta_lepton_2 = []  # Subleading lepton pseudorapidity
 
     with open(file_name, "r") as file:
         in_event = False
@@ -109,9 +111,21 @@ def parse_lhe_file(file_name):
                     # Store rapidity of the lepton pair
                     rapidity_lepton_pair.append(lepton_pair.Rapidity())
 
+                    # Identify the leading and subleading leptons
+                    if lepton_plus_vec.Pt() > lepton_minus_vec.Pt():
+                        leading_lepton = lepton_plus_vec
+                        subleading_lepton = lepton_minus_vec
+                    else:
+                        leading_lepton = lepton_minus_vec
+                        subleading_lepton = lepton_plus_vec
+
                     # Store leading and subleading lepton pT
-                    pt_lepton_1.append(max(lepton_plus_vec.Pt(), lepton_minus_vec.Pt()))  # Leading lepton
-                    pt_lepton_2.append(min(lepton_plus_vec.Pt(), lepton_minus_vec.Pt()))  # Subleading lepton
+                    pt_lepton_1.append(leading_lepton.Pt())
+                    pt_lepton_2.append(subleading_lepton.Pt())
+
+                    # Store leading and subleading lepton pseudorapidity
+                    eta_lepton_1.append(leading_lepton.Eta())
+                    eta_lepton_2.append(subleading_lepton.Eta())
 
                 continue
 
@@ -165,7 +179,21 @@ def parse_lhe_file(file_name):
                     # Store jet information (for vetoing)
                     jets.append(jet)
 
-    return pt_leptons, eta_leptons, delta_r_values, missing_transverse_energy, rapidity_lepton_pair, invariant_mass_lepton_pair, pt_lepton_pair, pt_lepton_1, pt_lepton_2
+    return (
+        pt_leptons,
+        eta_leptons,
+        delta_r_values,
+        missing_transverse_energy,
+        rapidity_lepton_pair,
+        invariant_mass_lepton_pair,
+        pt_lepton_pair,
+        pt_lepton_1,
+        pt_lepton_2,
+        eta_lepton_1,  # Leading lepton pseudorapidity
+        eta_lepton_2   # Subleading lepton pseudorapidity
+    )
+
+
 
 
 # =======================================================================
@@ -186,19 +214,19 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/
 
 
 
+
 # Parse LHE files, keeping only leptonic events (jets are vetoed)
 (pt_leptons_signal_0, eta_leptons_signal_0, delta_r_signal_0, met_signal_0,
  rapidity_lepton_pair_signal_0, invariant_mass_lepton_pair_signal_0, pt_lepton_pair_signal_0,
- pt_lepton_1_signal_0, pt_lepton_2_signal_0) = parse_lhe_file(signal_file_0)
+ pt_lepton_1_signal_0, pt_lepton_2_signal_0, eta_lepton_1_signal_0, eta_lepton_2_signal_0) = parse_lhe_file(signal_file_0)
 
 (pt_leptons_signal_2, eta_leptons_signal_2, delta_r_signal_2, met_signal_2,
  rapidity_lepton_pair_signal_2, invariant_mass_lepton_pair_signal_2, pt_lepton_pair_signal_2,
- pt_lepton_1_signal_2, pt_lepton_2_signal_2) = parse_lhe_file(signal_file_2)
+ pt_lepton_1_signal_2, pt_lepton_2_signal_2, eta_lepton_1_signal_2, eta_lepton_2_signal_2) = parse_lhe_file(signal_file_2)
 
 (pt_leptons_background, eta_leptons_background, delta_r_background, met_background,
  rapidity_lepton_pair_background, invariant_mass_lepton_pair_background, pt_lepton_pair_background,
- pt_lepton_1_background, pt_lepton_2_background) = parse_lhe_file(background_file)
-
+ pt_lepton_1_background, pt_lepton_2_background, eta_lepton_1_background, eta_lepton_2_background) = parse_lhe_file(background_file)
 
 
 
@@ -213,24 +241,34 @@ import pandas as pd
 def min_length(*arrays):
     return min(map(len, arrays))
 
+
+
 # Find minimum length for each dataset
 min_len_signal_0 = min_length(pt_lepton_1_signal_0, pt_lepton_2_signal_0, eta_leptons_signal_0,
+                              eta_lepton_1_signal_0, eta_lepton_2_signal_0,  # Added leading & subleading lepton eta
                               delta_r_signal_0, met_signal_0, rapidity_lepton_pair_signal_0,
                               invariant_mass_lepton_pair_signal_0, pt_lepton_pair_signal_0)
 
 min_len_signal_2 = min_length(pt_lepton_1_signal_2, pt_lepton_2_signal_2, eta_leptons_signal_2,
+                              eta_lepton_1_signal_2, eta_lepton_2_signal_2,  # Added leading & subleading lepton eta
                               delta_r_signal_2, met_signal_2, rapidity_lepton_pair_signal_2,
                               invariant_mass_lepton_pair_signal_2, pt_lepton_pair_signal_2)
 
 min_len_background = min_length(pt_lepton_1_background, pt_lepton_2_background, eta_leptons_background,
+                                eta_lepton_1_background, eta_lepton_2_background,  # Added leading & subleading lepton eta
                                 delta_r_background, met_background, rapidity_lepton_pair_background,
                                 invariant_mass_lepton_pair_background, pt_lepton_pair_background)
+
+
+
+
 
 # Trim all lists to ensure equal length
 df_signal_0 = pd.DataFrame({
     'pt_lepton_1': pt_lepton_1_signal_0[:min_len_signal_0],
     'pt_lepton_2': pt_lepton_2_signal_0[:min_len_signal_0],
-    'eta_lepton': eta_leptons_signal_0[:min_len_signal_0],
+    'eta_lepton_1': eta_lepton_1_signal_0[:min_len_signal_0],  # Added leading lepton eta
+    'eta_lepton_2': eta_lepton_2_signal_0[:min_len_signal_0],  # Added subleading lepton eta
     'delta_R': delta_r_signal_0[:min_len_signal_0],
     'MET': met_signal_0[:min_len_signal_0],
     'rapidity_lepton_pair': rapidity_lepton_pair_signal_0[:min_len_signal_0],
@@ -242,7 +280,8 @@ df_signal_0 = pd.DataFrame({
 df_signal_2 = pd.DataFrame({
     'pt_lepton_1': pt_lepton_1_signal_2[:min_len_signal_2],
     'pt_lepton_2': pt_lepton_2_signal_2[:min_len_signal_2],
-    'eta_lepton': eta_leptons_signal_2[:min_len_signal_2],
+    'eta_lepton_1': eta_lepton_1_signal_2[:min_len_signal_2],  # Added leading lepton eta
+    'eta_lepton_2': eta_lepton_2_signal_2[:min_len_signal_2],  # Added subleading lepton eta
     'delta_R': delta_r_signal_2[:min_len_signal_2],
     'MET': met_signal_2[:min_len_signal_2],
     'rapidity_lepton_pair': rapidity_lepton_pair_signal_2[:min_len_signal_2],
@@ -254,7 +293,8 @@ df_signal_2 = pd.DataFrame({
 df_background = pd.DataFrame({
     'pt_lepton_1': pt_lepton_1_background[:min_len_background],
     'pt_lepton_2': pt_lepton_2_background[:min_len_background],
-    'eta_lepton': eta_leptons_background[:min_len_background],
+    'eta_lepton_1': eta_lepton_1_background[:min_len_background],  # Added leading lepton eta
+    'eta_lepton_2': eta_lepton_2_background[:min_len_background],  # Added subleading lepton eta
     'delta_R': delta_r_background[:min_len_background],
     'MET': met_background[:min_len_background],
     'rapidity_lepton_pair': rapidity_lepton_pair_background[:min_len_background],
@@ -262,6 +302,10 @@ df_background = pd.DataFrame({
     'pt_ll': pt_lepton_pair_background[:min_len_background],
     'label': 0  # Background label
 })
+
+
+
+
 
 # Merge all data and shuffle
 df = pd.concat([df_signal_0, df_signal_2, df_background], ignore_index=True)
@@ -316,10 +360,12 @@ eta_range = (-10, 10)          # Range for pseudorapidity
 delta_r_range = (0, 10)        # Range for Delta R between leptons
 met_range = (1, 300)           # Define range for MET (adjust as needed)
 rapidity_range = (-5, 5)       # Define range for lepton pair rapidity
-m_ll_range = (0, 300)         # Define range for dilepton invariant mass M(ll)
+m_ll_range = (0, 300)          # Define range for dilepton invariant mass M(ll)
 pt_ll_range = (0, 200)         # Define range for dilepton transverse momentum pT(ll)
 pt_lepton_1_range = (0, 200)   # Define range for leading lepton transverse momentum
 pt_lepton_2_range = (0, 200)   # Define range for subleading lepton transverse momentum
+eta_lepton_1_range = (-5, 5)   # Define range for leading lepton pseudorapidity
+eta_lepton_2_range = (-5, 5)   # Define range for subleading lepton pseudorapidity
 
 # Calculate bin widths
 bin_width_pt_lepton = (pt_range_lepton[1] - pt_range_lepton[0]) / num_bins
@@ -331,6 +377,8 @@ bin_width_m_ll = (m_ll_range[1] - m_ll_range[0]) / num_bins  # Bin width for dil
 bin_width_pt_ll = (pt_ll_range[1] - pt_ll_range[0]) / num_bins  # Bin width for dilepton transverse momentum pT(ll)
 bin_width_pt_lepton_1 = (pt_lepton_1_range[1] - pt_lepton_1_range[0]) / num_bins  # Bin width for leading lepton pT
 bin_width_pt_lepton_2 = (pt_lepton_2_range[1] - pt_lepton_2_range[0]) / num_bins  # Bin width for subleading lepton pT
+bin_width_eta_lepton_1 = (eta_lepton_1_range[1] - eta_lepton_1_range[0]) / num_bins  # Bin width for leading lepton pseudorapidity
+bin_width_eta_lepton_2 = (eta_lepton_2_range[1] - eta_lepton_2_range[0]) / num_bins  # Bin width for subleading lepton pseudorapidity
 
 
 
@@ -386,16 +434,36 @@ pt_ll_bins_signal_2, dsigma_signal_pt_ll_2 = calculate_dsigma(pt_lepton_pair_sig
 pt_ll_bins_background, dsigma_background_pt_ll = calculate_dsigma(pt_lepton_pair_background, background_cross_section, bin_width_pt_ll, pt_ll_range)
 
 
+
+
 # Calculate differential cross-sections for Leading Lepton Transverse Momentum pT(l1)
 pt_lepton_1_bins_signal_0, dsigma_signal_pt_lepton_1_0 = calculate_dsigma(pt_lepton_1_signal_0, signal_cross_section_0, bin_width_pt_lepton_1, pt_lepton_1_range)
 pt_lepton_1_bins_signal_2, dsigma_signal_pt_lepton_1_2 = calculate_dsigma(pt_lepton_1_signal_2, signal_cross_section_2, bin_width_pt_lepton_1, pt_lepton_1_range)
 pt_lepton_1_bins_background, dsigma_background_pt_lepton_1 = calculate_dsigma(pt_lepton_1_background, background_cross_section, bin_width_pt_lepton_1, pt_lepton_1_range)
 
 
+
 # Calculate differential cross-sections for Subleading Lepton Transverse Momentum pT(l2)
 pt_lepton_2_bins_signal_0, dsigma_signal_pt_lepton_2_0 = calculate_dsigma(pt_lepton_2_signal_0, signal_cross_section_0, bin_width_pt_lepton_2, pt_lepton_2_range)
 pt_lepton_2_bins_signal_2, dsigma_signal_pt_lepton_2_2 = calculate_dsigma(pt_lepton_2_signal_2, signal_cross_section_2, bin_width_pt_lepton_2, pt_lepton_2_range)
 pt_lepton_2_bins_background, dsigma_background_pt_lepton_2 = calculate_dsigma(pt_lepton_2_background, background_cross_section, bin_width_pt_lepton_2, pt_lepton_2_range)
+
+
+
+
+
+# Calculate differential cross-sections for Leading Lepton eta
+eta_lepton_1_bins_signal_0, dsigma_signal_eta_lepton_1_0 = calculate_dsigma(eta_lepton_1_signal_0, signal_cross_section_0, bin_width_eta_lepton_1, eta_lepton_1_range)
+eta_lepton_1_bins_signal_2, dsigma_signal_eta_lepton_1_2 = calculate_dsigma(eta_lepton_1_signal_2, signal_cross_section_2, bin_width_eta_lepton_1, eta_lepton_1_range)
+eta_lepton_1_bins_background, dsigma_background_eta_lepton_1 = calculate_dsigma(eta_lepton_1_background, background_cross_section, bin_width_eta_lepton_1, eta_lepton_1_range)
+
+
+
+# Calculate differential cross-sections for Subleading Lepton eta
+eta_lepton_2_bins_signal_0, dsigma_signal_eta_lepton_2_0 = calculate_dsigma(eta_lepton_2_signal_0, signal_cross_section_0, bin_width_eta_lepton_2, eta_lepton_2_range)
+eta_lepton_2_bins_signal_2, dsigma_signal_eta_lepton_2_2 = calculate_dsigma(eta_lepton_2_signal_2, signal_cross_section_2, bin_width_eta_lepton_2, eta_lepton_2_range)
+eta_lepton_2_bins_background, dsigma_background_eta_lepton_2 = calculate_dsigma(eta_lepton_2_background, background_cross_section, bin_width_eta_lepton_2, eta_lepton_2_range)
+
 
 
 
@@ -421,7 +489,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.001)
-plt.savefig("differential_cross_section_pt_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_pt_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -441,7 +509,7 @@ plt.ylim(0.0001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_eta_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_eta_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -463,7 +531,7 @@ plt.ylim(0.0001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_delta_r_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_delta_r_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -482,7 +550,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.000001, 0.001)
-plt.savefig("differential_cross_section_met_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_met_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -502,7 +570,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.0001, 0.01)
-plt.savefig("differential_cross_section_rapidity_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_rapidity_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -523,7 +591,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.0001)
-plt.savefig("differential_cross_section_m_ll_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_m_ll_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -542,8 +610,8 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.0001)
-plt.savefig("differential_cross_section_pt_ll_fully_leptonic.png", dpi=600)
+plt.ylim(0.00001, 0.001)
+plt.savefig("differential_cross_section_pt_ll_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -564,7 +632,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.001)
-plt.savefig("differential_cross_section_pt_lepton_1_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_pt_lepton_1_fully_leptonic.pdf", dpi=600)
 plt.show()
 
 
@@ -586,8 +654,60 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.001)
-plt.savefig("differential_cross_section_pt_lepton_2_fully_leptonic.png", dpi=600)
+plt.savefig("differential_cross_section_pt_lepton_2_fully_leptonic.pdf", dpi=600)
 plt.show()
+
+
+
+
+
+
+
+
+
+
+# Plot the differential cross-sections for Leading Lepton eta
+plt.step(eta_lepton_1_bins_signal_0, dsigma_signal_eta_lepton_1_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(eta_lepton_1_bins_signal_2, dsigma_signal_eta_lepton_1_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(eta_lepton_1_bins_background, dsigma_background_eta_lepton_1, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$\eta^{leading  \;  \ell} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_T^{leading  \;  \ell}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+#plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.0005, 0.0025)
+plt.savefig("differential_cross_section_eta_lepton_1_fully_leptonic.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+
+# Plot the differential cross-sections for Subleading Lepton eta
+plt.step(eta_lepton_2_bins_signal_0, dsigma_signal_eta_lepton_2_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(eta_lepton_2_bins_signal_2, dsigma_signal_eta_lepton_2_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(eta_lepton_2_bins_background, dsigma_background_eta_lepton_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($W^+ W^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$\eta_T^{subleading  \;  \ell} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_T^{subleading  \;  \ell}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+#plt.yscale("log")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.0005, 0.0025)
+plt.savefig("differential_cross_section_eta_lepton_2_fully_leptonic.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
 
 
 
