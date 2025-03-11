@@ -179,8 +179,8 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 
 # Define LHE file paths for signals and background
-signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM0/Events/run_01/aa_ww_fully_leptonic_NP_FM0.lhe"
-signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM2/Events/run_01/aa_ww_fully_leptonic_NP_FM2.lhe"
+signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM0/Events/run_02/aa_ww_fully_leptonic_NP_FM0.lhe"
+signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_FM2/Events/run_02/aa_ww_fully_leptonic_NP_FM2.lhe"
 
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/Events/run_01/aa_ww_fully_leptonic_SM.lhe"
 
@@ -282,26 +282,44 @@ print("Dataset saved successfully!")
 
 # Parameters for differential cross-section
 
-signal_cross_section_0    =  0.00780461    # pb  FM0
+# FM = 1000
+
+#signal_cross_section_0   =  0.00780461    # pb  FM0
 #signal_cross_section_1   =  0.00412265    # pb  FM1
-signal_cross_section_2    =  0.192811      # pb  FM2
+#signal_cross_section_2   =  0.192811      # pb  FM2
 #signal_cross_section_3   =  0.0201263     # pb  FM3
 
 
-background_cross_section  =  0.00351599    # pb
+
+# FM = 100
+
+signal_cross_section_0   =  0.00338968    # pb  FM0
+#signal_cross_section_1   =  0.00343213    # pb  FM1
+signal_cross_section_2   =  0.00498621      # pb  FM2
+#signal_cross_section_3   =  0.00376192     # pb  FM3
+
+
+
+#NP=0
+#background_cross_section  =  0.00351599    # pb
+
+# SM
+background_cross_section  =  0.00357101    # pb
+
+
 
 
 num_bins = 50
 
-pt_range_lepton = (0, 500)     # Range for lepton pT
+pt_range_lepton = (0, 200)     # Range for lepton pT
 eta_range = (-10, 10)          # Range for pseudorapidity
 delta_r_range = (0, 10)        # Range for Delta R between leptons
-met_range = (1, 500)           # Define range for MET (adjust as needed)
+met_range = (1, 300)           # Define range for MET (adjust as needed)
 rapidity_range = (-5, 5)       # Define range for lepton pair rapidity
-m_ll_range = (0, 1000)         # Define range for dilepton invariant mass M(ll)
-pt_ll_range = (0, 500)         # Define range for dilepton transverse momentum pT(ll)
-pt_lepton_1_range = (0, 500)   # Define range for leading lepton transverse momentum
-pt_lepton_2_range = (0, 500)   # Define range for subleading lepton transverse momentum
+m_ll_range = (0, 300)         # Define range for dilepton invariant mass M(ll)
+pt_ll_range = (0, 200)         # Define range for dilepton transverse momentum pT(ll)
+pt_lepton_1_range = (0, 200)   # Define range for leading lepton transverse momentum
+pt_lepton_2_range = (0, 200)   # Define range for subleading lepton transverse momentum
 
 # Calculate bin widths
 bin_width_pt_lepton = (pt_range_lepton[1] - pt_range_lepton[0]) / num_bins
@@ -402,7 +420,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.01)
+plt.ylim(0.00001, 0.001)
 plt.savefig("differential_cross_section_pt_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -463,7 +481,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.000001, 0.01)
+plt.ylim(0.000001, 0.001)
 plt.savefig("differential_cross_section_met_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -504,7 +522,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.01)
+plt.ylim(0.00001, 0.001)
 plt.savefig("differential_cross_section_m_ll_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -524,7 +542,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.01)
+plt.ylim(0.00001, 0.001)
 plt.savefig("differential_cross_section_pt_ll_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -545,7 +563,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.01)
+plt.ylim(0.00001, 0.001)
 plt.savefig("differential_cross_section_pt_lepton_1_fully_leptonic.png", dpi=600)
 plt.show()
 
@@ -567,7 +585,7 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 0.01)
+plt.ylim(0.00001, 0.001)
 plt.savefig("differential_cross_section_pt_lepton_2_fully_leptonic.png", dpi=600)
 plt.show()
 
