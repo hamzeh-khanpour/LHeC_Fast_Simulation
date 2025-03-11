@@ -41,10 +41,10 @@ hep.style.use("CMS")
 
 # Path to the ROOT files : signal and background
 signal_files = {
-    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM0_100K.root",
-    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM1_100K.root",
-    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM2_100K.root",
-    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM3_100K.root",
+    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM0_100.root",
+    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM1_100.root",
+    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM2_100.root",
+    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM3_100.root",
 }
 background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
 
@@ -264,16 +264,26 @@ def process_file(
 
 # Parameters for differential cross-section
 
-# Parameters for differential cross-section
+#1000
+#signal_cross_sections = {
+#    "$FM_{0} / \Lambda^4$": 0.031526,   # pb
+#    "$FM_{1} / \Lambda^4$": 0.0164002,   # pb
+#    "$FM_{2} / \Lambda^4$": 0.780502,   # pb
+#    "$FM_{3} / \Lambda^4$": 0.0808444    # pb
+#}
 
+
+
+#1000
 signal_cross_sections = {
-    "$FM_{0} / \Lambda^4$": 1.99216,   # pb
-    "$FM_{1} / \Lambda^4$": 0.17783,   # pb
-    "$FM_{2} / \Lambda^4$": 77.8809,   # pb
-    "$FM_{3} / \Lambda^4$": 5.95386    # pb
+    "$FM_{0} / \Lambda^4$": 0.0134836,   # pb
+    "$FM_{1} / \Lambda^4$": 0.0136291,   # pb
+    "$FM_{2} / \Lambda^4$": 0.0200421,   # pb
+    "$FM_{3} / \Lambda^4$": 0.0149315    # pb
 }
 
-background_cross_section = 0.0134936  # pb
+
+background_cross_section = 0.0137276  # pb
 
 
 
@@ -283,19 +293,19 @@ background_cross_section = 0.0134936  # pb
 
 
 num_bins = 50
-pt_range_lepton = (0, 500)     # Range for lepton pT
-pt_range_jet = (0, 500)        # Range for leading jet pT (adjusted for higher jet momenta)
+pt_range_lepton = (0, 300)     # Range for lepton pT
+pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)
 eta_range = (-10, 10)          # Range for pseudorapidity
-delta_r_range = (0, 10)        # Range for Delta R
-met_range = (0, 500)           # Range for Missing Transverse Energy (MET)
+delta_r_range = (0, 6)        # Range for Delta R
+met_range = (0, 300)           # Range for Missing Transverse Energy (MET)
 centrality_range = (-5, 5)     # Range for centrality
 exp_centrality_range = (0, 2)  # Range for exponential centrality
 jet_centrality_range = (0, 5)  # Range for jet centrality
 delta_eta_jj_range = (0, 6)    # Range for Delta Eta between jets
 
 # Define ranges for invariant masses
-m_w_hadronic_range = (1, 150)  # Range for the hadronic W boson mass
-m_w_leptonic_range = (1, 150)  # Range for the leptonic W boson mass
+m_w_hadronic_range = (1, 140)  # Range for the hadronic W boson mass
+m_w_leptonic_range = (1, 140)  # Range for the leptonic W boson mass
 
 
 
@@ -523,10 +533,10 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_pt_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/differential_cross_section_lepton_pt_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -562,10 +572,10 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_jet_pt_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/differential_cross_section_jet_pt_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -604,10 +614,10 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.0001, 0.1)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_lepton_eta_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/differential_cross_section_lepton_eta_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -644,10 +654,10 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.0001, 1.0)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_delta_r_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/differential_cross_section_delta_r_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -684,10 +694,10 @@ plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.00001, 10.0)
+plt.ylim(0.00001, 0.01)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/differential_cross_section_met_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/differential_cross_section_met_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -724,10 +734,10 @@ plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0, 0.3)
+plt.ylim(0.0, 0.50)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_hadronic_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/normalized_m_w_hadronic_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -768,10 +778,10 @@ plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0, 0.3)
+plt.ylim(0.0, 0.50)
 
 # Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/normalized_m_w_leptonic_allFMsignal.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/normalized_m_w_leptonic_allFMsignal.pdf", dpi=600)
 
 # Show the plot
 plt.show()
@@ -786,7 +796,7 @@ plt.show()
 #=========================================================================
 
 # Open the output ROOT file (use "UPDATE" if you want to append)
-output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/output_histograms.root", "RECREATE")
+output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/output_histograms.root", "RECREATE")
 
 try:
     # ✅ Fix 1: Rename signal names to be ROOT-compatible (remove LaTeX)

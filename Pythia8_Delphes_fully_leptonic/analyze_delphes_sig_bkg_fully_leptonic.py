@@ -40,7 +40,7 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_fully_leptonic_NP_FM0_100.root"
+signal_file_path = "aa_ww_fully_leptonic_NP_FM2_100.root"
 background_file_path = "aa_ww_fully_leptonic_SM.root"
 
 
@@ -217,26 +217,26 @@ hist_leading_lepton_background = ROOT.TH1F(
 
 # ✅ Subleading Lepton pT Distribution
 hist_subleading_lepton_signal = ROOT.TH1F(
-    "hist_subleading_lepton_signal", "Subleading Lepton pT Distribution; p_{T}^{subleading} [GeV]; Entries", 50, 0, 400
+    "hist_subleading_lepton_signal", "Subleading Lepton pT Distribution; p_{T}^{subleading} [GeV]; Entries", 50, 0, 300
 )
 hist_subleading_lepton_background = ROOT.TH1F(
-    "hist_subleading_lepton_background", "Subleading Lepton pT Distribution; p_{T}^{subleading} [GeV]; Entries", 50, 0, 400
+    "hist_subleading_lepton_background", "Subleading Lepton pT Distribution; p_{T}^{subleading} [GeV]; Entries", 50, 0, 300
 )
 
 # ✅ Dilepton Invariant Mass Distribution (M_ll)
 hist_m_ll_signal = ROOT.TH1F(
-    "hist_m_ll_signal", "Dilepton Invariant Mass Distribution; M_{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 1000
+    "hist_m_ll_signal", "Dilepton Invariant Mass Distribution; M_{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 800
 )
 hist_m_ll_background = ROOT.TH1F(
-    "hist_m_ll_background", "Dilepton Invariant Mass Distribution; M_{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 1000
+    "hist_m_ll_background", "Dilepton Invariant Mass Distribution; M_{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 800
 )
 
 # ✅ Dilepton Transverse Momentum Distribution (pT_ll)
 hist_pt_ll_signal = ROOT.TH1F(
-    "hist_pt_ll_signal", "Dilepton Transverse Momentum Distribution; p_{T}^{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 500
+    "hist_pt_ll_signal", "Dilepton Transverse Momentum Distribution; p_{T}^{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 300
 )
 hist_pt_ll_background = ROOT.TH1F(
-    "hist_pt_ll_background", "Dilepton Transverse Momentum Distribution; p_{T}^{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 500
+    "hist_pt_ll_background", "Dilepton Transverse Momentum Distribution; p_{T}^{\\ell^+\\ell^-} [GeV]; Entries", 50, 0, 300
 )
 
 # ✅ Rapidity of Dilepton System (Y_ll)
@@ -294,10 +294,10 @@ hist_rapidity_difference_background = ROOT.TH1F(
 
 # ✅ Missing Transverse Energy (MET)
 hist_met_signal = ROOT.TH1F(
-    "hist_met_signal", "Missing Transverse Energy; MET [GeV]; Entries", 50, 0, 500
+    "hist_met_signal", "Missing Transverse Energy; MET [GeV]; Entries", 50, 0, 400
 )
 hist_met_background = ROOT.TH1F(
-    "hist_met_background", "Missing Transverse Energy; MET [GeV]; Entries", 50, 0, 500
+    "hist_met_background", "Missing Transverse Energy; MET [GeV]; Entries", 50, 0, 400
 )
 
 
@@ -321,10 +321,10 @@ hist_m_WW_background = ROOT.TH1F(
 
 # ✅ Diboson Transverse Momentum (pT_WW)
 hist_pT_WW_signal = ROOT.TH1F(
-    "hist_pT_WW_signal", "Diboson Transverse Momentum; p_T^{WW} [GeV]; Entries", 50, 0, 500
+    "hist_pT_WW_signal", "Diboson Transverse Momentum; p_T^{WW} [GeV]; Entries", 50, 0, 400
 )
 hist_pT_WW_background = ROOT.TH1F(
-    "hist_pT_WW_background", "Diboson Transverse Momentum; p_T^{WW} [GeV]; Entries", 50, 0, 500
+    "hist_pT_WW_background", "Diboson Transverse Momentum; p_T^{WW} [GeV]; Entries", 50, 0, 400
 )
 
 
@@ -559,7 +559,7 @@ y_vals_subleading_lepton_eta_background = [hist_subleading_lepton_eta_background
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_leading_lepton_signal, y_vals_leading_lepton_signal, width=hist_leading_lepton_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_leading_lepton_signal, y_vals_leading_lepton_signal, width=hist_leading_lepton_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_leading_lepton_background, y_vals_leading_lepton_background, width=hist_leading_lepton_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$p_T^{\mathrm{leading}~\ell} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
@@ -576,7 +576,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_subleading_lepton_signal, y_vals_subleading_lepton_signal, width=hist_subleading_lepton_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_subleading_lepton_signal, y_vals_subleading_lepton_signal, width=hist_subleading_lepton_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_subleading_lepton_background, y_vals_subleading_lepton_background, width=hist_subleading_lepton_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$p_T^{\mathrm{subleading}~\ell} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
@@ -593,7 +593,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_m_ll_signal, y_vals_m_ll_signal, width=hist_m_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_m_ll_signal, y_vals_m_ll_signal, width=hist_m_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_m_ll_background, y_vals_m_ll_background, width=hist_m_ll_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$M_{\ell^+\ell^-} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
@@ -610,7 +610,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_pt_ll_signal, y_vals_pt_ll_signal, width=hist_pt_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_pt_ll_signal, y_vals_pt_ll_signal, width=hist_pt_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_pt_ll_background, y_vals_pt_ll_background, width=hist_pt_ll_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$p_T^{\ell^+\ell^-} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
@@ -627,7 +627,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_rapidity_ll_signal, y_vals_rapidity_ll_signal, width=hist_rapidity_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_rapidity_ll_signal, y_vals_rapidity_ll_signal, width=hist_rapidity_ll_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_rapidity_ll_background, y_vals_rapidity_ll_background, width=hist_rapidity_ll_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$Y_{\ell^+\ell^-}$")
 plt.ylabel("Entries")
@@ -644,7 +644,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_leading_lepton_eta_signal, y_vals_leading_lepton_eta_signal, width=hist_leading_lepton_eta_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_leading_lepton_eta_signal, y_vals_leading_lepton_eta_signal, width=hist_leading_lepton_eta_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_leading_lepton_eta_background, y_vals_leading_lepton_eta_background, width=hist_leading_lepton_eta_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$\eta_{\mathrm{leading}~\ell}$")
 plt.ylabel("Entries")
@@ -662,7 +662,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_subleading_lepton_eta_signal, y_vals_subleading_lepton_eta_signal, width=hist_subleading_lepton_eta_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_subleading_lepton_eta_signal, y_vals_subleading_lepton_eta_signal, width=hist_subleading_lepton_eta_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_subleading_lepton_eta_background, y_vals_subleading_lepton_eta_background, width=hist_subleading_lepton_eta_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$\eta_{\mathrm{subleading}~\ell}$")
 plt.ylabel("Entries")
@@ -680,7 +680,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_lepton_separation_signal, y_vals_lepton_separation_signal, width=hist_lepton_separation_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_lepton_separation_signal, y_vals_lepton_separation_signal, width=hist_lepton_separation_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_lepton_separation_background, y_vals_lepton_separation_background, width=hist_lepton_separation_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$\Delta R(\ell_1, \ell_2)$")
 plt.ylabel("Entries")
@@ -698,7 +698,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_azimuthal_angle_separation_signal, y_vals_azimuthal_angle_separation_signal, width=hist_azimuthal_angle_separation_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_azimuthal_angle_separation_signal, y_vals_azimuthal_angle_separation_signal, width=hist_azimuthal_angle_separation_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_azimuthal_angle_separation_background, y_vals_azimuthal_angle_separation_background, width=hist_azimuthal_angle_separation_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$\Delta \phi (\ell_1, \ell_2)$")
 plt.ylabel("Entries")
@@ -716,7 +716,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_rapidity_difference_signal, y_vals_rapidity_difference_signal, width=hist_rapidity_difference_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_rapidity_difference_signal, y_vals_rapidity_difference_signal, width=hist_rapidity_difference_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_rapidity_difference_background, y_vals_rapidity_difference_background, width=hist_rapidity_difference_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$\Delta y (\ell_1, \ell_2)$")
 plt.ylabel("Entries")
@@ -734,7 +734,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_met_signal, y_vals_met_signal, width=hist_met_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_met_signal, y_vals_met_signal, width=hist_met_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_met_background, y_vals_met_background, width=hist_met_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$E_T^{\mathrm{miss}}$ [GeV]")
 plt.ylabel("Entries")
@@ -753,7 +753,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_mT_W_signal, y_vals_mT_W_signal, width=hist_mT_W_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_mT_W_signal, y_vals_mT_W_signal, width=hist_mT_W_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_mT_W_background, y_vals_mT_W_background, width=hist_mT_W_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$M_T(W)$ [GeV]")
 plt.ylabel("Entries")
@@ -771,7 +771,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_m_WW_signal, y_vals_m_WW_signal, width=hist_m_WW_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_m_WW_signal, y_vals_m_WW_signal, width=hist_m_WW_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_m_WW_background, y_vals_m_WW_background, width=hist_m_WW_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$M_{WW}$ [GeV]")
 plt.ylabel("Entries")
@@ -788,7 +788,7 @@ plt.show()
 plt.figure(figsize=(10, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_pT_WW_signal, y_vals_pT_WW_signal, width=hist_pT_WW_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_0} / \Lambda^4$]")
+plt.bar(x_vals_pT_WW_signal, y_vals_pT_WW_signal, width=hist_pT_WW_signal.GetBinWidth(1), alpha=0.6, color="red", label="Signal ($W^+ W^-$) [$f_{M_2} / \Lambda^4$]")
 plt.bar(x_vals_pT_WW_background, y_vals_pT_WW_background, width=hist_pT_WW_background.GetBinWidth(1), alpha=0.6, color="blue", label="SM background ($W^+ W^-$)")
 plt.xlabel(r"$p_T^{WW}$ [GeV]")
 plt.ylabel("Entries")

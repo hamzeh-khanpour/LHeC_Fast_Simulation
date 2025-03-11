@@ -40,8 +40,8 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM0_100K.root"
-background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_FM2_100.root"
+background_file_path = "aa_ww_semi_leptonic_SM.root"
 
 
 
@@ -191,20 +191,20 @@ def process_file(
 
 
 # Create histograms for lepton and leading jet pT (signal and background)
-hist_lepton_signal = ROOT.TH1F("hist_lepton_signal", "Lepton pT Distribution; p_{T} [GeV]; Entries", 50, 0, 400)
-hist_lepton_background = ROOT.TH1F("hist_lepton_background", "Lepton pT Distribution; p_{T} [GeV]; Entries", 50, 0, 400)
+hist_lepton_signal = ROOT.TH1F("hist_lepton_signal", "Lepton pT Distribution; p_{T} [GeV]; Entries", 50, 0, 300)
+hist_lepton_background = ROOT.TH1F("hist_lepton_background", "Lepton pT Distribution; p_{T} [GeV]; Entries", 50, 0, 300)
 
 
-hist_leading_jet_signal = ROOT.TH1F("hist_leading_jet_signal", "Leading Jet pT Distribution; p_{T} [GeV]; Entries", 50, 0, 400)
-hist_leading_jet_background = ROOT.TH1F("hist_leading_jet_background", "Leading Jet pT Distribution; p_{T} [GeV]; Entries", 50, 0, 400)
+hist_leading_jet_signal = ROOT.TH1F("hist_leading_jet_signal", "Leading Jet pT Distribution; p_{T} [GeV]; Entries", 50, 0, 300)
+hist_leading_jet_background = ROOT.TH1F("hist_leading_jet_background", "Leading Jet pT Distribution; p_{T} [GeV]; Entries", 50, 0, 300)
 
 
-hist_m_w_leptonic_signal = ROOT.TH1F("hist_m_w_leptonic_signal", "Leptonic W Mass Distribution (Signal); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 150)
-hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Leptonic W Mass Distribution (Background); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 150)
+hist_m_w_leptonic_signal = ROOT.TH1F("hist_m_w_leptonic_signal", "Leptonic W Mass Distribution (Signal); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 130)
+hist_m_w_leptonic_background = ROOT.TH1F("hist_m_w_leptonic_background", "Leptonic W Mass Distribution (Background); M_W^{\ell\nu} [GeV]; Entries", 50, 1, 130)
 
 
-hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 1, 150)
-hist_m_w_hadronic_background = ROOT.TH1F("hist_m_w_hadronic_background", "Hadronic W Mass Distribution (Background); M_W^{jj} [GeV]; Entries", 50, 1, 150)
+hist_m_w_hadronic_signal = ROOT.TH1F("hist_m_w_hadronic_signal", "Hadronic W Mass Distribution (Signal); M_W^{jj} [GeV]; Entries", 50, 1, 130)
+hist_m_w_hadronic_background = ROOT.TH1F("hist_m_w_hadronic_background", "Hadronic W Mass Distribution (Background); M_W^{jj} [GeV]; Entries", 50, 1, 130)
 
 
 # ✅ NEW: Define histograms for lepton pseudorapidity (η)
@@ -328,7 +328,7 @@ plt.figure(figsize=(10, 12))  # Create a new figure for the lepton plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 plt.bar(    x_vals_lepton_signal,    y_vals_lepton_signal,    width=hist_lepton_signal.GetBinWidth(1),    alpha=0.6,
-    label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+    label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red",)
 plt.bar(    x_vals_lepton_background,    y_vals_lepton_background,    width=hist_lepton_background.GetBinWidth(1),    alpha=0.6,
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
@@ -336,7 +336,7 @@ plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/lepton_pt_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/lepton_pt_comparison.pdf", dpi=300)
 plt.show()  # Ensure this ends the current plot properly
 
 
@@ -347,7 +347,7 @@ plt.show()  # Ensure this ends the current plot properly
 plt.figure(figsize=(10, 12))  # Create a new figure for the jet plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(    x_vals_jet_signal,    y_vals_jet_signal,    width=hist_leading_jet_signal.GetBinWidth(1),    alpha=0.6,    label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+plt.bar(    x_vals_jet_signal,    y_vals_jet_signal,    width=hist_leading_jet_signal.GetBinWidth(1),    alpha=0.6,    label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red",)
 plt.bar(    x_vals_jet_background,    y_vals_jet_background,    width=hist_leading_jet_background.GetBinWidth(1),    alpha=0.6,
     label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
@@ -355,7 +355,7 @@ plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/leading_jet_pt_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/leading_jet_pt_comparison.pdf", dpi=300)
 plt.show()  # Ensure the second plot is displayed
 
 
@@ -367,14 +367,14 @@ plt.show()  # Ensure the second plot is displayed
 plt.figure(figsize=(10, 12))  # Create a new figure for leptonic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(    x_vals_m_w_leptonic_signal,    y_vals_m_w_leptonic_signal,    width=hist_m_w_leptonic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+plt.bar(    x_vals_m_w_leptonic_signal,    y_vals_m_w_leptonic_signal,    width=hist_m_w_leptonic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red",)
 plt.bar(    x_vals_m_w_leptonic_background,    y_vals_m_w_leptonic_background,    width=hist_m_w_leptonic_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/m_w_leptonic_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/m_w_leptonic_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -385,14 +385,14 @@ plt.show()
 plt.figure(figsize=(10, 12))  # Create a new figure for hadronic W mass plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(    x_vals_m_w_hadronic_signal,    y_vals_m_w_hadronic_signal,    width=hist_m_w_hadronic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red",)
+plt.bar(    x_vals_m_w_hadronic_signal,    y_vals_m_w_hadronic_signal,    width=hist_m_w_hadronic_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red",)
 plt.bar(    x_vals_m_w_hadronic_background,    y_vals_m_w_hadronic_background,    width=hist_m_w_hadronic_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue",)
 plt.xlabel(r"$M_W^{\mathrm{j_1j_2}} \ \mathrm{[GeV]}$")
 plt.ylabel("Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/m_w_hadronic_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/m_w_hadronic_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -403,14 +403,14 @@ plt.show()
 plt.figure(figsize=(10, 12))  # Create a new figure for the lepton η plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_lepton_eta_signal, y_vals_lepton_eta_signal, width=hist_lepton_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red")
+plt.bar(x_vals_lepton_eta_signal, y_vals_lepton_eta_signal, width=hist_lepton_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red")
 plt.bar(x_vals_lepton_eta_background, y_vals_lepton_eta_background, width=hist_lepton_eta_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue")
 plt.xlabel(r"$\eta_{\ell}$")
 plt.ylabel("Entries")
 plt.title(r"Lepton Pseudorapidity Distribution: $e^- p \to e^- w^+ w^- p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/lepton_eta_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/lepton_eta_comparison.pdf", dpi=300)
 plt.show()
 
 
@@ -422,14 +422,14 @@ plt.show()
 plt.figure(figsize=(10, 12))  # Create a new figure for the leading jet η plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
-plt.bar(x_vals_leading_jet_eta_signal, y_vals_leading_jet_eta_signal, width=hist_leading_jet_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red")
+plt.bar(x_vals_leading_jet_eta_signal, y_vals_leading_jet_eta_signal, width=hist_leading_jet_eta_signal.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red")
 plt.bar(x_vals_leading_jet_eta_background, y_vals_leading_jet_eta_background, width=hist_leading_jet_eta_background.GetBinWidth(1), alpha=0.6, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue")
 plt.xlabel(r"$\eta_{\mathrm{leading~jet}}$")
 plt.ylabel("Entries")
 plt.title(r"Leading Jet Pseudorapidity Distribution: $e^- p \to e^- w^+ w^- p$", fontsize=18)
 plt.legend()
 plt.grid()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes/leading_jet_eta_comparison.png", dpi=300)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/leading_jet_eta_comparison.pdf", dpi=300)
 plt.show()
 
 
