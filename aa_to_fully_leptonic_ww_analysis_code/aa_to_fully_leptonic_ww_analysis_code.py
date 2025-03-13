@@ -344,6 +344,15 @@ signal_cross_section_2   =  0.00498621      # pb  FM2
 
 
 
+
+# FM = 10
+
+#signal_cross_section_0   =  0.00338718    # pb  FM0
+#signal_cross_section_1   =  0.003396729    # pb  FM1
+#signal_cross_section_2   =  0.00337894      # pb  FM2
+#signal_cross_section_3   =  0.003416949     # pb  FM3
+
+
 #NP=0
 #background_cross_section  =  0.00351599    # pb
 
