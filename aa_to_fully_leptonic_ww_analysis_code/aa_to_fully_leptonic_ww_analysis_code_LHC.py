@@ -339,9 +339,9 @@ signal_cross_section_2   =  0.023965100   # pb  FM2
 
 # FM = 100   NP=1
 
-#signal_cross_section_0   =  ..    # pb  FM0
+#signal_cross_section_0   =  0.0540784    # pb  FM0
 #signal_cross_section_1   =  ..   # pb  FM1
-#signal_cross_section_2   =  ..   # pb  FM2
+#signal_cross_section_2   =  1.92944   # pb  FM2
 #signal_cross_section_3   =  ..   # pb  FM3
 
 
