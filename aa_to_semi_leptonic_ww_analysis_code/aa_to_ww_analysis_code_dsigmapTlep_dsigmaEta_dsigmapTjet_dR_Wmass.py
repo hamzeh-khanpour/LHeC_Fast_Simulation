@@ -394,7 +394,7 @@ plt.ylim(0.0001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_eta.pdf", dpi=600)
+plt.savefig("differential_cross_section_eta_lepton.pdf", dpi=600)
 plt.show()
 
 
@@ -470,18 +470,18 @@ plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0_norm, where="mid",
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 # Axis labels and title
-plt.xlabel(r"$\eta_{j1}$")
+plt.xlabel(r"$\eta_{leading \; jet}$")
 plt.ylabel("Normalized Distribution")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 #plt.yscale("log")
-plt.ylim(0.0, 0.08)  # Adjust as needed for log scale
+plt.ylim(0.0, 0.2)  # Adjust as needed for log scale
 # Add legend, grid, and formula
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 #plt.text(0.5, 1e-3, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$", color="black")
 # Save and display the plot
 plt.tight_layout()
-plt.savefig("normalized_distribution_eta_j2.pdf", dpi=600)
+plt.savefig("normalized_distribution_eta_leading_jet.pdf", dpi=600)
 plt.show()
 
 
@@ -493,17 +493,17 @@ plt.show()
 plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
-plt.xlabel(r"$\eta_{j1}$")
-plt.ylabel(r"$\frac{d\sigma}{d\eta_{j1}}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\eta_{leading \; jet}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_{leading \; jet}}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.00001, 100.0)
+plt.ylim(0.00001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 # Add formula inside the plot
 #plt.text(0.5, 0.001, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$",  color="black")
 plt.tight_layout()
-plt.savefig("differential_cross_section_eta_j2.pdf", dpi=600)
+plt.savefig("differential_cross_section_eta_leading_jet.pdf", dpi=600)
 plt.show()
 
 
@@ -583,11 +583,11 @@ plt.xlabel(r"$C_{\mathrm{jets}}$")
 plt.ylabel("Normalized Distribution")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 #plt.yscale("log")
-plt.ylim(0.0, 0.08)  # Adjusted for normalized scale
+plt.ylim(0.02, 0.08)  # Adjusted for normalized scale
 # Add legend, grid, and formula inside the plot
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
-plt.text(0.5, 1e-3, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
+plt.text(0.9, 0.06, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_jet_centrality.pdf", dpi=600)
@@ -632,15 +632,15 @@ plt.show()
 plt.step(delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(delta_eta_jj_bins_background, dsigma_background_delta_eta_jj, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
-plt.xlabel(r"$\Delta \eta_{j2}$")
-plt.ylabel(r"$\frac{d\sigma}{d\Delta \eta_{j2}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\eta_{subleading \; jet}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_{subleading \; jet}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1.0)
+plt.ylim(0.0001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_eta_j2.pdf", dpi=600)
+plt.savefig("differential_cross_section_eta_subleading_jet.pdf", dpi=600)
 plt.show()
 
 
@@ -778,76 +778,76 @@ plt.show()
 
 
 
-# Save data for pT lepton
-np.savetxt("dsigma_signal_pt_0.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_signal_pt_2.txt", np.column_stack([pt_bins_signal_2, dsigma_signal_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+## Save data for pT lepton
+#np.savetxt("dsigma_signal_pt_0.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_signal_pt_2.txt", np.column_stack([pt_bins_signal_2, dsigma_signal_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
 
 
-# Save data for eta lepton
-np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
-np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
-np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
+## Save data for eta lepton
+#np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
+#np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
+#np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
 
 
-# Save data for leading jet pT
-np.savetxt("dsigma_signal_leading_jet_pt_0.txt", np.column_stack([pt_jet_bins_signal_0, dsigma_signal_jet_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_signal_leading_jet_pt_2.txt", np.column_stack([pt_jet_bins_signal_2, dsigma_signal_jet_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
-np.savetxt("dsigma_background_leading_jet_pt.txt", np.column_stack([pt_jet_bins_background, dsigma_background_jet_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+## Save data for leading jet pT
+#np.savetxt("dsigma_signal_leading_jet_pt_0.txt", np.column_stack([pt_jet_bins_signal_0, dsigma_signal_jet_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_signal_leading_jet_pt_2.txt", np.column_stack([pt_jet_bins_signal_2, dsigma_signal_jet_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
+#np.savetxt("dsigma_background_leading_jet_pt.txt", np.column_stack([pt_jet_bins_background, dsigma_background_jet_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
 
 
-# Save data for Delta R
-np.savetxt("dsigma_signal_delta_r_0.txt", np.column_stack([delta_r_bins_signal_0, dsigma_signal_delta_r_0]), header="Delta R, dσ/d(Delta R) [pb]")
-np.savetxt("dsigma_signal_delta_r_2.txt", np.column_stack([delta_r_bins_signal_2, dsigma_signal_delta_r_2]), header="Delta R, dσ/d(Delta R) [pb]")
-np.savetxt("dsigma_background_delta_r.txt", np.column_stack([delta_r_bins_background, dsigma_background_delta_r]), header="Delta R, dσ/d(Delta R) [pb]")
+## Save data for Delta R
+#np.savetxt("dsigma_signal_delta_r_0.txt", np.column_stack([delta_r_bins_signal_0, dsigma_signal_delta_r_0]), header="Delta R, dσ/d(Delta R) [pb]")
+#np.savetxt("dsigma_signal_delta_r_2.txt", np.column_stack([delta_r_bins_signal_2, dsigma_signal_delta_r_2]), header="Delta R, dσ/d(Delta R) [pb]")
+#np.savetxt("dsigma_background_delta_r.txt", np.column_stack([delta_r_bins_background, dsigma_background_delta_r]), header="Delta R, dσ/d(Delta R) [pb]")
 
 
-# Save data for Missing Transverse Energy (MET)
-np.savetxt("dsigma_signal_met_0.txt", np.column_stack([met_bins_signal_0, dsigma_signal_met_0]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
-np.savetxt("dsigma_signal_met_2.txt", np.column_stack([met_bins_signal_2, dsigma_signal_met_2]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
-np.savetxt("dsigma_background_met.txt", np.column_stack([met_bins_background, dsigma_background_met]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
+## Save data for Missing Transverse Energy (MET)
+#np.savetxt("dsigma_signal_met_0.txt", np.column_stack([met_bins_signal_0, dsigma_signal_met_0]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
+#np.savetxt("dsigma_signal_met_2.txt", np.column_stack([met_bins_signal_2, dsigma_signal_met_2]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
+#np.savetxt("dsigma_background_met.txt", np.column_stack([met_bins_background, dsigma_background_met]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
 
 
-# Save data for Lepton Centrality
-np.savetxt("dsigma_signal_centrality_0.txt", np.column_stack([centrality_bins_signal_0, dsigma_signal_centrality_0]), header="C_l, dσ/d(C_l) [pb]")
-np.savetxt("dsigma_signal_centrality_2.txt", np.column_stack([centrality_bins_signal_2, dsigma_signal_centrality_2]), header="C_l, dσ/d(C_l) [pb]")
-np.savetxt("dsigma_background_centrality.txt", np.column_stack([centrality_bins_background, dsigma_background_centrality]), header="C_l, dσ/d(C_l) [pb]")
+## Save data for Lepton Centrality
+#np.savetxt("dsigma_signal_centrality_0.txt", np.column_stack([centrality_bins_signal_0, dsigma_signal_centrality_0]), header="C_l, dσ/d(C_l) [pb]")
+#np.savetxt("dsigma_signal_centrality_2.txt", np.column_stack([centrality_bins_signal_2, dsigma_signal_centrality_2]), header="C_l, dσ/d(C_l) [pb]")
+#np.savetxt("dsigma_background_centrality.txt", np.column_stack([centrality_bins_background, dsigma_background_centrality]), header="C_l, dσ/d(C_l) [pb]")
 
 
-# Save data for Exponential Lepton Centrality (exp_centrality)
-np.savetxt("dsigma_signal_exp_centrality_0.txt", np.column_stack([exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
-np.savetxt("dsigma_signal_exp_centrality_2.txt", np.column_stack([exp_centrality_bins_signal_2, dsigma_signal_exp_centrality_2]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
-np.savetxt("dsigma_background_exp_centrality.txt", np.column_stack([exp_centrality_bins_background, dsigma_background_exp_centrality]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
+## Save data for Exponential Lepton Centrality (exp_centrality)
+#np.savetxt("dsigma_signal_exp_centrality_0.txt", np.column_stack([exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
+#np.savetxt("dsigma_signal_exp_centrality_2.txt", np.column_stack([exp_centrality_bins_signal_2, dsigma_signal_exp_centrality_2]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
+#np.savetxt("dsigma_background_exp_centrality.txt", np.column_stack([exp_centrality_bins_background, dsigma_background_exp_centrality]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
 
 
-# Save data for Jet Centrality
-np.savetxt("dsigma_signal_jet_centrality_0.txt", np.column_stack([jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0]), header="C_j, dσ/d(C_j) [pb]")
-np.savetxt("dsigma_signal_jet_centrality_2.txt", np.column_stack([jet_centrality_bins_signal_2, dsigma_signal_jet_centrality_2]), header="C_j, dσ/d(C_j) [pb]")
-np.savetxt("dsigma_background_jet_centrality.txt", np.column_stack([jet_centrality_bins_background, dsigma_background_jet_centrality]), header="C_j, dσ/d(C_j) [pb]")
-
-
-
-# Save data for Pseudorapidity Difference Between Jets (Δηjj)
-np.savetxt("dsigma_signal_delta_eta_jj_0.txt", np.column_stack([delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
-np.savetxt("dsigma_signal_delta_eta_jj_2.txt", np.column_stack([delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
-np.savetxt("dsigma_background_delta_eta_jj.txt", np.column_stack([delta_eta_jj_bins_background, dsigma_background_delta_eta_jj]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
+## Save data for Jet Centrality
+#np.savetxt("dsigma_signal_jet_centrality_0.txt", np.column_stack([jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0]), header="C_j, dσ/d(C_j) [pb]")
+#np.savetxt("dsigma_signal_jet_centrality_2.txt", np.column_stack([jet_centrality_bins_signal_2, dsigma_signal_jet_centrality_2]), header="C_j, dσ/d(C_j) [pb]")
+#np.savetxt("dsigma_background_jet_centrality.txt", np.column_stack([jet_centrality_bins_background, dsigma_background_jet_centrality]), header="C_j, dσ/d(C_j) [pb]")
 
 
 
+## Save data for Pseudorapidity Difference Between Jets (Δηjj)
+#np.savetxt("dsigma_signal_delta_eta_jj_0.txt", np.column_stack([delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
+#np.savetxt("dsigma_signal_delta_eta_jj_2.txt", np.column_stack([delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
+#np.savetxt("dsigma_background_delta_eta_jj.txt", np.column_stack([delta_eta_jj_bins_background, dsigma_background_delta_eta_jj]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
 
 
 
-# Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
-np.savetxt("dsigma_signal_m_w_hadronic_0.txt",   np.column_stack([m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-np.savetxt("dsigma_signal_m_w_hadronic_2.txt",   np.column_stack([m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-np.savetxt("dsigma_background_m_w_hadronic.txt", np.column_stack([m_w_hadronic_bins_background, dsigma_background_m_w_hadronic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
 
 
 
-# Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
-np.savetxt("dsigma_signal_m_w_leptonic_0.txt",   np.column_stack([m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-np.savetxt("dsigma_signal_m_w_leptonic_2.txt",   np.column_stack([m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-np.savetxt("dsigma_background_m_w_leptonic.txt", np.column_stack([m_w_leptonic_bins_background, dsigma_background_m_w_leptonic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+## Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
+#np.savetxt("dsigma_signal_m_w_hadronic_0.txt",   np.column_stack([m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+#np.savetxt("dsigma_signal_m_w_hadronic_2.txt",   np.column_stack([m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+#np.savetxt("dsigma_background_m_w_hadronic.txt", np.column_stack([m_w_hadronic_bins_background, dsigma_background_m_w_hadronic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+
+
+
+## Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
+#np.savetxt("dsigma_signal_m_w_leptonic_0.txt",   np.column_stack([m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+#np.savetxt("dsigma_signal_m_w_leptonic_2.txt",   np.column_stack([m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
+#np.savetxt("dsigma_background_m_w_leptonic.txt", np.column_stack([m_w_leptonic_bins_background, dsigma_background_m_w_leptonic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
 
 
 
