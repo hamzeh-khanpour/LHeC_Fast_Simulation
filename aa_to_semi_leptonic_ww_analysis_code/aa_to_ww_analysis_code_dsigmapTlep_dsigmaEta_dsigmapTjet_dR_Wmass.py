@@ -83,10 +83,10 @@ def parse_lhe_file(file_name):
 
                     # Compute lepton centrality if at least two jets exist
                     if len(jets) >= 2 and len(leptons) == 1:
-                        delta_eta_jj = abs(jets[0].Eta() - jets[1].Eta())
+                        delta_eta_jj = jets[0].Eta()
                         delta_eta_jj_values.append(delta_eta_jj)  # Store Δηjj
-                        if delta_eta_jj > 0:  # Avoid division by zero
-                            lepton_centrality = (leptons[0].Eta() - jets[0].Eta()) / delta_eta_jj
+                        if delta_eta_jj > -10000:  # Avoid division by zero
+                            lepton_centrality = jets[1].Eta()
                             centrality_values.append(lepton_centrality)
 
                     # Compute the centrality of jets (average pseudorapidity of two jets)
@@ -243,10 +243,10 @@ pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher j
 eta_range = (-10, 10)          # Range for pseudorapidity
 delta_r_range = (0, 10)        # Range for Delta R is between 0 and 5
 met_range = (1, 400)           # Define range for MET (adjust as needed)
-centrality_range = (-5, 5)     # Centrality typically ranges from -5 to 5
+centrality_range = (-10, 10)     # Centrality typically ranges from -5 to 5
 exp_centrality_range = (0, 2)  # Centrality typically ranges from 0 to 2
 jet_centrality_range = (0, 6) # Centrality typically ranges of jet from 0 to 10
-delta_eta_jj_range  = (0, 5)   # Pseudorapidity difference between jets from 0 to 5
+delta_eta_jj_range  = (-10, 10)   # Pseudorapidity difference between jets from 0 to 5
 m_w_hadronic_range = (1, 140)  # Range for the hadronic W boson mass
 m_w_leptonic_range = (1, 140)  # Range for the leptonic W boson mass
 
@@ -374,7 +374,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.01)
-plt.savefig("differential_cross_section_pt.png", dpi=600)
+plt.savefig("differential_cross_section_pt.pdf", dpi=600)
 plt.show()
 
 
@@ -394,7 +394,7 @@ plt.ylim(0.0001, 0.1)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_eta.png", dpi=600)
+plt.savefig("differential_cross_section_eta.pdf", dpi=600)
 plt.show()
 
 
@@ -414,7 +414,7 @@ plt.ylim(0.00001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_leading_jet_pt.png", dpi=600)
+plt.savefig("differential_cross_section_leading_jet_pt.pdf", dpi=600)
 plt.show()
 
 
@@ -432,7 +432,7 @@ plt.ylim(0.0001, 1.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_delta_r.png", dpi=600)
+plt.savefig("differential_cross_section_delta_r.pdf", dpi=600)
 plt.show()
 
 
@@ -451,7 +451,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.000001, 1.0)
-plt.savefig("differential_cross_section_met.png", dpi=600)
+plt.savefig("differential_cross_section_met.pdf", dpi=600)
 plt.show()
 
 
@@ -470,7 +470,7 @@ plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0_norm, where="mid",
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 # Axis labels and title
-plt.xlabel(r"$C_{\ell}$")
+plt.xlabel(r"$\eta_{j1}$")
 plt.ylabel("Normalized Distribution")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 #plt.yscale("log")
@@ -478,11 +478,14 @@ plt.ylim(0.0, 0.08)  # Adjust as needed for log scale
 # Add legend, grid, and formula
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
-plt.text(0.5, 1e-3, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$", color="black")
+#plt.text(0.5, 1e-3, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$", color="black")
 # Save and display the plot
 plt.tight_layout()
-plt.savefig("normalized_distribution_centrality.png", dpi=600)
+plt.savefig("normalized_distribution_eta_j2.pdf", dpi=600)
 plt.show()
+
+
+
 
 
 
@@ -490,17 +493,17 @@ plt.show()
 plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
-plt.xlabel(r"$C_{\ell}$")
-plt.ylabel(r"$\frac{d\sigma}{dC_{\ell}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\eta_{j1}$")
+plt.ylabel(r"$\frac{d\sigma}{d\eta_{j1}}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
 plt.ylim(0.00001, 100.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 # Add formula inside the plot
-plt.text(0.5, 0.001, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$",  color="black")
+#plt.text(0.5, 0.001, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$",  color="black")
 plt.tight_layout()
-plt.savefig("differential_cross_section_centrality.png", dpi=600)
+plt.savefig("differential_cross_section_eta_j2.pdf", dpi=600)
 plt.show()
 
 
@@ -533,7 +536,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 1e-3, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black")
 # Save and display the plot
 plt.tight_layout()
-plt.savefig("normalized_distribution_exp_centrality.png", dpi=600)
+plt.savefig("normalized_distribution_exp_centrality.pdf", dpi=600)
 plt.show()
 
 
@@ -553,7 +556,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 # Add formula inside the plot
 plt.text(0.5, 0.001, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black")
 plt.tight_layout()
-plt.savefig("differential_cross_section_exp_centrality.png", dpi=600)
+plt.savefig("differential_cross_section_exp_centrality.pdf", dpi=600)
 plt.show()
 
 
@@ -587,7 +590,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 1e-3, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
 # Save and display the plot
 plt.tight_layout()
-plt.savefig("normalized_distribution_jet_centrality.png", dpi=600)
+plt.savefig("normalized_distribution_jet_centrality.pdf", dpi=600)
 plt.show()
 
 
@@ -610,7 +613,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 # Add formula inside the plot
 plt.text(0.5, 0.001, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
 plt.tight_layout()
-plt.savefig("differential_cross_section_jet_centrality.png", dpi=600)
+plt.savefig("differential_cross_section_jet_centrality.pdf", dpi=600)
 plt.show()
 
 
@@ -629,15 +632,15 @@ plt.show()
 plt.step(delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(delta_eta_jj_bins_background, dsigma_background_delta_eta_jj, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
-plt.xlabel(r"$\Delta \eta_{jj}$")
-plt.ylabel(r"$\frac{d\sigma}{d\Delta \eta_{jj}} \ \mathrm{[pb]}$")
+plt.xlabel(r"$\Delta \eta_{j2}$")
+plt.ylabel(r"$\frac{d\sigma}{d\Delta \eta_{j2}} \ \mathrm{[pb]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.0001, 1000.0)
+plt.ylim(0.0001, 1.0)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("differential_cross_section_delta_eta_jj.png", dpi=600)
+plt.savefig("differential_cross_section_eta_j2.pdf", dpi=600)
 plt.show()
 
 
