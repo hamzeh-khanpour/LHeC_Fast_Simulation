@@ -41,12 +41,12 @@ hep.style.use("CMS")
 
 # Path to the ROOT files : signal and background
 signal_files = {
-    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM0_100.root",
-    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM1_100.root",
-    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM2_100.root",
-    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_FM3_100.root",
+    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM0_100.root",
+    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM1_100.root",
+    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM2_100.root",
+    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM3_100.root",
 }
-background_file_path = "aa_ww_semi_leptonic_SM_100K.root"
+background_file_path = "aa_ww_semi_leptonic_SM.root"
 
 
 
@@ -796,7 +796,7 @@ plt.show()
 #=========================================================================
 
 # Open the output ROOT file (use "UPDATE" if you want to append)
-output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/output_histograms.root", "RECREATE")
+#output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic/output_histograms.root", "RECREATE")
 
 try:
     # ✅ Fix 1: Rename signal names to be ROOT-compatible (remove LaTeX)

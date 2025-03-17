@@ -40,7 +40,7 @@ hep.style.use("CMS")
 
 
 # Path to the ROOT files
-signal_file_path = "aa_ww_semi_leptonic_NP_FM2_100.root"
+signal_file_path = "aa_ww_semi_leptonic_NP_1_FM2_100.root"
 background_file_path = "aa_ww_semi_leptonic_SM.root"
 
 
