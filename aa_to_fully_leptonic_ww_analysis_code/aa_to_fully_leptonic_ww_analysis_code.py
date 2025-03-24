@@ -207,8 +207,8 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 
 # Define LHE file paths for signals and background
-signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_1_FM0/Events/run_02/aa_ww_fully_leptonic_NP_1_FM0.lhe"
-signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_1_FM2/Events/run_02/aa_ww_fully_leptonic_NP_1_FM2.lhe"
+signal_file_0 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_1_FM0/Events/run_01/aa_ww_fully_leptonic_NP_1_FM0.lhe"
+signal_file_2 = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_NP_1_FM2/Events/run_01/aa_ww_fully_leptonic_NP_1_FM2.lhe"
 
 background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_5_7/aa_ww_fully_leptonic_SM/Events/run_01/aa_ww_fully_leptonic_SM.lhe"
 
@@ -328,26 +328,27 @@ print("Dataset saved successfully!")
 
 
 
-# FM = 10   NP=1
-
-#signal_cross_section_0   =  0.00351119    # pb  FM0
-#signal_cross_section_1   =  0.00351967    # pb  FM1
-#signal_cross_section_2   =  0.003504430   # pb  FM2
-#signal_cross_section_3   =  0.00353969    # pb  FM3
-
-
-
 # FM = 100   NP=1
 
-signal_cross_section_0   =  0.0035158    # pb  FM0
-#signal_cross_section_1   =  0.00355588   # pb  FM1
-signal_cross_section_2   =  0.00516605   # pb  FM2
-#signal_cross_section_3   =  0.00389345   # pb  FM3
+signal_cross_section_0   =  0.0037266    # pb  FM0
+#signal_cross_section_1   =  0.003769959   # pb  FM1
+signal_cross_section_2   =  0.005357030   # pb  FM2
+#signal_cross_section_3   =  0.00411204   # pb  FM3
+
+
+
+
+# FM = 10   NP=1
+
+#signal_cross_section_0   =  0.00     # pb  FM0
+#signal_cross_section_1   =  0.00     # pb  FM1
+#signal_cross_section_2   =  0.00     # pb  FM2
+#signal_cross_section_3   =  0.00      # pb  FM3
 
 
 
 # SM
-background_cross_section  =  0.00357101    # pb
+background_cross_section  =  0.00376912    # pb
 
 
 

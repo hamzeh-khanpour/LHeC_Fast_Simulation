@@ -234,16 +234,14 @@ def process_file(
 
 # Parameters for differential cross-section
 
-# Parameters for differential cross-section
-
 signal_cross_sections = {
-    "$FM_{0} / \Lambda^4$": 0.00338968,   # pb
-    "$FM_{1} / \Lambda^4$": 0.00343213,   # pb
-    "$FM_{2} / \Lambda^4$": 0.00498621,   # pb
-    "$FM_{3} / \Lambda^4$": 0.00376192    # pb
+    "$FM_{0} / \Lambda^4$": 0.0037266,   # pb
+    "$FM_{1} / \Lambda^4$": 0.003769959,   # pb
+    "$FM_{2} / \Lambda^4$": 0.005357030,   # pb
+    "$FM_{3} / \Lambda^4$": 0.00411204    # pb
 }
 
-background_cross_section = 0.00357101  # pb
+background_cross_section = 0.00376912  # pb
 
 
 
