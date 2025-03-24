@@ -96,7 +96,7 @@ def process_file(
 
     # Create ExRootTreeReader object
     treeReader = ROOT.ExRootTreeReader(chain)
-    numberOfEntries =  10000   #   treeReader.GetEntries()
+    numberOfEntries = treeReader.GetEntries()
 
     # Counters for efficiency calculation
     total_events = numberOfEntries
@@ -252,7 +252,7 @@ signal_cross_sections = {
 }
 
 aa_ww_background_cross_section     = 0.00357101  # pb
-aa_ttbar_background_cross_section  = 2.3846e-03  # pb  * 10^{+3}
+aa_ttbar_background_cross_section  = 2.3846e-06 * 100.0  # pb  * 10^{+2}
 aa_tautau_background_cross_section = 2.51510000  # pb
 aa_mumu_background_cross_section   = 2.57270000  # pb
 
@@ -270,13 +270,13 @@ num_bins = 50
 # ✅ Leading & Subleading Lepton Kinematics
 pt_range_leading_lepton = (0, 200)     # Range for leading lepton pT
 pt_range_subleading_lepton = (0, 200)  # Range for subleading lepton pT
-eta_range_leading_lepton = (-5, 5)     # Range for leading lepton pseudorapidity
-eta_range_subleading_lepton = (-5, 5)  # Range for subleading lepton pseudorapidity
+eta_range_leading_lepton = (-6, 6)     # Range for leading lepton pseudorapidity
+eta_range_subleading_lepton = (-6, 6)  # Range for subleading lepton pseudorapidity
 
 # ✅ Dilepton System Kinematics
 m_ll_range = (0, 200)         # Range for dilepton invariant mass M(ll)
 pt_ll_range = (0, 200)         # Range for dilepton transverse momentum pT(ll)
-rapidity_ll_range = (-5, 5)    # Range for dilepton system rapidity Y(ll)
+rapidity_ll_range = (-6, 6)    # Range for dilepton system rapidity Y(ll)
 
 # ✅ Angular Separations
 delta_r_range = (0, 6)         # Range for ΔR between leptons
@@ -317,7 +317,7 @@ bin_width_pT_WW = (pT_WW_range[1] - pT_WW_range[0]) / num_bins
 
 
 
-
+"""
 # Function to calculate differential cross-section
 def calculate_dsigma(histogram, total_cross_section, bin_width):
     counts = [histogram.GetBinContent(i) for i in range(1, histogram.GetNbinsX() + 1)]
@@ -331,10 +331,10 @@ def calculate_dsigma(histogram, total_cross_section, bin_width):
 
     return bin_edges[:-1], dsigma
 
-
-
-
 """
+
+
+
 
 # Function to calculate differential cross-section from a ROOT histogram
 def calculate_dsigma(histogram, total_cross_section, bin_width):
@@ -369,7 +369,7 @@ def calculate_dsigma(histogram, total_cross_section, bin_width):
 
     return bin_centers, dsigma
 
-"""
+
 
 
 #=========================================================================
@@ -1003,7 +1003,7 @@ z_dsigma = {
 #=========================================================================
 
 
-plt.figure(figsize=(11, 12))  # Create a new figure for the leading lepton pT plot
+plt.figure(figsize=(16, 14))  # Create a new figure for the leading lepton pT plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Define colors for each signal
@@ -1025,49 +1025,49 @@ signal_colors = {
 for signal_name, dsigma_data in signal_dsigma.items():
     pt_bins, dsigma = dsigma_data["pt_bins_leading_lepton"]
     plt.step(pt_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Leading Lepton
 pt_bins_background, dsigma_background = background_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 pt_bins_ttbar, dsigma_ttbar = ttbar_dsigma["pt_bins_leading_lepton"]
-plt.step(pt_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$"
+plt.step(pt_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7, label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$"
 , color="purple", linewidth=3)
 
 
 # ✅ tautau Background
 pt_bins_tautau, dsigma_tautau = tautau_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ mumu Background
 pt_bins_mumu, dsigma_mumu = mumu_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 
 # ✅ Inclusive tt̄ Background
 pt_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 pt_bins_single_top, dsigma_single_top = single_top_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 pt_bins_w, dsigma_w = w_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 pt_bins_z, dsigma_z = z_dsigma["pt_bins_leading_lepton"]
 plt.step(pt_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 
@@ -1099,7 +1099,7 @@ plt.show()
 # ✅ Subleading Lepton \( p_T \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for the subleading lepton pT plot
+plt.figure(figsize=(16, 14))  # Create a new figure for the subleading lepton pT plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for subleading lepton
@@ -1117,7 +1117,7 @@ plt.step(pt_bins_background, dsigma_background, where="mid", alpha=0.7,
 # ✅ Plot ttbar Background
 pt_bins_ttbar, dsigma_ttbar = ttbar_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ tautau Background
@@ -1128,27 +1128,27 @@ plt.step(pt_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
 # ✅ mumu Background
 pt_bins_mumu, dsigma_mumu = mumu_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 pt_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 pt_bins_single_top, dsigma_single_top = single_top_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 pt_bins_w, dsigma_w = w_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 pt_bins_z, dsigma_z = z_dsigma["pt_bins_subleading_lepton"]
 plt.step(pt_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1180,57 +1180,57 @@ plt.show()
 # ✅ Dilepton Invariant Mass \( M_{\ell\ell} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for M_ll plot
+plt.figure(figsize=(16, 14))  # Create a new figure for M_ll plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for M_ll
 for signal_name, dsigma_data in signal_dsigma.items():
     m_ll_bins, dsigma = dsigma_data["m_ll_bins"]
     plt.step(m_ll_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Dilepton Invariant Mass
 m_ll_bins_background, dsigma_background = background_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot ttbar Background
 m_ll_bins_ttbar, dsigma_ttbar = ttbar_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ Plot tautau Background
 m_ll_bins_tautau, dsigma_tautau = tautau_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot mumu Background
 m_ll_bins_mumu, dsigma_mumu = mumu_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 m_ll_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 m_ll_bins_single_top, dsigma_single_top = single_top_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 m_ll_bins_w, dsigma_w = w_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 m_ll_bins_z, dsigma_z = z_dsigma["m_ll_bins"]
 plt.step(m_ll_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1258,56 +1258,56 @@ plt.show()
 # ✅ Dilepton Transverse Momentum \( p_T^{\ell\ell} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for pT_ll plot
+plt.figure(figsize=(16, 14))  # Create a new figure for pT_ll plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for pT_ll
 for signal_name, dsigma_data in signal_dsigma.items():
     pt_ll_bins, dsigma = dsigma_data["pt_ll_bins"]
     plt.step(pt_ll_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Dilepton Transverse Momentum
 pt_ll_bins_background, dsigma_background = background_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 # ✅ Plot tt̄ Background
 pt_ll_bins_ttbar, dsigma_ttbar = ttbar_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ Plot τ⁺τ⁻ Background
 pt_ll_bins_tautau, dsigma_tautau = tautau_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 pt_ll_bins_mumu, dsigma_mumu = mumu_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 pt_ll_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 pt_ll_bins_single_top, dsigma_single_top = single_top_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 pt_ll_bins_w, dsigma_w = w_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 pt_ll_bins_z, dsigma_z = z_dsigma["pt_ll_bins"]
 plt.step(pt_ll_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1331,81 +1331,6 @@ plt.show()
 
 
 
-# ===================================================
-# ✅ Dilepton Rapidity \( Y_{\ell\ell} \) Differential Cross-Section
-# ===================================================
-
-plt.figure(figsize=(11, 12))  # Create a new figure for rapidity_ll plot
-plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
-
-# Loop through all signals and plot their differential cross-section for rapidity_ll
-for signal_name, dsigma_data in signal_dsigma.items():
-    rapidity_ll_bins, dsigma = dsigma_data["rapidity_ll_bins"]
-    plt.step(rapidity_ll_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
-             color=signal_colors.get(signal_name, "black"), linewidth=3)
-
-# ✅ Plot Background for Dilepton Rapidity
-rapidity_ll_bins_background, dsigma_background = background_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
-
-
-# ✅ Plot tt̄ Background
-rapidity_ll_bins_ttbar, dsigma_ttbar = ttbar_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
-
-
-# ✅ Plot τ⁺τ⁻ Background
-rapidity_ll_bins_tautau, dsigma_tautau = tautau_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
-
-# ✅ Plot μ⁺μ⁻ Background
-rapidity_ll_bins_mumu, dsigma_mumu = mumu_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
-
-
-# ✅ Inclusive tt̄ Background
-rapidity_ll_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
-
-# ✅ Single Top Background
-rapidity_ll_bins_single_top, dsigma_single_top = single_top_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
-
-# ✅ W Production Background
-rapidity_ll_bins_w, dsigma_w = w_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
-
-# ✅ Z Production Background
-rapidity_ll_bins_z, dsigma_z = z_dsigma["rapidity_ll_bins"]
-plt.step(rapidity_ll_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
-
-
-# Set labels and title
-plt.xlabel(r"$Y_{\ell\ell}$")
-plt.ylabel(r"$\frac{d\sigma}{dY_{\ell\ell}} \ \mathrm{[pb]}$")
-plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
-plt.yscale("log")
-
-# Grid, legend, and layout adjustments
-plt.legend()
-plt.grid(True, linestyle="--", alpha=0.6)
-plt.tight_layout()
-plt.ylim(0.00001, 1.0)
-
-# Save the plot
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic_allsignal_bkgs/differential_cross_section_rapidity_ll_allFMsignal_allbkgs.pdf", dpi=600)
-
-# Show the plot
-plt.show()
 
 
 
@@ -1414,57 +1339,57 @@ plt.show()
 # ✅ Lepton Separation \( \Delta R(\ell_1, \ell_2) \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for Delta R plot
+plt.figure(figsize=(16, 14))  # Create a new figure for Delta R plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for lepton separation
 for signal_name, dsigma_data in signal_dsigma.items():
     delta_r_bins, dsigma = dsigma_data["delta_r_bins"]
     plt.step(delta_r_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Lepton Separation
 delta_r_bins_background, dsigma_background = background_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 delta_r_bins_ttbar, dsigma_ttbar = ttbar_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ Plot τ⁺τ⁻ Background
 delta_r_bins_tautau, dsigma_tautau = tautau_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 delta_r_bins_mumu, dsigma_mumu = mumu_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 delta_r_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 delta_r_bins_single_top, dsigma_single_top = single_top_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 delta_r_bins_w, dsigma_w = w_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 delta_r_bins_z, dsigma_z = z_dsigma["delta_r_bins"]
 plt.step(delta_r_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1491,56 +1416,56 @@ plt.show()
 # ✅ Azimuthal Angle Separation \( \Delta \phi(\ell_1, \ell_2) \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for Delta Phi plot
+plt.figure(figsize=(16, 14))  # Create a new figure for Delta Phi plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for azimuthal angle separation
 for signal_name, dsigma_data in signal_dsigma.items():
     delta_phi_bins, dsigma = dsigma_data["delta_phi_bins"]
     plt.step(delta_phi_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Azimuthal Angle Separation
 delta_phi_bins_background, dsigma_background = background_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 delta_phi_bins_ttbar, dsigma_ttbar = ttbar_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 # ✅ Plot τ⁺τ⁻ Background
 delta_phi_bins_tautau, dsigma_tautau = tautau_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 delta_phi_bins_mumu, dsigma_mumu = mumu_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 delta_phi_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 delta_phi_bins_single_top, dsigma_single_top = single_top_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 delta_phi_bins_w, dsigma_w = w_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 delta_phi_bins_z, dsigma_z = z_dsigma["delta_phi_bins"]
 plt.step(delta_phi_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1568,57 +1493,57 @@ plt.show()
 # ✅ Rapidity Difference \( \Delta y(\ell_1, \ell_2) \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for rapidity difference Δy plot
+plt.figure(figsize=(16, 14))  # Create a new figure for rapidity difference Δy plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for rapidity difference Δy
 for signal_name, dsigma_data in signal_dsigma.items():
     delta_y_bins, dsigma = dsigma_data["delta_y_bins"]
     plt.step(delta_y_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Rapidity Difference
 delta_y_bins_background, dsigma_background = background_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 delta_y_bins_ttbar, dsigma_ttbar = ttbar_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 # ✅ Plot τ⁺τ⁻ Background
 delta_y_bins_tautau, dsigma_tautau = tautau_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 delta_y_bins_mumu, dsigma_mumu = mumu_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 
 # ✅ Inclusive tt̄ Background
 delta_y_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 delta_y_bins_single_top, dsigma_single_top = single_top_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 delta_y_bins_w, dsigma_w = w_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 delta_y_bins_z, dsigma_z = z_dsigma["delta_y_bins"]
 plt.step(delta_y_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1646,57 +1571,57 @@ plt.show()
 # ✅ Missing Transverse Energy (MET) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for MET plot
+plt.figure(figsize=(16, 14))  # Create a new figure for MET plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for MET
 for signal_name, dsigma_data in signal_dsigma.items():
     met_bins, dsigma = dsigma_data["met_bins"]
     plt.step(met_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for MET
 met_bins_background, dsigma_background = background_dsigma["met_bins"]
 plt.step(met_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 met_bins_ttbar, dsigma_ttbar = ttbar_dsigma["met_bins"]
 plt.step(met_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ τ⁺τ⁻ Background
 met_bins_tautau, dsigma_tautau = tautau_dsigma["met_bins"]
 plt.step(met_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ μ⁺μ⁻ Background
 met_bins_mumu, dsigma_mumu = mumu_dsigma["met_bins"]
 plt.step(met_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 met_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["met_bins"]
 plt.step(met_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 met_bins_single_top, dsigma_single_top = single_top_dsigma["met_bins"]
 plt.step(met_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 met_bins_w, dsigma_w = w_dsigma["met_bins"]
 plt.step(met_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 met_bins_z, dsigma_z = z_dsigma["met_bins"]
 plt.step(met_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1723,58 +1648,58 @@ plt.show()
 # ✅ Transverse Mass of W Boson \( M_T(W) \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for M_T(W) plot
+plt.figure(figsize=(16, 14))  # Create a new figure for M_T(W) plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for M_T(W)
 for signal_name, dsigma_data in signal_dsigma.items():
     mT_W_bins, dsigma = dsigma_data["mT_W_bins"]
     plt.step(mT_W_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for M_T(W)
 mT_W_bins_background, dsigma_background = background_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 mT_W_bins_ttbar, dsigma_ttbar = ttbar_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 
 # ✅ τ⁺τ⁻ Background
 mT_W_bins_tautau, dsigma_tautau = tautau_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ μ⁺μ⁻ Background
 mT_W_bins_mumu, dsigma_mumu = mumu_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 mT_W_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 mT_W_bins_single_top, dsigma_single_top = single_top_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 mT_W_bins_w, dsigma_w = w_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 mT_W_bins_z, dsigma_z = z_dsigma["mT_W_bins"]
 plt.step(mT_W_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1802,59 +1727,59 @@ plt.show()
 # ✅ Diboson Invariant Mass \( M_{WW} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for M_WW plot
+plt.figure(figsize=(16, 14))  # Create a new figure for M_WW plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for M_WW
 for signal_name, dsigma_data in signal_dsigma.items():
     m_WW_bins, dsigma = dsigma_data["m_WW_bins"]
     plt.step(m_WW_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Diboson Invariant Mass
 m_WW_bins_background, dsigma_background = background_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 
 # ✅ Plot tt̄ Background
 m_WW_bins_ttbar, dsigma_ttbar = ttbar_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ Plot τ⁺τ⁻ Background
 m_WW_bins_tautau, dsigma_tautau = tautau_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 m_WW_bins_mumu, dsigma_mumu = mumu_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 
 # ✅ Inclusive tt̄ Background
 m_WW_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 m_WW_bins_single_top, dsigma_single_top = single_top_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 m_WW_bins_w, dsigma_w = w_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 m_WW_bins_z, dsigma_z = z_dsigma["m_WW_bins"]
 plt.step(m_WW_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1883,58 +1808,58 @@ plt.show()
 # ✅ Diboson Transverse Momentum \( p_T^{WW} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for pT_WW plot
+plt.figure(figsize=(16, 14))  # Create a new figure for pT_WW plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for pT_WW
 for signal_name, dsigma_data in signal_dsigma.items():
     pT_WW_bins, dsigma = dsigma_data["pT_WW_bins"]
     plt.step(pT_WW_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Diboson Transverse Momentum
 pT_WW_bins_background, dsigma_background = background_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 pT_WW_bins_ttbar, dsigma_ttbar = ttbar_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 
 # ✅ Plot τ⁺τ⁻ Background
 pT_WW_bins_tautau, dsigma_tautau = tautau_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 pT_WW_bins_mumu, dsigma_mumu = mumu_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 pT_WW_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 pT_WW_bins_single_top, dsigma_single_top = single_top_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 pT_WW_bins_w, dsigma_w = w_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 pT_WW_bins_z, dsigma_z = z_dsigma["pT_WW_bins"]
 plt.step(pT_WW_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
@@ -1962,69 +1887,70 @@ plt.show()
 # ✅ Leading Lepton Pseudorapidity \( \eta_{\mathrm{leading}~\ell} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for leading lepton eta plot
+plt.figure(figsize=(16, 14))  # Create a new figure for leading lepton eta plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for leading lepton eta
 for signal_name, dsigma_data in signal_dsigma.items():
     eta_leading_bins, dsigma = dsigma_data["eta_bins_leading_lepton"]
     plt.step(eta_leading_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Leading Lepton Eta
 eta_leading_bins_background, dsigma_background = background_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 eta_leading_bins_ttbar, dsigma_ttbar = ttbar_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 
 # ✅ τ⁺τ⁻ Background
 eta_leading_bins_tautau, dsigma_tautau = tautau_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ μ⁺μ⁻ Background
 eta_leading_bins_mumu, dsigma_mumu = mumu_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Inclusive tt̄ Background
 eta_leading_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 eta_leading_bins_single_top, dsigma_single_top = single_top_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 eta_leading_bins_w, dsigma_w = w_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 eta_leading_bins_z, dsigma_z = z_dsigma["eta_bins_leading_lepton"]
 plt.step(eta_leading_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 # Set labels and title
 plt.xlabel(r"$\eta_{\mathrm{leading}~\ell}$")
 plt.ylabel(r"$\frac{d\sigma}{d\eta_{\mathrm{leading}~\ell}} \ \mathrm{[pb]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.yscale("log")
 
 # Grid, legend, and layout adjustments
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0005, 0.003)
+plt.ylim(0.00001, 1.0)
 
 # Save the plot
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic_allsignal_bkgs/differential_cross_section_eta_leading_lepton_allFMsignal_allbkgs.pdf", dpi=600)
@@ -2040,70 +1966,71 @@ plt.show()
 # ✅ Subleading Lepton Pseudorapidity \( \eta_^{\mathrm{subleading}~\ell} \) Differential Cross-Section
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # Create a new figure for subleading lepton eta plot
+plt.figure(figsize=(16, 14))  # Create a new figure for subleading lepton eta plot
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Loop through all signals and plot their differential cross-section for subleading lepton eta
 for signal_name, dsigma_data in signal_dsigma.items():
     eta_subleading_bins, dsigma = dsigma_data["eta_bins_subleading_lepton"]
     plt.step(eta_subleading_bins, dsigma, where="mid", alpha=0.7,
-             label=f"LHeC@1.2 TeV : Signal ($W^+ W^-$) [{signal_name}]",
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Background for Subleading Lepton Eta
 eta_subleading_bins_background, dsigma_background = background_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_background, dsigma_background, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
 
 
 # ✅ Plot tt̄ Background
 eta_subleading_bins_ttbar, dsigma_ttbar = ttbar_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to t\bar{t} (\times 10^{3})$", color="purple", linewidth=3)
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
 
 
 # ✅ Plot τ⁺τ⁻ Background
 eta_subleading_bins_tautau, dsigma_tautau = tautau_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
 
 # ✅ Plot μ⁺μ⁻ Background
 eta_subleading_bins_mumu, dsigma_mumu = mumu_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : $\gamma\gamma \to \mu^+\mu^-$", color="brown", linewidth=3)
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 
 # ✅ Inclusive tt̄ Background
 eta_subleading_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Inclusive $t\bar{t}$", color="orchid", linewidth=3)
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
 
 # ✅ Single Top Background
 eta_subleading_bins_single_top, dsigma_single_top = single_top_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Single Top", color="teal", linewidth=3)
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
 
 # ✅ W Production Background
 eta_subleading_bins_w, dsigma_w = w_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_w, dsigma_w, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : W Production", color="darkgreen", linewidth=3)
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
 
 # ✅ Z Production Background
 eta_subleading_bins_z, dsigma_z = z_dsigma["eta_bins_subleading_lepton"]
 plt.step(eta_subleading_bins_z, dsigma_z, where="mid", alpha=0.7,
-         label=r"LHeC@1.2 TeV : Z Production", color="darkred", linewidth=3)
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
 
 
 # Set labels and title
 plt.xlabel(r"$\eta_{\mathrm{subleading}~\ell}$")
 plt.ylabel(r"$\frac{d\sigma}{d\eta_{\mathrm{subleading}~\ell}} \ \mathrm{[pb]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.yscale("log")
 
 # Grid, legend, and layout adjustments
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.ylim(0.0005, 0.003)
+plt.ylim(0.00001, 1.0)
 
 
 # Save the plot
@@ -2115,6 +2042,83 @@ plt.show()
 
 
 
+
+
+# ===================================================
+# ✅ Dilepton Rapidity \( Y_{\ell\ell} \) Differential Cross-Section
+# ===================================================
+
+plt.figure(figsize=(16, 14))  # Create a new figure for rapidity_ll plot
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# Loop through all signals and plot their differential cross-section for rapidity_ll
+for signal_name, dsigma_data in signal_dsigma.items():
+    rapidity_ll_bins, dsigma = dsigma_data["rapidity_ll_bins"]
+    plt.step(rapidity_ll_bins, dsigma, where="mid", alpha=0.7,
+             label=f"Signal ($W^+ W^-$) [{signal_name}]",
+             color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Background for Dilepton Rapidity
+rapidity_ll_bins_background, dsigma_background = background_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_background, dsigma_background, where="mid", alpha=0.7,
+         label=r"SM ($\gamma\gamma \to W^+ W^-$)", color="blue", linewidth=3)
+
+
+# ✅ Plot tt̄ Background
+rapidity_ll_bins_ttbar, dsigma_ttbar = ttbar_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_ttbar, dsigma_ttbar, where="mid", alpha=0.7,
+         label=r"$\gamma\gamma \to t\bar{t} (\times 10^{2})$", color="purple", linewidth=3)
+
+
+# ✅ Plot τ⁺τ⁻ Background
+rapidity_ll_bins_tautau, dsigma_tautau = tautau_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_tautau, dsigma_tautau, where="mid", alpha=0.7,
+         label=r"$\gamma\gamma \to \tau^+\tau^-$", color="orange", linewidth=3)
+
+# ✅ Plot μ⁺μ⁻ Background
+rapidity_ll_bins_mumu, dsigma_mumu = mumu_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_mumu, dsigma_mumu, where="mid", alpha=0.7,
+         label=r"$\gamma\gamma \to \mu^+\mu^-$", color="brown", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
+
+
+# ✅ Inclusive tt̄ Background
+rapidity_ll_bins_ttbar_inc, dsigma_ttbar_inc = ttbar_inc_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_ttbar_inc, dsigma_ttbar_inc, where="mid", alpha=0.7,
+         label=r"Inclusive $t\bar{t}$", color="orchid", linestyle=(0, (3, 1, 1, 1)), linewidth=3)
+
+# ✅ Single Top Background
+rapidity_ll_bins_single_top, dsigma_single_top = single_top_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_single_top, dsigma_single_top, where="mid", alpha=0.7,
+         label=r"Single Top", color="teal", linestyle='--', linewidth=3)
+
+# ✅ W Production Background
+rapidity_ll_bins_w, dsigma_w = w_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_w, dsigma_w, where="mid", alpha=0.7,
+         label=r"W Production", color="darkgreen", linestyle='-.', linewidth=3)
+
+# ✅ Z Production Background
+rapidity_ll_bins_z, dsigma_z = z_dsigma["rapidity_ll_bins"]
+plt.step(rapidity_ll_bins_z, dsigma_z, where="mid", alpha=0.7,
+         label=r"Z Production", color="darkred", linestyle=':', linewidth=3)
+
+
+# Set labels and title
+plt.xlabel(r"$Y_{\ell\ell}$")
+plt.ylabel(r"$\frac{d\sigma}{dY_{\ell\ell}} \ \mathrm{[pb]}$")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- \ell^+ \nu_{\ell} \ell^- \bar{\nu}_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.yscale("log")
+
+# Grid, legend, and layout adjustments
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.ylim(0.00001, 1.0)
+
+# Save the plot
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_fully_leptonic_allsignal_bkgs/differential_cross_section_rapidity_ll_allFMsignal_allbkgs.pdf", dpi=600)
+
+# Show the plot
+plt.show()
 
 
 #=========================================================================
