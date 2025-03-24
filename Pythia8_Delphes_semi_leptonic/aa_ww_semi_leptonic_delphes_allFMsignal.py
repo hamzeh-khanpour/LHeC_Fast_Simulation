@@ -264,26 +264,26 @@ def process_file(
 
 # Parameters for differential cross-section
 
-#1000
+#10
 #signal_cross_sections = {
-#    "$FM_{0} / \Lambda^4$": 0.031526,   # pb
-#    "$FM_{1} / \Lambda^4$": 0.0164002,   # pb
-#    "$FM_{2} / \Lambda^4$": 0.780502,   # pb
-#    "$FM_{3} / \Lambda^4$": 0.0808444    # pb
+#    "$FM_{0} / \Lambda^4$": 0.0,   # pb
+#    "$FM_{1} / \Lambda^4$": 0.0,   # pb
+#    "$FM_{2} / \Lambda^4$": 0.0,   # pb
+#    "$FM_{3} / \Lambda^4$": 0.0    # pb
 #}
 
 
 
-#1000
+#100
 signal_cross_sections = {
-    "$FM_{0} / \Lambda^4$": 0.0134836,   # pb
-    "$FM_{1} / \Lambda^4$": 0.0136291,   # pb
-    "$FM_{2} / \Lambda^4$": 0.0200421,   # pb
-    "$FM_{3} / \Lambda^4$": 0.0149315    # pb
+    "$FM_{0} / \Lambda^4$": 0.01490319,   # pb
+    "$FM_{1} / \Lambda^4$": 0.01508150,   # pb
+    "$FM_{2} / \Lambda^4$": 0.02142500,   # pb
+    "$FM_{3} / \Lambda^4$": 0.01644609    # pb
 }
 
 
-background_cross_section = 0.0137276  # pb
+background_cross_section = 0.01507430  # pb
 
 
 
