@@ -220,7 +220,7 @@ def process_file(
 
 
         # **✅ Final Event Selection (Corrected Indentation)**
-        if leading_jet.Pt() < 100 or leptons[0].Pt() < 100:
+        if leading_jet.Pt() < 1 or leptons[0].Pt() < 1:
             continue
 
         # Count selected events
