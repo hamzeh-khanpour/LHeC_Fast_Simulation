@@ -41,15 +41,16 @@ hep.style.use("CMS")
 
 # Path to the ROOT files : signal and background
 signal_files = {
-    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM0_100.root",
-    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM1_100.root",
+#    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM0_100.root",
+#    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM1_100.root",
     "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM2_100.root",
-    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM3_100.root",
+#    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM3_100.root",
 }
 aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_decay.root"
 
 aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay.root"
-aa_tautau_background_file_path = "aa_tautau_semi_leptonic.root"
+aa_tautau_background_file_path = "aa_tautau_leptonic_decay.root"
+
 aa_mumu_background_file_path   = "aa_mumu.root"
 
 
@@ -60,6 +61,10 @@ single_top_background_file_path        = "single_top_inclusive_decay.root"
 w_production_background_file_path      = "w_production_inclusive_decay.root"
 z_production_background_file_path      = "z_production_inclusive_decay.root"
 
+
+wwj_production_background_file_path      = "diboson_wwj_inclusive_decay.root"
+zzj_production_background_file_path      = "diboson_zzj_inclusive_decay.root"
+wzj_production_background_file_path      = "diboson_wzj_inclusive_decay.root"
 
 
 # Load Delphes library
@@ -309,6 +314,10 @@ w_production_background_cross_section      = 1.910288             # pb
 z_production_background_cross_section      = 0.24064758729900002  # pb
 
 
+wwj_production_background_cross_section      = 0.016080595320336195   # pb
+zzj_production_background_cross_section      = 6.694889944457796e-05 * 100.0  # pb  * 10^{+2}
+wzj_production_background_cross_section      = 0.0023785292894910495  # pb
+
 
 num_bins = 50
 pt_range_lepton = (0, 300)     # Range for lepton pT
@@ -530,6 +539,49 @@ hist_m_w_hadronic_z_production = ROOT.TH1F("hist_m_w_hadronic_z_production", "Ha
 hist_m_w_leptonic_z_production = ROOT.TH1F("hist_m_w_leptonic_z_production", "Leptonic W Mass (z_production); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 
+# === WWJ PRODUCTION ===
+hist_lepton_wwj_production = ROOT.TH1F("hist_lepton_wwj_production", "Lepton pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_wwj_production = ROOT.TH1F("hist_leading_jet_wwj_production", "Leading Jet pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_eta_wwj_production = ROOT.TH1F("hist_lepton_eta_wwj_production", "Lepton Eta (wwj_production); #eta; Entries", num_bins, *eta_range)
+hist_delta_r_wwj_production = ROOT.TH1F("hist_delta_r_wwj_production", "Delta R (wwj_production); ΔR; Entries", num_bins, *delta_r_range)
+hist_missing_et_wwj_production = ROOT.TH1F("hist_missing_et_wwj_production", "MET (wwj_production); MET [GeV]; Entries", num_bins, *met_range)
+hist_subleading_jet_eta_wwj_production = ROOT.TH1F("hist_subleading_jet_eta_wwj_production", "Centrality (wwj_production); Centrality; Entries", num_bins, *centrality_range)
+hist_leading_jet_eta_wwj_production = ROOT.TH1F("hist_leading_jet_eta_wwj_production", "Exp Centrality (wwj_production); exp(Centrality); Entries", num_bins, *exp_centrality_range)
+hist_jet_centrality_wwj_production = ROOT.TH1F("hist_jet_centrality_wwj_production", "Jet Centrality (wwj_production); Jet Centrality; Entries", num_bins, *jet_centrality_range)
+hist_delta_eta_jj_wwj_production = ROOT.TH1F("hist_delta_eta_jj_wwj_production", "Delta Eta jj (wwj_production); Δηjj; Entries", num_bins, *delta_eta_jj_range)
+hist_m_w_hadronic_wwj_production = ROOT.TH1F("hist_m_w_hadronic_wwj_production", "Hadronic W Mass (wwj_production); m_{W}^{hadronic} [GeV]; Entries", num_bins, *m_w_hadronic_range)
+hist_m_w_leptonic_wwj_production = ROOT.TH1F("hist_m_w_leptonic_wwj_production", "Leptonic W Mass (wwj_production); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
+
+
+# === ZZJ PRODUCTION ===
+hist_lepton_zzj_production = ROOT.TH1F("hist_lepton_zzj_production", "Lepton pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_zzj_production = ROOT.TH1F("hist_leading_jet_zzj_production", "Leading Jet pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_eta_zzj_production = ROOT.TH1F("hist_lepton_eta_zzj_production", "Lepton Eta (zzj_production); #eta; Entries", num_bins, *eta_range)
+hist_delta_r_zzj_production = ROOT.TH1F("hist_delta_r_zzj_production", "Delta R (zzj_production); ΔR; Entries", num_bins, *delta_r_range)
+hist_missing_et_zzj_production = ROOT.TH1F("hist_missing_et_zzj_production", "MET (zzj_production); MET [GeV]; Entries", num_bins, *met_range)
+hist_subleading_jet_eta_zzj_production = ROOT.TH1F("hist_subleading_jet_eta_zzj_production", "Centrality (zzj_production); Centrality; Entries", num_bins, *centrality_range)
+hist_leading_jet_eta_zzj_production = ROOT.TH1F("hist_leading_jet_eta_zzj_production", "Exp Centrality (zzj_production); exp(Centrality); Entries", num_bins, *exp_centrality_range)
+hist_jet_centrality_zzj_production = ROOT.TH1F("hist_jet_centrality_zzj_production", "Jet Centrality (zzj_production); Jet Centrality; Entries", num_bins, *jet_centrality_range)
+hist_delta_eta_jj_zzj_production = ROOT.TH1F("hist_delta_eta_jj_zzj_production", "Delta Eta jj (zzj_production); Δηjj; Entries", num_bins, *delta_eta_jj_range)
+hist_m_w_hadronic_zzj_production = ROOT.TH1F("hist_m_w_hadronic_zzj_production", "Hadronic W Mass (zzj_production); m_{W}^{hadronic} [GeV]; Entries", num_bins, *m_w_hadronic_range)
+hist_m_w_leptonic_zzj_production = ROOT.TH1F("hist_m_w_leptonic_zzj_production", "Leptonic W Mass (zzj_production); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
+
+
+# === WZJ PRODUCTION ===
+hist_lepton_wzj_production = ROOT.TH1F("hist_lepton_wzj_production", "Lepton pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_wzj_production = ROOT.TH1F("hist_leading_jet_wzj_production", "Leading Jet pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_eta_wzj_production = ROOT.TH1F("hist_lepton_eta_wzj_production", "Lepton Eta (wzj_production); #eta; Entries", num_bins, *eta_range)
+hist_delta_r_wzj_production = ROOT.TH1F("hist_delta_r_wzj_production", "Delta R (wzj_production); ΔR; Entries", num_bins, *delta_r_range)
+hist_missing_et_wzj_production = ROOT.TH1F("hist_missing_et_wzj_production", "MET (wzj_production); MET [GeV]; Entries", num_bins, *met_range)
+hist_subleading_jet_eta_wzj_production = ROOT.TH1F("hist_subleading_jet_eta_wzj_production", "Centrality (wzj_production); Centrality; Entries", num_bins, *centrality_range)
+hist_leading_jet_eta_wzj_production = ROOT.TH1F("hist_leading_jet_eta_wzj_production", "Exp Centrality (wzj_production); exp(Centrality); Entries", num_bins, *exp_centrality_range)
+hist_jet_centrality_wzj_production = ROOT.TH1F("hist_jet_centrality_wzj_production", "Jet Centrality (wzj_production); Jet Centrality; Entries", num_bins, *jet_centrality_range)
+hist_delta_eta_jj_wzj_production = ROOT.TH1F("hist_delta_eta_jj_wzj_production", "Delta Eta jj (wzj_production); Δηjj; Entries", num_bins, *delta_eta_jj_range)
+hist_m_w_hadronic_wzj_production = ROOT.TH1F("hist_m_w_hadronic_wzj_production", "Hadronic W Mass (wzj_production); m_{W}^{hadronic} [GeV]; Entries", num_bins, *m_w_hadronic_range)
+hist_m_w_leptonic_wzj_production = ROOT.TH1F("hist_m_w_leptonic_wzj_production", "Leptonic W Mass (wzj_production); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
+
+
+
 
 
 
@@ -649,6 +701,44 @@ for signal_name, file_path in signal_files.items():
 )
 
 
+# === Process the WWJ_PRODUCTION background file ===
+
+(hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production, hist_delta_r_wwj_production,
+ hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production, hist_jet_centrality_wwj_production,
+ hist_delta_eta_jj_wwj_production, hist_m_w_leptonic_wwj_production, hist_m_w_hadronic_wwj_production,
+ background_efficiency_pre_wwj_production, background_efficiency_final_wwj_production) = process_file(
+    wwj_production_background_file_path, hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production,
+    hist_delta_r_wwj_production, hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production,
+    hist_jet_centrality_wwj_production, hist_delta_eta_jj_wwj_production, hist_m_w_leptonic_wwj_production, hist_m_w_hadronic_wwj_production
+)
+
+
+# === Process the ZZJ_PRODUCTION background file ===
+
+(hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production, hist_delta_r_zzj_production,
+ hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production, hist_jet_centrality_zzj_production,
+ hist_delta_eta_jj_zzj_production, hist_m_w_leptonic_zzj_production, hist_m_w_hadronic_zzj_production,
+ background_efficiency_pre_zzj_production, background_efficiency_final_zzj_production) = process_file(
+    zzj_production_background_file_path, hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production,
+    hist_delta_r_zzj_production, hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production,
+    hist_jet_centrality_zzj_production, hist_delta_eta_jj_zzj_production, hist_m_w_leptonic_zzj_production, hist_m_w_hadronic_zzj_production
+)
+
+
+
+# === Process the WZJ_PRODUCTION background file ===
+
+(hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production, hist_delta_r_wzj_production,
+ hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production, hist_jet_centrality_wzj_production,
+ hist_delta_eta_jj_wzj_production, hist_m_w_leptonic_wzj_production, hist_m_w_hadronic_wzj_production,
+ background_efficiency_pre_wzj_production, background_efficiency_final_wzj_production) = process_file(
+    wzj_production_background_file_path, hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production,
+    hist_delta_r_wzj_production, hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production,
+    hist_jet_centrality_wzj_production, hist_delta_eta_jj_wzj_production, hist_m_w_leptonic_wzj_production, hist_m_w_hadronic_wzj_production
+)
+
+
+
 
 
 
@@ -664,7 +754,6 @@ for signal_name, efficiencies in signal_efficiencies.items():
 
 
 
-
 # Print background efficiencies
 print("\n=== Background Selection Efficiencies ===")
 print(f"aa_ww          : Pre = {background_efficiency_pre_aa_ww:.2%}, Final = {background_efficiency_final_aa_ww:.2%}")
@@ -675,9 +764,10 @@ print(f"inclusive_ttbar: Pre = {background_efficiency_pre_inclusive_ttbar:.2%}, 
 print(f"single_top     : Pre = {background_efficiency_pre_single_top:.2%}, Final = {background_efficiency_final_single_top:.2%}")
 print(f"w_production   : Pre = {background_efficiency_pre_w_production:.2%}, Final = {background_efficiency_final_w_production:.2%}")
 print(f"z_production   : Pre = {background_efficiency_pre_z_production:.2%}, Final = {background_efficiency_final_z_production:.2%}")
+print(f"wwj_production : Pre = {background_efficiency_pre_wwj_production:.2%}, Final = {background_efficiency_final_wwj_production:.2%}")
+print(f"zzj_production : Pre = {background_efficiency_pre_zzj_production:.2%}, Final = {background_efficiency_final_zzj_production:.2%}")
+print(f"wzj_production : Pre = {background_efficiency_pre_wzj_production:.2%}, Final = {background_efficiency_final_wzj_production:.2%}")
 print("=" * 50)
-
-
 
 
 
@@ -829,6 +919,59 @@ background_dsigma_z_production = {
 
 
 
+# === Differential cross-sections for wwj_production background ===
+background_dsigma_wwj_production = {
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_wwj_production, wwj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_wwj_production, wwj_production_background_cross_section, bin_width_pt_jet),
+    "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_wwj_production, wwj_production_background_cross_section, bin_width_eta),
+    "delta_r_bins": calculate_dsigma(hist_delta_r_wwj_production, wwj_production_background_cross_section, bin_width_delta_r),
+    "met_bins": calculate_dsigma(hist_missing_et_wwj_production, wwj_production_background_cross_section, bin_width_met),
+    "centrality_bins": calculate_dsigma(hist_subleading_jet_eta_wwj_production, wwj_production_background_cross_section, bin_width_centrality),
+    "exp_centrality_bins": calculate_dsigma(hist_leading_jet_eta_wwj_production, wwj_production_background_cross_section, bin_width_exp_centrality),
+    "jet_centrality_bins": calculate_dsigma(hist_jet_centrality_wwj_production, wwj_production_background_cross_section, bin_width_jet_centrality),
+    "delta_eta_jj_bins": calculate_dsigma(hist_delta_eta_jj_wwj_production, wwj_production_background_cross_section, bin_width_delta_eta_jj),
+    "m_w_hadronic_bins": calculate_dsigma(hist_m_w_hadronic_wwj_production, wwj_production_background_cross_section, bin_width_m_w_hadronic),
+    "m_w_leptonic_bins": calculate_dsigma(hist_m_w_leptonic_wwj_production, wwj_production_background_cross_section, bin_width_m_w_leptonic),
+}
+
+
+
+
+# === Differential cross-sections for zzj_production background ===
+background_dsigma_zzj_production = {
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_zzj_production, zzj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_zzj_production, zzj_production_background_cross_section, bin_width_pt_jet),
+    "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_zzj_production, zzj_production_background_cross_section, bin_width_eta),
+    "delta_r_bins": calculate_dsigma(hist_delta_r_zzj_production, zzj_production_background_cross_section, bin_width_delta_r),
+    "met_bins": calculate_dsigma(hist_missing_et_zzj_production, zzj_production_background_cross_section, bin_width_met),
+    "centrality_bins": calculate_dsigma(hist_subleading_jet_eta_zzj_production, zzj_production_background_cross_section, bin_width_centrality),
+    "exp_centrality_bins": calculate_dsigma(hist_leading_jet_eta_zzj_production, zzj_production_background_cross_section, bin_width_exp_centrality),
+    "jet_centrality_bins": calculate_dsigma(hist_jet_centrality_zzj_production, zzj_production_background_cross_section, bin_width_jet_centrality),
+    "delta_eta_jj_bins": calculate_dsigma(hist_delta_eta_jj_zzj_production, zzj_production_background_cross_section, bin_width_delta_eta_jj),
+    "m_w_hadronic_bins": calculate_dsigma(hist_m_w_hadronic_zzj_production, zzj_production_background_cross_section, bin_width_m_w_hadronic),
+    "m_w_leptonic_bins": calculate_dsigma(hist_m_w_leptonic_zzj_production, zzj_production_background_cross_section, bin_width_m_w_leptonic),
+}
+
+
+
+# === Differential cross-sections for wzj_production background ===
+background_dsigma_wzj_production = {
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_wzj_production, wzj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_wzj_production, wzj_production_background_cross_section, bin_width_pt_jet),
+    "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_wzj_production, wzj_production_background_cross_section, bin_width_eta),
+    "delta_r_bins": calculate_dsigma(hist_delta_r_wzj_production, wzj_production_background_cross_section, bin_width_delta_r),
+    "met_bins": calculate_dsigma(hist_missing_et_wzj_production, wzj_production_background_cross_section, bin_width_met),
+    "centrality_bins": calculate_dsigma(hist_subleading_jet_eta_wzj_production, wzj_production_background_cross_section, bin_width_centrality),
+    "exp_centrality_bins": calculate_dsigma(hist_leading_jet_eta_wzj_production, wzj_production_background_cross_section, bin_width_exp_centrality),
+    "jet_centrality_bins": calculate_dsigma(hist_jet_centrality_wzj_production, wzj_production_background_cross_section, bin_width_jet_centrality),
+    "delta_eta_jj_bins": calculate_dsigma(hist_delta_eta_jj_wzj_production, wzj_production_background_cross_section, bin_width_delta_eta_jj),
+    "m_w_hadronic_bins": calculate_dsigma(hist_m_w_hadronic_wzj_production, wzj_production_background_cross_section, bin_width_m_w_hadronic),
+    "m_w_leptonic_bins": calculate_dsigma(hist_m_w_leptonic_wzj_production, wzj_production_background_cross_section, bin_width_m_w_leptonic),
+}
+
+
+
+
 
 
 
@@ -845,9 +988,9 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # Define colors for each signal
 signal_colors = {
-    "$FM_{0} / \Lambda^4$": "red",
+    "$FM_{0} / \Lambda^4$": "green",
     "$FM_{1} / \Lambda^4$": "purple",
-    "$FM_{2} / \Lambda^4$": "green",
+    "$FM_{2} / \Lambda^4$": "red",
     "$FM_{3} / \Lambda^4$": "orange"
 }
 
@@ -878,8 +1021,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     pt_bins, dsigma = dsigma_dict["pt_bins_lepton"]
@@ -932,8 +1079,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "firebrick", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "mediumslateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     pt_bins, dsigma = dsigma_dict["pt_bins_jet"]
@@ -983,8 +1134,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "firebrick", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "mediumslateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     eta_bins, dsigma = dsigma_dict["eta_bins_lepton"]
@@ -1036,8 +1191,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     delta_r_bins, dsigma = dsigma_dict["delta_r_bins"]
@@ -1091,8 +1250,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     met_bins, dsigma = dsigma_dict["met_bins"]
@@ -1142,14 +1305,19 @@ for signal_name, dsigma_data in signal_dsigma.items():
 # ✅ Plot Normalized Backgrounds
 background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
-    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),   #"purple", "-"
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "purple", "-"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
     (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
 ]
+
+
 
 for label, dsigma_dict, color, style in background_styles:
     m_w_bins, dsigma = dsigma_dict["m_w_hadronic_bins"]
@@ -1204,8 +1372,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     m_w_bins, dsigma = dsigma_dict["m_w_leptonic_bins"]
@@ -1259,8 +1431,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     centrality_bins, dsigma = dsigma_dict["centrality_bins"]
@@ -1286,9 +1462,14 @@ plt.show()
 
 
 
+
+
+
 # ===================================================
 # ✅ Normalized eta_{subleading \; jet Distribution (Semi-Leptonic)
 # ===================================================
+
+
 
 plt.figure(figsize=(11, 12))
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
@@ -1311,8 +1492,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),         # custom dashed
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),           # dense dots
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))    # dash-dot-dash
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     exp_centrality_bins, dsigma = dsigma_dict["exp_centrality_bins"]
@@ -1365,8 +1550,12 @@ background_styles = [
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
-    (r"Z Production", background_dsigma_z_production, "darkred", ":")
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),         # new
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),           # new
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))    # new
 ]
+
 
 for label, dsigma_dict, color, style in background_styles:
     jet_centrality_bins, dsigma = dsigma_dict["jet_centrality_bins"]
