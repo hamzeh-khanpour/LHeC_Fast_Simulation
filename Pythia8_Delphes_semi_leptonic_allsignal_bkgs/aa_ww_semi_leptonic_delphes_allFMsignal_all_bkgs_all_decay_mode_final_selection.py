@@ -105,6 +105,11 @@ def process_file(
     total_events = numberOfEntries
 
     selected_events_pre = 0   # ✅ Fix: Initialize before use
+    selected_events_pre_lepton = 0
+    selected_events_pre_jets = 0
+    selected_events_pre_eta_lepton = 0
+    selected_events_pre_jet_centrality = 0
+
     selected_events_final = 0 # ✅ Fix: Initialize before use
 
 
@@ -124,14 +129,16 @@ def process_file(
             electron = branchElectron.At(i)
             lepton_vec = TLorentzVector()
             lepton_vec.SetPtEtaPhiM(electron.PT, electron.Eta, electron.Phi, 0.0)
-            if electron.PT > 10:
+            if electron.PT > 1:
                 leptons.append(lepton_vec)
+
         for i in range(branchMuon.GetEntries()):
             muon = branchMuon.At(i)
             lepton_vec = TLorentzVector()
             lepton_vec.SetPtEtaPhiM(muon.PT, muon.Eta, muon.Phi, 0.0)
-            if muon.PT > 10:
+            if muon.PT > 1:
                 leptons.append(lepton_vec)
+
 
 
         # Count the number of jets
@@ -143,12 +150,37 @@ def process_file(
             if jet.PT > 10:
                 jets.append(jet_vec)
 
-        # Apply selection criteria: exactly one lepton and exactly two jets
-        if len(leptons) != 1 or len(jets) != 2:
-            continue
 
+
+       # Apply selection criteria: exactly one lepton and exactly two jets
+
+        if len(leptons) != 1 or len(jets) != 2:
+#            continue
         # Count selected events
-        selected_events_pre += 1
+            selected_events_pre += 1 # ✅ Count events passing both lepton and jet requirements
+
+
+        # ----------------------------------------
+        # Step 1: Lepton requirement (1 lepton + pT > 10 GeV)
+
+        if len(leptons) != 1:
+            continue
+        if leptons[0].Pt() <= 10:
+            continue
+        selected_events_pre_lepton += 1
+
+
+
+        # ----------------------------------------
+
+        # Step 2: Exactly 2 jets with pT > 10 GeV
+        if len(jets) != 2:
+            continue
+        if jets[0].Pt() <= 10 or jets[1].Pt() <= 10:
+            continue
+        selected_events_pre_jets += 1
+
+
 
 
         # Fill histogram with lepton pT
@@ -237,17 +269,39 @@ def process_file(
             hist_m_w_leptonic.Fill(w_leptonic.M())
 
 
-        # **✅ Final Event Selection (Corrected Indentation)**
-        if leading_jet.Pt() < 1 or leptons[0].Pt() < 1:
-            continue
+        #if abs(leptons[0].Eta()) > 0.5:
+            #selected_events_pre_eta_lepton += 1
 
-        # Count selected events
-        selected_events_final += 1
+        #if jet_centrality > 2.0:
+            #selected_events_pre_jet_centrality += 1
+
+        ## **✅ Final Event Selection (W mass window)**
+        #if 65 < w_leptonic.M() < 95 and 65 < w_hadronic.M() < 95:
+           #selected_events_final += 1     # Count selected events
+
+
+# ✅ Apply cuts in sequence: η_lepton → jet_centrality → W mass window
+        if abs(leptons[0].Eta()) > 0.5:
+            selected_events_pre_eta_lepton += 1
+
+            if jet_centrality > 2.0:
+                selected_events_pre_jet_centrality += 1
+
+                if 65 < w_leptonic.M() < 95 and 65 < w_hadronic.M() < 95:
+                    selected_events_final += 1  # ✅ Count event only if it passed all previous cuts
 
 
 
     # **✅ Selection Efficiency Calculations**
     efficiency_pre = selected_events_pre / total_events if total_events > 0 else 0
+
+    efficiency_pre_lepton = selected_events_pre_lepton / total_events if total_events > 0 else 0
+    efficiency_pre_jets = selected_events_pre_jets / total_events if total_events > 0 else 0
+
+
+    efficiency_eta_lepton = selected_events_pre_eta_lepton / total_events if total_events > 0 else 0
+    efficiency_jet_centrality = selected_events_pre_jet_centrality / total_events if total_events > 0 else 0
+
 
     efficiency_final = selected_events_final / total_events if total_events > 0 else 0
 
@@ -266,6 +320,10 @@ def process_file(
         hist_delta_eta_jj,
         hist_m_w_leptonic,
         hist_m_w_hadronic,
+        efficiency_pre_lepton,
+        efficiency_pre_jets,
+        efficiency_eta_lepton,
+        efficiency_jet_centrality,
         efficiency_pre,
         efficiency_final,
     )
@@ -584,10 +642,7 @@ hist_m_w_leptonic_wzj_production = ROOT.TH1F("hist_m_w_leptonic_wzj_production",
 
 
 
-
-
-
-
+##################################################################
 
 
 
@@ -601,101 +656,141 @@ for signal_name, file_path in signal_files.items():
     # Get the corresponding histograms for this signal
     histograms = signal_histograms[signal_name]
 
-    # Process the signal file
+    # Process the signal file and unpack all efficiencies
     (histograms["hist_lepton_pt"], histograms["hist_leading_jet_pt"], histograms["hist_lepton_eta"], histograms["hist_delta_r"],
      histograms["hist_missing_et"], histograms["hist_subleading_jet_eta"], histograms["hist_leading_jet_eta"], histograms["hist_jet_centrality"],
      histograms["hist_delta_eta_jj"], histograms["hist_m_w_leptonic"], histograms["hist_m_w_hadronic"],
+     efficiency_pre_lepton, efficiency_pre_jets, efficiency_eta_lepton, efficiency_jet_centrality,
      efficiency_pre, efficiency_final) = process_file(
-        file_path, histograms["hist_lepton_pt"], histograms["hist_leading_jet_pt"], histograms["hist_lepton_eta"],
-        histograms["hist_delta_r"], histograms["hist_missing_et"], histograms["hist_subleading_jet_eta"], histograms["hist_leading_jet_eta"],
-        histograms["hist_jet_centrality"], histograms["hist_delta_eta_jj"], histograms["hist_m_w_leptonic"], histograms["hist_m_w_hadronic"]
+        file_path,
+        histograms["hist_lepton_pt"],
+        histograms["hist_leading_jet_pt"],
+        histograms["hist_lepton_eta"],
+        histograms["hist_delta_r"],
+        histograms["hist_missing_et"],
+        histograms["hist_subleading_jet_eta"],
+        histograms["hist_leading_jet_eta"],
+        histograms["hist_jet_centrality"],
+        histograms["hist_delta_eta_jj"],
+        histograms["hist_m_w_leptonic"],
+        histograms["hist_m_w_hadronic"]
     )
 
-    # Store efficiencies for this signal
+    # Store all efficiencies for this signal
     signal_efficiencies[signal_name] = {
+        "efficiency_pre_lepton": efficiency_pre_lepton,
+        "efficiency_pre_jets": efficiency_pre_jets,
+        "efficiency_eta_lepton": efficiency_eta_lepton,
+        "efficiency_jet_centrality": efficiency_jet_centrality,
         "efficiency_pre": efficiency_pre,
         "efficiency_final": efficiency_final
     }
 
 
 
+##################################################################
 
 
 
-# === Process the AA_WW background file ===
+
+# Auto-generated background process blocks with eta_lepton efficiency
+
 (hist_lepton_aa_ww, hist_leading_jet_aa_ww, hist_lepton_eta_aa_ww, hist_delta_r_aa_ww,
  hist_missing_et_aa_ww, hist_subleading_jet_eta_aa_ww, hist_leading_jet_eta_aa_ww, hist_jet_centrality_aa_ww,
  hist_delta_eta_jj_aa_ww, hist_m_w_leptonic_aa_ww, hist_m_w_hadronic_aa_ww,
+ background_efficiency_pre_lepton_aa_ww, background_efficiency_pre_jets_aa_ww,
+ background_efficiency_eta_lepton_aa_ww, background_efficiency_jet_centrality_aa_ww,
  background_efficiency_pre_aa_ww, background_efficiency_final_aa_ww) = process_file(
     aa_ww_background_file_path, hist_lepton_aa_ww, hist_leading_jet_aa_ww, hist_lepton_eta_aa_ww,
     hist_delta_r_aa_ww, hist_missing_et_aa_ww, hist_subleading_jet_eta_aa_ww, hist_leading_jet_eta_aa_ww,
     hist_jet_centrality_aa_ww, hist_delta_eta_jj_aa_ww, hist_m_w_leptonic_aa_ww, hist_m_w_hadronic_aa_ww
 )
 
-# === Process the AA_TTBAR background file ===
+
+
 (hist_lepton_aa_ttbar, hist_leading_jet_aa_ttbar, hist_lepton_eta_aa_ttbar, hist_delta_r_aa_ttbar,
  hist_missing_et_aa_ttbar, hist_subleading_jet_eta_aa_ttbar, hist_leading_jet_eta_aa_ttbar, hist_jet_centrality_aa_ttbar,
  hist_delta_eta_jj_aa_ttbar, hist_m_w_leptonic_aa_ttbar, hist_m_w_hadronic_aa_ttbar,
+ background_efficiency_pre_lepton_aa_ttbar, background_efficiency_pre_jets_aa_ttbar,
+ background_efficiency_eta_lepton_aa_ttbar, background_efficiency_jet_centrality_aa_ttbar,
  background_efficiency_pre_aa_ttbar, background_efficiency_final_aa_ttbar) = process_file(
     aa_ttbar_background_file_path, hist_lepton_aa_ttbar, hist_leading_jet_aa_ttbar, hist_lepton_eta_aa_ttbar,
     hist_delta_r_aa_ttbar, hist_missing_et_aa_ttbar, hist_subleading_jet_eta_aa_ttbar, hist_leading_jet_eta_aa_ttbar,
     hist_jet_centrality_aa_ttbar, hist_delta_eta_jj_aa_ttbar, hist_m_w_leptonic_aa_ttbar, hist_m_w_hadronic_aa_ttbar
 )
 
-# === Process the AA_TAUTAU background file ===
+
+
 (hist_lepton_aa_tautau, hist_leading_jet_aa_tautau, hist_lepton_eta_aa_tautau, hist_delta_r_aa_tautau,
  hist_missing_et_aa_tautau, hist_subleading_jet_eta_aa_tautau, hist_leading_jet_eta_aa_tautau, hist_jet_centrality_aa_tautau,
  hist_delta_eta_jj_aa_tautau, hist_m_w_leptonic_aa_tautau, hist_m_w_hadronic_aa_tautau,
+ background_efficiency_pre_lepton_aa_tautau, background_efficiency_pre_jets_aa_tautau,
+ background_efficiency_eta_lepton_aa_tautau, background_efficiency_jet_centrality_aa_tautau,
  background_efficiency_pre_aa_tautau, background_efficiency_final_aa_tautau) = process_file(
     aa_tautau_background_file_path, hist_lepton_aa_tautau, hist_leading_jet_aa_tautau, hist_lepton_eta_aa_tautau,
     hist_delta_r_aa_tautau, hist_missing_et_aa_tautau, hist_subleading_jet_eta_aa_tautau, hist_leading_jet_eta_aa_tautau,
     hist_jet_centrality_aa_tautau, hist_delta_eta_jj_aa_tautau, hist_m_w_leptonic_aa_tautau, hist_m_w_hadronic_aa_tautau
 )
 
-# === Process the AA_MUMU background file ===
+
+
 (hist_lepton_aa_mumu, hist_leading_jet_aa_mumu, hist_lepton_eta_aa_mumu, hist_delta_r_aa_mumu,
  hist_missing_et_aa_mumu, hist_subleading_jet_eta_aa_mumu, hist_leading_jet_eta_aa_mumu, hist_jet_centrality_aa_mumu,
  hist_delta_eta_jj_aa_mumu, hist_m_w_leptonic_aa_mumu, hist_m_w_hadronic_aa_mumu,
+ background_efficiency_pre_lepton_aa_mumu, background_efficiency_pre_jets_aa_mumu,
+ background_efficiency_eta_lepton_aa_mumu, background_efficiency_jet_centrality_aa_mumu,
  background_efficiency_pre_aa_mumu, background_efficiency_final_aa_mumu) = process_file(
     aa_mumu_background_file_path, hist_lepton_aa_mumu, hist_leading_jet_aa_mumu, hist_lepton_eta_aa_mumu,
     hist_delta_r_aa_mumu, hist_missing_et_aa_mumu, hist_subleading_jet_eta_aa_mumu, hist_leading_jet_eta_aa_mumu,
     hist_jet_centrality_aa_mumu, hist_delta_eta_jj_aa_mumu, hist_m_w_leptonic_aa_mumu, hist_m_w_hadronic_aa_mumu
 )
 
-# === Process the INCLUSIVE_TTBAR background file ===
+
+
 (hist_lepton_inclusive_ttbar, hist_leading_jet_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar, hist_delta_r_inclusive_ttbar,
  hist_missing_et_inclusive_ttbar, hist_subleading_jet_eta_inclusive_ttbar, hist_leading_jet_eta_inclusive_ttbar, hist_jet_centrality_inclusive_ttbar,
  hist_delta_eta_jj_inclusive_ttbar, hist_m_w_leptonic_inclusive_ttbar, hist_m_w_hadronic_inclusive_ttbar,
+ background_efficiency_pre_lepton_inclusive_ttbar, background_efficiency_pre_jets_inclusive_ttbar,
+ background_efficiency_eta_lepton_inclusive_ttbar, background_efficiency_jet_centrality_inclusive_ttbar,
  background_efficiency_pre_inclusive_ttbar, background_efficiency_final_inclusive_ttbar) = process_file(
     inclusive_ttbar_background_file_path, hist_lepton_inclusive_ttbar, hist_leading_jet_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar,
     hist_delta_r_inclusive_ttbar, hist_missing_et_inclusive_ttbar, hist_subleading_jet_eta_inclusive_ttbar, hist_leading_jet_eta_inclusive_ttbar,
     hist_jet_centrality_inclusive_ttbar, hist_delta_eta_jj_inclusive_ttbar, hist_m_w_leptonic_inclusive_ttbar, hist_m_w_hadronic_inclusive_ttbar
 )
 
-# === Process the SINGLE_TOP background file ===
+
+
 (hist_lepton_single_top, hist_leading_jet_single_top, hist_lepton_eta_single_top, hist_delta_r_single_top,
  hist_missing_et_single_top, hist_subleading_jet_eta_single_top, hist_leading_jet_eta_single_top, hist_jet_centrality_single_top,
  hist_delta_eta_jj_single_top, hist_m_w_leptonic_single_top, hist_m_w_hadronic_single_top,
+ background_efficiency_pre_lepton_single_top, background_efficiency_pre_jets_single_top,
+ background_efficiency_eta_lepton_single_top, background_efficiency_jet_centrality_single_top,
  background_efficiency_pre_single_top, background_efficiency_final_single_top) = process_file(
     single_top_background_file_path, hist_lepton_single_top, hist_leading_jet_single_top, hist_lepton_eta_single_top,
     hist_delta_r_single_top, hist_missing_et_single_top, hist_subleading_jet_eta_single_top, hist_leading_jet_eta_single_top,
     hist_jet_centrality_single_top, hist_delta_eta_jj_single_top, hist_m_w_leptonic_single_top, hist_m_w_hadronic_single_top
 )
 
-# === Process the W_PRODUCTION background file ===
+
+
 (hist_lepton_w_production, hist_leading_jet_w_production, hist_lepton_eta_w_production, hist_delta_r_w_production,
  hist_missing_et_w_production, hist_subleading_jet_eta_w_production, hist_leading_jet_eta_w_production, hist_jet_centrality_w_production,
  hist_delta_eta_jj_w_production, hist_m_w_leptonic_w_production, hist_m_w_hadronic_w_production,
+ background_efficiency_pre_lepton_w_production, background_efficiency_pre_jets_w_production,
+ background_efficiency_eta_lepton_w_production, background_efficiency_jet_centrality_w_production,
  background_efficiency_pre_w_production, background_efficiency_final_w_production) = process_file(
     w_production_background_file_path, hist_lepton_w_production, hist_leading_jet_w_production, hist_lepton_eta_w_production,
     hist_delta_r_w_production, hist_missing_et_w_production, hist_subleading_jet_eta_w_production, hist_leading_jet_eta_w_production,
     hist_jet_centrality_w_production, hist_delta_eta_jj_w_production, hist_m_w_leptonic_w_production, hist_m_w_hadronic_w_production
 )
 
-# === Process the Z_PRODUCTION background file ===
+
+
 (hist_lepton_z_production, hist_leading_jet_z_production, hist_lepton_eta_z_production, hist_delta_r_z_production,
  hist_missing_et_z_production, hist_subleading_jet_eta_z_production, hist_leading_jet_eta_z_production, hist_jet_centrality_z_production,
  hist_delta_eta_jj_z_production, hist_m_w_leptonic_z_production, hist_m_w_hadronic_z_production,
+ background_efficiency_pre_lepton_z_production, background_efficiency_pre_jets_z_production,
+ background_efficiency_eta_lepton_z_production, background_efficiency_jet_centrality_z_production,
  background_efficiency_pre_z_production, background_efficiency_final_z_production) = process_file(
     z_production_background_file_path, hist_lepton_z_production, hist_leading_jet_z_production, hist_lepton_eta_z_production,
     hist_delta_r_z_production, hist_missing_et_z_production, hist_subleading_jet_eta_z_production, hist_leading_jet_eta_z_production,
@@ -703,11 +798,12 @@ for signal_name, file_path in signal_files.items():
 )
 
 
-# === Process the WWJ_PRODUCTION background file ===
 
 (hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production, hist_delta_r_wwj_production,
  hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production, hist_jet_centrality_wwj_production,
  hist_delta_eta_jj_wwj_production, hist_m_w_leptonic_wwj_production, hist_m_w_hadronic_wwj_production,
+ background_efficiency_pre_lepton_wwj_production, background_efficiency_pre_jets_wwj_production,
+ background_efficiency_eta_lepton_wwj_production, background_efficiency_jet_centrality_wwj_production,
  background_efficiency_pre_wwj_production, background_efficiency_final_wwj_production) = process_file(
     wwj_production_background_file_path, hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production,
     hist_delta_r_wwj_production, hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production,
@@ -715,11 +811,11 @@ for signal_name, file_path in signal_files.items():
 )
 
 
-# === Process the ZZJ_PRODUCTION background file ===
-
 (hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production, hist_delta_r_zzj_production,
  hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production, hist_jet_centrality_zzj_production,
  hist_delta_eta_jj_zzj_production, hist_m_w_leptonic_zzj_production, hist_m_w_hadronic_zzj_production,
+ background_efficiency_pre_lepton_zzj_production, background_efficiency_pre_jets_zzj_production,
+ background_efficiency_eta_lepton_zzj_production, background_efficiency_jet_centrality_zzj_production,
  background_efficiency_pre_zzj_production, background_efficiency_final_zzj_production) = process_file(
     zzj_production_background_file_path, hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production,
     hist_delta_r_zzj_production, hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production,
@@ -727,12 +823,11 @@ for signal_name, file_path in signal_files.items():
 )
 
 
-
-# === Process the WZJ_PRODUCTION background file ===
-
 (hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production, hist_delta_r_wzj_production,
  hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production, hist_jet_centrality_wzj_production,
  hist_delta_eta_jj_wzj_production, hist_m_w_leptonic_wzj_production, hist_m_w_hadronic_wzj_production,
+ background_efficiency_pre_lepton_wzj_production, background_efficiency_pre_jets_wzj_production,
+ background_efficiency_eta_lepton_wzj_production, background_efficiency_jet_centrality_wzj_production,
  background_efficiency_pre_wzj_production, background_efficiency_final_wzj_production) = process_file(
     wzj_production_background_file_path, hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production,
     hist_delta_r_wzj_production, hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production,
@@ -741,39 +836,76 @@ for signal_name, file_path in signal_files.items():
 
 
 
+####################################################################
 
 
-
-
-
-
-# Print selection efficiencies for all signals
 print("\n=== Signal Selection Efficiencies ===")
 for signal_name, efficiencies in signal_efficiencies.items():
-    print(f"{signal_name} Selection Efficiency (Pre)  : {efficiencies['efficiency_pre']:.2%}")
-    print(f"{signal_name} Selection Efficiency (Final): {efficiencies['efficiency_final']:.2%}")
+    print(f"{signal_name} Selection Efficiency (1lepton + lepton pT>10 GeV)     : {efficiencies['efficiency_pre_lepton']:.2%}")
+    print(f"{signal_name} Selection Efficiency (2jest + iet pT > 10 GeV)        : {efficiencies['efficiency_pre_jets']:.2%}")
+    print(f"{signal_name} Selection Efficiency (Lepton η)      : {efficiencies['efficiency_eta_lepton']:.2%}")
+    print(f"{signal_name} Selection Efficiency (Jet Centrality) : {efficiencies['efficiency_jet_centrality']:.2%}")
+#    print(f"{signal_name} Selection Efficiency (Pre)           : {efficiencies['efficiency_pre']:.2%}")
+    print(f"{signal_name} Selection Efficiency (W Mass Window)         : {efficiencies['efficiency_final']:.2%}")
     print("-" * 50)
 
 
 
 
-
-# Print background efficiencies
 print("\n=== Background Selection Efficiencies ===")
-print(f"aa_ww          : Pre = {background_efficiency_pre_aa_ww:.2%}, Final = {background_efficiency_final_aa_ww:.2%}")
-print(f"aa_ttbar       : Pre = {background_efficiency_pre_aa_ttbar:.2%}, Final = {background_efficiency_final_aa_ttbar:.2%}")
-print(f"aa_tautau      : Pre = {background_efficiency_pre_aa_tautau:.2%}, Final = {background_efficiency_final_aa_tautau:.2%}")
-print(f"aa_mumu        : Pre = {background_efficiency_pre_aa_mumu:.2%}, Final = {background_efficiency_final_aa_mumu:.2%}")
-print(f"inclusive_ttbar: Pre = {background_efficiency_pre_inclusive_ttbar:.2%}, Final = {background_efficiency_final_inclusive_ttbar:.2%}")
-print(f"single_top     : Pre = {background_efficiency_pre_single_top:.2%}, Final = {background_efficiency_final_single_top:.2%}")
-print(f"w_production   : Pre = {background_efficiency_pre_w_production:.2%}, Final = {background_efficiency_final_w_production:.2%}")
-print(f"z_production   : Pre = {background_efficiency_pre_z_production:.2%}, Final = {background_efficiency_final_z_production:.2%}")
-print(f"wwj_production : Pre = {background_efficiency_pre_wwj_production:.2%}, Final = {background_efficiency_final_wwj_production:.2%}")
-print(f"zzj_production : Pre = {background_efficiency_pre_zzj_production:.2%}, Final = {background_efficiency_final_zzj_production:.2%}")
-print(f"wzj_production : Pre = {background_efficiency_pre_wzj_production:.2%}, Final = {background_efficiency_final_wzj_production:.2%}")
+def print_efficiencies(tag, lep_pt, jet_pt, lep_eta, jet_cent, pre, final):
+    print(f"{tag:<15}: 1lepton + lepton pT>10 GeV = {lep_pt:.2%}, 2jest + iet pT > 10 GeV = {jet_pt:.2%}, Lepton η = {lep_eta:.2%}, Jet Centrality = {jet_cent:.2%}, W Mass Window = {final:.2%}")  # Pre = {pre:.2%},
+
+print_efficiencies("aa ww", background_efficiency_pre_lepton_aa_ww, background_efficiency_pre_jets_aa_ww,
+                   background_efficiency_eta_lepton_aa_ww, background_efficiency_jet_centrality_aa_ww,
+                   background_efficiency_pre_aa_ww, background_efficiency_final_aa_ww)
+
+print_efficiencies("aa ttbar", background_efficiency_pre_lepton_aa_ttbar, background_efficiency_pre_jets_aa_ttbar,
+                   background_efficiency_eta_lepton_aa_ttbar, background_efficiency_jet_centrality_aa_ttbar,
+                   background_efficiency_pre_aa_ttbar, background_efficiency_final_aa_ttbar)
+
+print_efficiencies("aa tautau", background_efficiency_pre_lepton_aa_tautau, background_efficiency_pre_jets_aa_tautau,
+                   background_efficiency_eta_lepton_aa_tautau, background_efficiency_jet_centrality_aa_tautau,
+                   background_efficiency_pre_aa_tautau, background_efficiency_final_aa_tautau)
+
+print_efficiencies("aa mumu", background_efficiency_pre_lepton_aa_mumu, background_efficiency_pre_jets_aa_mumu,
+                   background_efficiency_eta_lepton_aa_mumu, background_efficiency_jet_centrality_aa_mumu,
+                   background_efficiency_pre_aa_mumu, background_efficiency_final_aa_mumu)
+
+print_efficiencies("inclusive ttbar", background_efficiency_pre_lepton_inclusive_ttbar, background_efficiency_pre_jets_inclusive_ttbar,
+                   background_efficiency_eta_lepton_inclusive_ttbar, background_efficiency_jet_centrality_inclusive_ttbar,
+                   background_efficiency_pre_inclusive_ttbar, background_efficiency_final_inclusive_ttbar)
+
+print_efficiencies("single top", background_efficiency_pre_lepton_single_top, background_efficiency_pre_jets_single_top,
+                   background_efficiency_eta_lepton_single_top, background_efficiency_jet_centrality_single_top,
+                   background_efficiency_pre_single_top, background_efficiency_final_single_top)
+
+print_efficiencies("w production", background_efficiency_pre_lepton_w_production, background_efficiency_pre_jets_w_production,
+                   background_efficiency_eta_lepton_w_production, background_efficiency_jet_centrality_w_production,
+                   background_efficiency_pre_w_production, background_efficiency_final_w_production)
+
+print_efficiencies("z production", background_efficiency_pre_lepton_z_production, background_efficiency_pre_jets_z_production,
+                   background_efficiency_eta_lepton_z_production, background_efficiency_jet_centrality_z_production,
+                   background_efficiency_pre_z_production, background_efficiency_final_z_production)
+
+print_efficiencies("wwj production", background_efficiency_pre_lepton_wwj_production, background_efficiency_pre_jets_wwj_production,
+                   background_efficiency_eta_lepton_wwj_production, background_efficiency_jet_centrality_wwj_production,
+                   background_efficiency_pre_wwj_production, background_efficiency_final_wwj_production)
+
+print_efficiencies("zzj production", background_efficiency_pre_lepton_zzj_production, background_efficiency_pre_jets_zzj_production,
+                   background_efficiency_eta_lepton_zzj_production, background_efficiency_jet_centrality_zzj_production,
+                   background_efficiency_pre_zzj_production, background_efficiency_final_zzj_production)
+
+print_efficiencies("wzj production", background_efficiency_pre_lepton_wzj_production, background_efficiency_pre_jets_wzj_production,
+                   background_efficiency_eta_lepton_wzj_production, background_efficiency_jet_centrality_wzj_production,
+                   background_efficiency_pre_wzj_production, background_efficiency_final_wzj_production)
+
 print("=" * 50)
 
 
+
+
+##############################################################
 
 
 
