@@ -98,7 +98,7 @@ def process_file(
 
     # Create ExRootTreeReader object
     treeReader = ROOT.ExRootTreeReader(chain)
-    numberOfEntries = treeReader.GetEntries()
+    numberOfEntries =  treeReader.GetEntries()
 
     # Counters for efficiency calculation
     # ✅ Initialize selection counters
@@ -132,6 +132,7 @@ def process_file(
             if electron.PT > 1:
                 leptons.append(lepton_vec)
 
+
         for i in range(branchMuon.GetEntries()):
             muon = branchMuon.At(i)
             lepton_vec = TLorentzVector()
@@ -141,13 +142,18 @@ def process_file(
 
 
 
+        if hist_missing_et is not None and branchMissingET.GetEntries() > 0:
+            missing_et = branchMissingET.At(0)
+            hist_missing_et.Fill(missing_et.MET)
+
+
         # Count the number of jets
         jets = []
         for i in range(branchJet.GetEntries()):
             jet = branchJet.At(i)
             jet_vec = TLorentzVector()
             jet_vec.SetPtEtaPhiM(jet.PT, jet.Eta, jet.Phi, jet.Mass)
-            if jet.PT > 10:
+            if jet.PT > 1:
                 jets.append(jet_vec)
 
 
@@ -167,6 +173,11 @@ def process_file(
             continue
         if leptons[0].Pt() <= 10:
             continue
+
+           # ✅ MET cut  :   # Skip event if MET is too low
+        if missing_et.MET < 10:
+            continue
+
         selected_events_pre_lepton += 1
 
 
@@ -198,11 +209,6 @@ def process_file(
             hist_delta_r.Fill(delta_r)
 
 
-        if hist_missing_et is not None and branchMissingET.GetEntries() > 0:
-            missing_et = branchMissingET.At(0)
-            hist_missing_et.Fill(missing_et.MET)
-
-
         if hist_subleading_jet_eta is not None and hist_leading_jet_eta is not None:
             delta_eta_jj = abs(jets[0].Eta() - jets[1].Eta())
             if delta_eta_jj > -100000:
@@ -231,6 +237,8 @@ def process_file(
         # **✅ Corrected W → ℓν Reconstruction**
         if hist_m_w_leptonic is not None and branchMissingET.GetEntries() > 0:
             missing_et = branchMissingET.At(0)
+
+
 
             # **Construct MET components**
             px_nu = missing_et.MET * np.cos(missing_et.Phi)
@@ -383,7 +391,7 @@ num_bins = 50
 pt_range_lepton = (0, 300)     # Range for lepton pT
 pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)
 eta_range = (-4, 6)          # Range for pseudorapidity
-delta_r_range = (0, 6)        # Range for Delta R
+delta_r_range = (0, 8)        # Range for Delta R
 met_range = (0, 300)           # Range for Missing Transverse Energy (MET)
 centrality_range = (-3, 6)     # Range for centrality
 exp_centrality_range = (-3, 6)  # Range for exponential centrality
@@ -841,7 +849,7 @@ for signal_name, file_path in signal_files.items():
 
 print("\n=== Signal Selection Efficiencies ===")
 for signal_name, efficiencies in signal_efficiencies.items():
-    print(f"{signal_name} Selection Efficiency (1lepton + lepton pT>10 GeV)     : {efficiencies['efficiency_pre_lepton']:.2%}")
+    print(f"{signal_name} Selection Efficiency (1lepton + lepton pT>10 GeV + MET >10 GeV)     : {efficiencies['efficiency_pre_lepton']:.2%}")
     print(f"{signal_name} Selection Efficiency (2jest + iet pT > 10 GeV)        : {efficiencies['efficiency_pre_jets']:.2%}")
     print(f"{signal_name} Selection Efficiency (Lepton η)      : {efficiencies['efficiency_eta_lepton']:.2%}")
     print(f"{signal_name} Selection Efficiency (Jet Centrality) : {efficiencies['efficiency_jet_centrality']:.2%}")
@@ -854,7 +862,7 @@ for signal_name, efficiencies in signal_efficiencies.items():
 
 print("\n=== Background Selection Efficiencies ===")
 def print_efficiencies(tag, lep_pt, jet_pt, lep_eta, jet_cent, pre, final):
-    print(f"{tag:<15}: 1lepton + lepton pT>10 GeV = {lep_pt:.2%}, 2jest + iet pT > 10 GeV = {jet_pt:.2%}, Lepton η = {lep_eta:.2%}, Jet Centrality = {jet_cent:.2%}, W Mass Window = {final:.2%}")  # Pre = {pre:.2%},
+    print(f"{tag:<15}: 1lepton + lepton pT>10 GeV + MET >10 GeV = {lep_pt:.2%}, 2jest + iet pT > 10 GeV = {jet_pt:.2%}, Lepton η = {lep_eta:.2%}, Jet Centrality = {jet_cent:.2%}, W Mass Window = {final:.2%}")  # Pre = {pre:.2%},
 
 print_efficiencies("aa ww", background_efficiency_pre_lepton_aa_ww, background_efficiency_pre_jets_aa_ww,
                    background_efficiency_eta_lepton_aa_ww, background_efficiency_jet_centrality_aa_ww,
@@ -1351,7 +1359,7 @@ plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
 plt.ylabel(r"$\frac{d\sigma}{d\Delta R} \ \mathrm{[pb]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-4, 1.0)
+plt.ylim(1e-4, 10.0)
 
 # ✅ Legend and Layout
 plt.legend()
@@ -1362,6 +1370,46 @@ plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/differential_cross_section_delta_r_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
 plt.show()
 
+
+
+
+
+
+
+# ===================================================
+# ✅ Normalized ΔR(ℓ, jet) Distribution (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Normalized Signal Distributions
+for signal_name, dsigma_data in signal_dsigma.items():
+    delta_r_bins, dsigma = dsigma_data["delta_r_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = np.array(dsigma) / np.sum(dsigma)
+        plt.step(delta_r_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Normalized Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    delta_r_bins, dsigma = dsigma_dict["delta_r_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = np.array(dsigma) / np.sum(dsigma)
+        plt.step(delta_r_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
+plt.ylabel("Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.ylim(0.0, 0.3)
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_delta_r_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+plt.show()
 
 
 
@@ -1410,7 +1458,7 @@ plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{d\mathrm{MET}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-5, 1e-1)
+plt.ylim(1e-5, 0.0000001)
 
 # ✅ Legend and Layout
 plt.legend()
@@ -1421,6 +1469,46 @@ plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/differential_cross_section_met_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
 plt.show()
 
+
+
+
+
+
+
+# ===================================================
+# ✅ Normalized MET Distribution (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Normalized Signal Distributions
+for signal_name, dsigma_data in signal_dsigma.items():
+    met_bins, dsigma = dsigma_data["met_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = np.array(dsigma) / np.sum(dsigma)
+        plt.step(met_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Normalized Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    met_bins, dsigma = dsigma_dict["met_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = np.array(dsigma) / np.sum(dsigma)
+        plt.step(met_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
+plt.ylabel("Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.ylim(0.0, 0.4)
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_met_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+plt.show()
 
 
 
