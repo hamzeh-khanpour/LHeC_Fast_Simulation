@@ -1261,6 +1261,8 @@ plt.show()
 
 
 
+
+
 # ===================================================
 # ✅ Lepton \( \eta \) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
@@ -1458,7 +1460,7 @@ plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{d\mathrm{MET}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-5, 0.0000001)
+plt.ylim(1e-5, 1.0)
 
 # ✅ Legend and Layout
 plt.legend()
@@ -1755,6 +1757,7 @@ plt.show()
 
 
 
+
 # ===================================================
 # ✅ Normalized Jet Centrality Distribution (Semi-Leptonic)
 # ===================================================
@@ -1820,62 +1823,193 @@ plt.show()
 #=========================================================================
 #=========================================================================
 
-# Open the output ROOT file (use "UPDATE" if you want to append)
-#output_file = ROOT.TFile("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/output_histograms.root", "RECREATE")
+import ROOT
+
+# ✅ Set the output ROOT file path
+output_file = ROOT.TFile("/home/hamzeh-khanpour/Delphes-3.5.0/output_histograms.root", "RECREATE")
 
 try:
-    # ✅ Fix 1: Rename signal names to be ROOT-compatible (remove LaTeX)
+    # ✅ Create signal directories with sanitized names
     signal_dirs = {}
     for signal_name in signal_files.keys():
         clean_signal_name = signal_name.replace("$", "").replace("{", "").replace("}", "").replace("\\", "").replace(" ", "_")
         signal_dirs[signal_name] = output_file.mkdir(f"signal_{clean_signal_name}")
 
-    # ✅ Fix 2: Create Background Directory BEFORE Writing Any Data
-    background_dir = output_file.mkdir("SM_background")
-
-    # ✅ Fix 3: Ensure `background_histograms` is properly defined
-    background_histograms = {
-        "hist_lepton": hist_lepton_background,
-        "hist_leading_jet": hist_leading_jet_background,
-        "hist_lepton_eta": hist_lepton_eta_background,
-        "hist_delta_r": hist_delta_r_background,
-        "hist_missing_et": hist_missing_et_background,
-        "hist_subleading_jet_eta": hist_subleading_jet_eta_background,
-        "hist_leading_jet_eta": hist_leading_jet_eta_background,
-        "hist_jet_centrality": hist_jet_centrality_background,
-        "hist_delta_eta_jj": hist_delta_eta_jj_background,
-        "hist_m_w_hadronic": hist_m_w_hadronic_background,
-        "hist_m_w_leptonic": hist_m_w_leptonic_background
+    # ✅ Define background histograms
+    background_histogram_sets = {
+        "aa_ww": {
+            "hist_lepton": hist_lepton_aa_ww,
+            "hist_leading_jet": hist_leading_jet_aa_ww,
+            "hist_lepton_eta": hist_lepton_eta_aa_ww,
+            "hist_delta_r": hist_delta_r_aa_ww,
+            "hist_missing_et": hist_missing_et_aa_ww,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_ww,
+            "hist_leading_jet_eta": hist_leading_jet_eta_aa_ww,
+            "hist_jet_centrality": hist_jet_centrality_aa_ww,
+            "hist_delta_eta_jj": hist_delta_eta_jj_aa_ww,
+            "hist_m_w_hadronic": hist_m_w_hadronic_aa_ww,
+            "hist_m_w_leptonic": hist_m_w_leptonic_aa_ww
+        },
+        "aa_ttbar": {
+            "hist_lepton": hist_lepton_aa_ttbar,
+            "hist_leading_jet": hist_leading_jet_aa_ttbar,
+            "hist_lepton_eta": hist_lepton_eta_aa_ttbar,
+            "hist_delta_r": hist_delta_r_aa_ttbar,
+            "hist_missing_et": hist_missing_et_aa_ttbar,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_ttbar,
+            "hist_leading_jet_eta": hist_leading_jet_eta_aa_ttbar,
+            "hist_jet_centrality": hist_jet_centrality_aa_ttbar,
+            "hist_delta_eta_jj": hist_delta_eta_jj_aa_ttbar,
+            "hist_m_w_hadronic": hist_m_w_hadronic_aa_ttbar,
+            "hist_m_w_leptonic": hist_m_w_leptonic_aa_ttbar
+        },
+        "aa_tautau": {
+            "hist_lepton": hist_lepton_aa_tautau,
+            "hist_leading_jet": hist_leading_jet_aa_tautau,
+            "hist_lepton_eta": hist_lepton_eta_aa_tautau,
+            "hist_delta_r": hist_delta_r_aa_tautau,
+            "hist_missing_et": hist_missing_et_aa_tautau,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_tautau,
+            "hist_leading_jet_eta": hist_leading_jet_eta_aa_tautau,
+            "hist_jet_centrality": hist_jet_centrality_aa_tautau,
+            "hist_delta_eta_jj": hist_delta_eta_jj_aa_tautau,
+            "hist_m_w_hadronic": hist_m_w_hadronic_aa_tautau,
+            "hist_m_w_leptonic": hist_m_w_leptonic_aa_tautau
+        },
+        "aa_mumu": {
+            "hist_lepton": hist_lepton_aa_mumu,
+            "hist_leading_jet": hist_leading_jet_aa_mumu,
+            "hist_lepton_eta": hist_lepton_eta_aa_mumu,
+            "hist_delta_r": hist_delta_r_aa_mumu,
+            "hist_missing_et": hist_missing_et_aa_mumu,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_mumu,
+            "hist_leading_jet_eta": hist_leading_jet_eta_aa_mumu,
+            "hist_jet_centrality": hist_jet_centrality_aa_mumu,
+            "hist_delta_eta_jj": hist_delta_eta_jj_aa_mumu,
+            "hist_m_w_hadronic": hist_m_w_hadronic_aa_mumu,
+            "hist_m_w_leptonic": hist_m_w_leptonic_aa_mumu
+        },
+        "inclusive_ttbar": {
+            "hist_lepton": hist_lepton_inclusive_ttbar,
+            "hist_leading_jet": hist_leading_jet_inclusive_ttbar,
+            "hist_lepton_eta": hist_lepton_eta_inclusive_ttbar,
+            "hist_delta_r": hist_delta_r_inclusive_ttbar,
+            "hist_missing_et": hist_missing_et_inclusive_ttbar,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_inclusive_ttbar,
+            "hist_leading_jet_eta": hist_leading_jet_eta_inclusive_ttbar,
+            "hist_jet_centrality": hist_jet_centrality_inclusive_ttbar,
+            "hist_delta_eta_jj": hist_delta_eta_jj_inclusive_ttbar,
+            "hist_m_w_hadronic": hist_m_w_hadronic_inclusive_ttbar,
+            "hist_m_w_leptonic": hist_m_w_leptonic_inclusive_ttbar
+        },
+        "single_top": {
+            "hist_lepton": hist_lepton_single_top,
+            "hist_leading_jet": hist_leading_jet_single_top,
+            "hist_lepton_eta": hist_lepton_eta_single_top,
+            "hist_delta_r": hist_delta_r_single_top,
+            "hist_missing_et": hist_missing_et_single_top,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_single_top,
+            "hist_leading_jet_eta": hist_leading_jet_eta_single_top,
+            "hist_jet_centrality": hist_jet_centrality_single_top,
+            "hist_delta_eta_jj": hist_delta_eta_jj_single_top,
+            "hist_m_w_hadronic": hist_m_w_hadronic_single_top,
+            "hist_m_w_leptonic": hist_m_w_leptonic_single_top
+        },
+        "w_production": {
+            "hist_lepton": hist_lepton_w_production,
+            "hist_leading_jet": hist_leading_jet_w_production,
+            "hist_lepton_eta": hist_lepton_eta_w_production,
+            "hist_delta_r": hist_delta_r_w_production,
+            "hist_missing_et": hist_missing_et_w_production,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_w_production,
+            "hist_leading_jet_eta": hist_leading_jet_eta_w_production,
+            "hist_jet_centrality": hist_jet_centrality_w_production,
+            "hist_delta_eta_jj": hist_delta_eta_jj_w_production,
+            "hist_m_w_hadronic": hist_m_w_hadronic_w_production,
+            "hist_m_w_leptonic": hist_m_w_leptonic_w_production
+        },
+        "z_production": {
+            "hist_lepton": hist_lepton_z_production,
+            "hist_leading_jet": hist_leading_jet_z_production,
+            "hist_lepton_eta": hist_lepton_eta_z_production,
+            "hist_delta_r": hist_delta_r_z_production,
+            "hist_missing_et": hist_missing_et_z_production,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_z_production,
+            "hist_leading_jet_eta": hist_leading_jet_eta_z_production,
+            "hist_jet_centrality": hist_jet_centrality_z_production,
+            "hist_delta_eta_jj": hist_delta_eta_jj_z_production,
+            "hist_m_w_hadronic": hist_m_w_hadronic_z_production,
+            "hist_m_w_leptonic": hist_m_w_leptonic_z_production
+        },
+        "wwj": {
+            "hist_lepton": hist_lepton_wwj_production,
+            "hist_leading_jet": hist_leading_jet_wwj_production,
+            "hist_lepton_eta": hist_lepton_eta_wwj_production,
+            "hist_delta_r": hist_delta_r_wwj_production,
+            "hist_missing_et": hist_missing_et_wwj_production,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_wwj_production,
+            "hist_leading_jet_eta": hist_leading_jet_eta_wwj_production,
+            "hist_jet_centrality": hist_jet_centrality_wwj_production,
+            "hist_delta_eta_jj": hist_delta_eta_jj_wwj_production,
+            "hist_m_w_hadronic": hist_m_w_hadronic_wwj_production,
+            "hist_m_w_leptonic": hist_m_w_leptonic_wwj_production
+        },
+        "zzj": {
+            "hist_lepton": hist_lepton_zzj_production,
+            "hist_leading_jet": hist_leading_jet_zzj_production,
+            "hist_lepton_eta": hist_lepton_eta_zzj_production,
+            "hist_delta_r": hist_delta_r_zzj_production,
+            "hist_missing_et": hist_missing_et_zzj_production,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_zzj_production,
+            "hist_leading_jet_eta": hist_leading_jet_eta_zzj_production,
+            "hist_jet_centrality": hist_jet_centrality_zzj_production,
+            "hist_delta_eta_jj": hist_delta_eta_jj_zzj_production,
+            "hist_m_w_hadronic": hist_m_w_hadronic_zzj_production,
+            "hist_m_w_leptonic": hist_m_w_leptonic_zzj_production
+        },
+        "wzj": {
+            "hist_lepton": hist_lepton_wzj_production,
+            "hist_leading_jet": hist_leading_jet_wzj_production,
+            "hist_lepton_eta": hist_lepton_eta_wzj_production,
+            "hist_delta_r": hist_delta_r_wzj_production,
+            "hist_missing_et": hist_missing_et_wzj_production,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_wzj_production,
+            "hist_leading_jet_eta": hist_leading_jet_eta_wzj_production,
+            "hist_jet_centrality": hist_jet_centrality_wzj_production,
+            "hist_delta_eta_jj": hist_delta_eta_jj_wzj_production,
+            "hist_m_w_hadronic": hist_m_w_hadronic_wzj_production,
+            "hist_m_w_leptonic": hist_m_w_leptonic_wzj_production
+        }
     }
 
-    # ✅ Fix 4: Save signal histograms (DO NOT redefine signal_histograms)
+    # ✅ Save each background set in its own directory
+    for bg_name, histograms in background_histogram_sets.items():
+        bg_dir = output_file.mkdir(f"background_{bg_name}")
+        bg_dir.cd()
+        for hist_name, hist in histograms.items():
+            if hist:
+                hist.Write()
+            else:
+                print(f"⚠️ Warning: {hist_name} in {bg_name} is empty!")
+
+    # ✅ Save each signal histogram set
     for signal_name, histograms in signal_histograms.items():
-        if signal_name in signal_dirs:  # Ensure directory exists
+        if signal_name in signal_dirs:
             signal_dirs[signal_name].cd()
             for hist_name, hist in histograms.items():
-                if hist:  # Ensure histogram exists
+                if hist:
                     hist.Write()
                 else:
-                    print(f"⚠️ Warning: Histogram {hist_name} for {signal_name} is empty!")
+                    print(f"⚠️ Warning: {hist_name} for {signal_name} is empty!")
 
-    # ✅ Fix 5: Save background histograms
-    background_dir.cd()
-    for hist_name, hist in background_histograms.items():
-        if hist:  # Ensure histogram exists
-            hist.Write()
-        else:
-            print(f"⚠️ Warning: Background histogram {hist_name} is empty!")
-
-    print("✅ Histograms successfully saved to output_histograms.root with separate branches for each signal and 'SM_background'.")
+    print("✅ All signal and background histograms written to ROOT file.")
 
 except Exception as e:
     print(f"❌ Error while saving histograms: {e}")
 
 finally:
-    # ✅ Fix 6: Always close the ROOT file properly
     output_file.Close()
     print("📁 ROOT file closed successfully.")
-
 
 
 #=========================================================================
