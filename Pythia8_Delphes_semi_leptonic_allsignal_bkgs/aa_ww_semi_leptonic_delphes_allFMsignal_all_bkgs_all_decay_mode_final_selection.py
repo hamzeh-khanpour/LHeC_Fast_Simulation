@@ -49,7 +49,7 @@ signal_files = {
 aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_decay.root"
 
 aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay.root"
-aa_tautau_background_file_path = "aa_tautau_leptonic_decay.root"
+aa_tautau_background_file_path = "aa_tautau_full_decay.root"
 
 aa_mumu_background_file_path   = "aa_mumu.root"
 
@@ -1838,8 +1838,8 @@ try:
     # ✅ Define background histograms
     background_histogram_sets = {
         "aa_ww": {
-            "hist_lepton": hist_lepton_aa_ww,
-            "hist_leading_jet": hist_leading_jet_aa_ww,
+            "hist_lepton_pt": hist_lepton_aa_ww,
+            "hist_leading_jet_pt": hist_leading_jet_aa_ww,
             "hist_lepton_eta": hist_lepton_eta_aa_ww,
             "hist_delta_r": hist_delta_r_aa_ww,
             "hist_missing_et": hist_missing_et_aa_ww,
@@ -1851,8 +1851,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_ww
         },
         "aa_ttbar": {
-            "hist_lepton": hist_lepton_aa_ttbar,
-            "hist_leading_jet": hist_leading_jet_aa_ttbar,
+            "hist_lepton_pt": hist_lepton_aa_ttbar,
+            "hist_leading_jet_pt": hist_leading_jet_aa_ttbar,
             "hist_lepton_eta": hist_lepton_eta_aa_ttbar,
             "hist_delta_r": hist_delta_r_aa_ttbar,
             "hist_missing_et": hist_missing_et_aa_ttbar,
@@ -1864,8 +1864,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_ttbar
         },
         "aa_tautau": {
-            "hist_lepton": hist_lepton_aa_tautau,
-            "hist_leading_jet": hist_leading_jet_aa_tautau,
+            "hist_lepton_pt": hist_lepton_aa_tautau,
+            "hist_leading_jet_pt": hist_leading_jet_aa_tautau,
             "hist_lepton_eta": hist_lepton_eta_aa_tautau,
             "hist_delta_r": hist_delta_r_aa_tautau,
             "hist_missing_et": hist_missing_et_aa_tautau,
@@ -1877,8 +1877,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_tautau
         },
         "aa_mumu": {
-            "hist_lepton": hist_lepton_aa_mumu,
-            "hist_leading_jet": hist_leading_jet_aa_mumu,
+            "hist_lepton_pt": hist_lepton_aa_mumu,
+            "hist_leading_jet_pt": hist_leading_jet_aa_mumu,
             "hist_lepton_eta": hist_lepton_eta_aa_mumu,
             "hist_delta_r": hist_delta_r_aa_mumu,
             "hist_missing_et": hist_missing_et_aa_mumu,
@@ -1890,8 +1890,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_mumu
         },
         "inclusive_ttbar": {
-            "hist_lepton": hist_lepton_inclusive_ttbar,
-            "hist_leading_jet": hist_leading_jet_inclusive_ttbar,
+            "hist_lepton_pt": hist_lepton_inclusive_ttbar,
+            "hist_leading_jet_pt": hist_leading_jet_inclusive_ttbar,
             "hist_lepton_eta": hist_lepton_eta_inclusive_ttbar,
             "hist_delta_r": hist_delta_r_inclusive_ttbar,
             "hist_missing_et": hist_missing_et_inclusive_ttbar,
@@ -1903,8 +1903,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_inclusive_ttbar
         },
         "single_top": {
-            "hist_lepton": hist_lepton_single_top,
-            "hist_leading_jet": hist_leading_jet_single_top,
+            "hist_lepton_pt": hist_lepton_single_top,
+            "hist_leading_jet_pt": hist_leading_jet_single_top,
             "hist_lepton_eta": hist_lepton_eta_single_top,
             "hist_delta_r": hist_delta_r_single_top,
             "hist_missing_et": hist_missing_et_single_top,
@@ -1916,8 +1916,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_single_top
         },
         "w_production": {
-            "hist_lepton": hist_lepton_w_production,
-            "hist_leading_jet": hist_leading_jet_w_production,
+            "hist_lepton_pt": hist_lepton_w_production,
+            "hist_leading_jet_pt": hist_leading_jet_w_production,
             "hist_lepton_eta": hist_lepton_eta_w_production,
             "hist_delta_r": hist_delta_r_w_production,
             "hist_missing_et": hist_missing_et_w_production,
@@ -1929,8 +1929,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_w_production
         },
         "z_production": {
-            "hist_lepton": hist_lepton_z_production,
-            "hist_leading_jet": hist_leading_jet_z_production,
+            "hist_lepton_pt": hist_lepton_z_production,
+            "hist_leading_jet_pt": hist_leading_jet_z_production,
             "hist_lepton_eta": hist_lepton_eta_z_production,
             "hist_delta_r": hist_delta_r_z_production,
             "hist_missing_et": hist_missing_et_z_production,
@@ -1942,8 +1942,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_z_production
         },
         "wwj": {
-            "hist_lepton": hist_lepton_wwj_production,
-            "hist_leading_jet": hist_leading_jet_wwj_production,
+            "hist_lepton_pt": hist_lepton_wwj_production,
+            "hist_leading_jet_pt": hist_leading_jet_wwj_production,
             "hist_lepton_eta": hist_lepton_eta_wwj_production,
             "hist_delta_r": hist_delta_r_wwj_production,
             "hist_missing_et": hist_missing_et_wwj_production,
@@ -1955,8 +1955,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_wwj_production
         },
         "zzj": {
-            "hist_lepton": hist_lepton_zzj_production,
-            "hist_leading_jet": hist_leading_jet_zzj_production,
+            "hist_lepton_pt": hist_lepton_zzj_production,
+            "hist_leading_jet_pt": hist_leading_jet_zzj_production,
             "hist_lepton_eta": hist_lepton_eta_zzj_production,
             "hist_delta_r": hist_delta_r_zzj_production,
             "hist_missing_et": hist_missing_et_zzj_production,
@@ -1968,8 +1968,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_zzj_production
         },
         "wzj": {
-            "hist_lepton": hist_lepton_wzj_production,
-            "hist_leading_jet": hist_leading_jet_wzj_production,
+            "hist_lepton_pt": hist_lepton_wzj_production,
+            "hist_leading_jet_pt": hist_leading_jet_wzj_production,
             "hist_lepton_eta": hist_lepton_eta_wzj_production,
             "hist_delta_r": hist_delta_r_wzj_production,
             "hist_missing_et": hist_missing_et_wzj_production,
