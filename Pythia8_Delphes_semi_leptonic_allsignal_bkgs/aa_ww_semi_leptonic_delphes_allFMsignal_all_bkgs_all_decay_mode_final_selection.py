@@ -43,9 +43,10 @@ hep.style.use("CMS")
 signal_files = {
 #    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM0_100.root",
 #    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM1_100.root",
-    "$FM_{2} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM2_100.root",
+    "FM2_Lambda4": "aa_ww_semi_leptonic_NP_1_FM2_100.root",
 #    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM3_100.root",
 }
+
 aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_decay.root"
 
 aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay.root"
@@ -98,7 +99,7 @@ def process_file(
 
     # Create ExRootTreeReader object
     treeReader = ROOT.ExRootTreeReader(chain)
-    numberOfEntries =  treeReader.GetEntries()
+    numberOfEntries = treeReader.GetEntries()
 
     # Counters for efficiency calculation
     # ✅ Initialize selection counters
@@ -362,7 +363,7 @@ def process_file(
 signal_cross_sections = {
     "$FM_{0} / \Lambda^4$": 0.01490319,   # pb
     "$FM_{1} / \Lambda^4$": 0.01508150,   # pb
-    "$FM_{2} / \Lambda^4$": 0.02142500,   # pb
+    "FM2_Lambda4": 0.02142500,   # pb
     "$FM_{3} / \Lambda^4$": 0.01644609    # pb
 }
 
@@ -484,8 +485,8 @@ signal_histograms = {}
 
 for signal_name in signal_files:
     signal_histograms[signal_name] = {
-        "hist_lepton_pt": ROOT.TH1F(f"hist_lepton_{signal_name}", f"Lepton pT Distribution ({signal_name}); p_{{T}} [GeV]; Entries", num_bins, *pt_range_lepton),
-        "hist_leading_jet_pt": ROOT.TH1F(f"hist_leading_jet_{signal_name}", f"Leading Jet pT Distribution ({signal_name}); p_{{T}} [GeV]; Entries", num_bins, *pt_range_jet),
+        "hist_lepton_pt": ROOT.TH1F(f"hist_lepton_pt_{signal_name}", f"Lepton pT Distribution ({signal_name}); p_{{T}} [GeV]; Entries", num_bins, *pt_range_lepton),
+        "hist_leading_jet_pt": ROOT.TH1F(f"hist_leading_jet_pt_{signal_name}", f"Leading Jet pT Distribution ({signal_name}); p_{{T}} [GeV]; Entries", num_bins, *pt_range_jet),
         "hist_lepton_eta": ROOT.TH1F(f"hist_lepton_eta_{signal_name}", f"Lepton Eta Distribution ({signal_name}); #eta; Entries", num_bins, *eta_range),
         "hist_delta_r": ROOT.TH1F(f"hist_delta_r_{signal_name}", f"Delta R Distribution ({signal_name}); ΔR; Entries", num_bins, *delta_r_range),
         "hist_missing_et": ROOT.TH1F(f"hist_missing_et_{signal_name}", f"Missing ET Distribution ({signal_name}); MET [GeV]; Entries", num_bins, *met_range),
@@ -503,8 +504,8 @@ for signal_name in signal_files:
 
 
 # === AA_WW Background ===
-hist_lepton_aa_ww = ROOT.TH1F("hist_lepton_aa_ww", "Lepton pT (aa_ww); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_aa_ww = ROOT.TH1F("hist_leading_jet_aa_ww", "Leading Jet pT (aa_ww); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_aa_ww = ROOT.TH1F("hist_lepton_pt_aa_ww", "Lepton pT (aa_ww); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_aa_ww = ROOT.TH1F("hist_leading_jet_pt_aa_ww", "Leading Jet pT (aa_ww); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_aa_ww = ROOT.TH1F("hist_lepton_eta_aa_ww", "Lepton Eta (aa_ww); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_aa_ww = ROOT.TH1F("hist_delta_r_aa_ww", "Delta R (aa_ww); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_aa_ww = ROOT.TH1F("hist_missing_et_aa_ww", "MET (aa_ww); MET [GeV]; Entries", num_bins, *met_range)
@@ -516,8 +517,8 @@ hist_m_w_hadronic_aa_ww = ROOT.TH1F("hist_m_w_hadronic_aa_ww", "Hadronic W Mass 
 hist_m_w_leptonic_aa_ww = ROOT.TH1F("hist_m_w_leptonic_aa_ww", "Leptonic W Mass (aa_ww); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === AA_TTBAR ===
-hist_lepton_aa_ttbar = ROOT.TH1F("hist_lepton_aa_ttbar", "Lepton pT (aa_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_aa_ttbar = ROOT.TH1F("hist_leading_jet_aa_ttbar", "Leading Jet pT (aa_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_aa_ttbar = ROOT.TH1F("hist_lepton_pt_aa_ttbar", "Lepton pT (aa_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_aa_ttbar = ROOT.TH1F("hist_leading_jet_pt_aa_ttbar", "Leading Jet pT (aa_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_aa_ttbar = ROOT.TH1F("hist_lepton_eta_aa_ttbar", "Lepton Eta (aa_ttbar); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_aa_ttbar = ROOT.TH1F("hist_delta_r_aa_ttbar", "Delta R (aa_ttbar); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_aa_ttbar = ROOT.TH1F("hist_missing_et_aa_ttbar", "MET (aa_ttbar); MET [GeV]; Entries", num_bins, *met_range)
@@ -529,8 +530,8 @@ hist_m_w_hadronic_aa_ttbar = ROOT.TH1F("hist_m_w_hadronic_aa_ttbar", "Hadronic W
 hist_m_w_leptonic_aa_ttbar = ROOT.TH1F("hist_m_w_leptonic_aa_ttbar", "Leptonic W Mass (aa_ttbar); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === AA_TAUTAU ===
-hist_lepton_aa_tautau = ROOT.TH1F("hist_lepton_aa_tautau", "Lepton pT (aa_tautau); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_aa_tautau = ROOT.TH1F("hist_leading_jet_aa_tautau", "Leading Jet pT (aa_tautau); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_aa_tautau = ROOT.TH1F("hist_lepton_pt_aa_tautau", "Lepton pT (aa_tautau); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_aa_tautau = ROOT.TH1F("hist_leading_jet_pt_aa_tautau", "Leading Jet pT (aa_tautau); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_aa_tautau = ROOT.TH1F("hist_lepton_eta_aa_tautau", "Lepton Eta (aa_tautau); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_aa_tautau = ROOT.TH1F("hist_delta_r_aa_tautau", "Delta R (aa_tautau); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_aa_tautau = ROOT.TH1F("hist_missing_et_aa_tautau", "MET (aa_tautau); MET [GeV]; Entries", num_bins, *met_range)
@@ -542,8 +543,8 @@ hist_m_w_hadronic_aa_tautau = ROOT.TH1F("hist_m_w_hadronic_aa_tautau", "Hadronic
 hist_m_w_leptonic_aa_tautau = ROOT.TH1F("hist_m_w_leptonic_aa_tautau", "Leptonic W Mass (aa_tautau); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === AA_MUMU ===
-hist_lepton_aa_mumu = ROOT.TH1F("hist_lepton_aa_mumu", "Lepton pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_aa_mumu = ROOT.TH1F("hist_leading_jet_aa_mumu", "Leading Jet pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_aa_mumu = ROOT.TH1F("hist_lepton_pt_aa_mumu", "Lepton pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_aa_mumu = ROOT.TH1F("hist_leading_jet_pt_aa_mumu", "Leading Jet pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_aa_mumu = ROOT.TH1F("hist_lepton_eta_aa_mumu", "Lepton Eta (aa_mumu); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_aa_mumu = ROOT.TH1F("hist_delta_r_aa_mumu", "Delta R (aa_mumu); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_aa_mumu = ROOT.TH1F("hist_missing_et_aa_mumu", "MET (aa_mumu); MET [GeV]; Entries", num_bins, *met_range)
@@ -555,8 +556,8 @@ hist_m_w_hadronic_aa_mumu = ROOT.TH1F("hist_m_w_hadronic_aa_mumu", "Hadronic W M
 hist_m_w_leptonic_aa_mumu = ROOT.TH1F("hist_m_w_leptonic_aa_mumu", "Leptonic W Mass (aa_mumu); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === Inclusive TTBAR ===
-hist_lepton_inclusive_ttbar = ROOT.TH1F("hist_lepton_inclusive_ttbar", "Lepton pT (inclusive_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_inclusive_ttbar = ROOT.TH1F("hist_leading_jet_inclusive_ttbar", "Leading Jet pT (inclusive_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_inclusive_ttbar = ROOT.TH1F("hist_lepton_pt_inclusive_ttbar", "Lepton pT (inclusive_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_inclusive_ttbar = ROOT.TH1F("hist_leading_jet_pt_inclusive_ttbar", "Leading Jet pT (inclusive_ttbar); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_inclusive_ttbar = ROOT.TH1F("hist_lepton_eta_inclusive_ttbar", "Lepton Eta (inclusive_ttbar); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_inclusive_ttbar = ROOT.TH1F("hist_delta_r_inclusive_ttbar", "Delta R (inclusive_ttbar); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_inclusive_ttbar = ROOT.TH1F("hist_missing_et_inclusive_ttbar", "MET (inclusive_ttbar); MET [GeV]; Entries", num_bins, *met_range)
@@ -568,8 +569,8 @@ hist_m_w_hadronic_inclusive_ttbar = ROOT.TH1F("hist_m_w_hadronic_inclusive_ttbar
 hist_m_w_leptonic_inclusive_ttbar = ROOT.TH1F("hist_m_w_leptonic_inclusive_ttbar", "Leptonic W Mass (inclusive_ttbar); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === SINGLE TOP ===
-hist_lepton_single_top = ROOT.TH1F("hist_lepton_single_top", "Lepton pT (single_top); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_single_top = ROOT.TH1F("hist_leading_jet_single_top", "Leading Jet pT (single_top); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_single_top = ROOT.TH1F("hist_lepton_pt_single_top", "Lepton pT (single_top); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_single_top = ROOT.TH1F("hist_leading_jet_pt_single_top", "Leading Jet pT (single_top); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_single_top = ROOT.TH1F("hist_lepton_eta_single_top", "Lepton Eta (single_top); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_single_top = ROOT.TH1F("hist_delta_r_single_top", "Delta R (single_top); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_single_top = ROOT.TH1F("hist_missing_et_single_top", "MET (single_top); MET [GeV]; Entries", num_bins, *met_range)
@@ -581,8 +582,8 @@ hist_m_w_hadronic_single_top = ROOT.TH1F("hist_m_w_hadronic_single_top", "Hadron
 hist_m_w_leptonic_single_top = ROOT.TH1F("hist_m_w_leptonic_single_top", "Leptonic W Mass (single_top); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === W PRODUCTION ===
-hist_lepton_w_production = ROOT.TH1F("hist_lepton_w_production", "Lepton pT (w_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_w_production = ROOT.TH1F("hist_leading_jet_w_production", "Leading Jet pT (w_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_w_production = ROOT.TH1F("hist_lepton_pt_w_production", "Lepton pT (w_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_w_production = ROOT.TH1F("hist_leading_jet_pt_w_production", "Leading Jet pT (w_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_w_production = ROOT.TH1F("hist_lepton_eta_w_production", "Lepton Eta (w_production); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_w_production = ROOT.TH1F("hist_delta_r_w_production", "Delta R (w_production); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_w_production = ROOT.TH1F("hist_missing_et_w_production", "MET (w_production); MET [GeV]; Entries", num_bins, *met_range)
@@ -594,8 +595,8 @@ hist_m_w_hadronic_w_production = ROOT.TH1F("hist_m_w_hadronic_w_production", "Ha
 hist_m_w_leptonic_w_production = ROOT.TH1F("hist_m_w_leptonic_w_production", "Leptonic W Mass (w_production); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 
 # === Z PRODUCTION ===
-hist_lepton_z_production = ROOT.TH1F("hist_lepton_z_production", "Lepton pT (z_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_z_production = ROOT.TH1F("hist_leading_jet_z_production", "Leading Jet pT (z_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_z_production = ROOT.TH1F("hist_lepton_pt_z_production", "Lepton pT (z_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_z_production = ROOT.TH1F("hist_leading_jet_pt_z_production", "Leading Jet pT (z_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_z_production = ROOT.TH1F("hist_lepton_eta_z_production", "Lepton Eta (z_production); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_z_production = ROOT.TH1F("hist_delta_r_z_production", "Delta R (z_production); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_z_production = ROOT.TH1F("hist_missing_et_z_production", "MET (z_production); MET [GeV]; Entries", num_bins, *met_range)
@@ -608,8 +609,8 @@ hist_m_w_leptonic_z_production = ROOT.TH1F("hist_m_w_leptonic_z_production", "Le
 
 
 # === WWJ PRODUCTION ===
-hist_lepton_wwj_production = ROOT.TH1F("hist_lepton_wwj_production", "Lepton pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_wwj_production = ROOT.TH1F("hist_leading_jet_wwj_production", "Leading Jet pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_wwj_production = ROOT.TH1F("hist_lepton_pt_wwj_production", "Lepton pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_wwj_production = ROOT.TH1F("hist_leading_jet_pt_wwj_production", "Leading Jet pT (wwj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_wwj_production = ROOT.TH1F("hist_lepton_eta_wwj_production", "Lepton Eta (wwj_production); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_wwj_production = ROOT.TH1F("hist_delta_r_wwj_production", "Delta R (wwj_production); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_wwj_production = ROOT.TH1F("hist_missing_et_wwj_production", "MET (wwj_production); MET [GeV]; Entries", num_bins, *met_range)
@@ -622,8 +623,8 @@ hist_m_w_leptonic_wwj_production = ROOT.TH1F("hist_m_w_leptonic_wwj_production",
 
 
 # === ZZJ PRODUCTION ===
-hist_lepton_zzj_production = ROOT.TH1F("hist_lepton_zzj_production", "Lepton pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_zzj_production = ROOT.TH1F("hist_leading_jet_zzj_production", "Leading Jet pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_zzj_production = ROOT.TH1F("hist_lepton_pt_zzj_production", "Lepton pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_zzj_production = ROOT.TH1F("hist_leading_jet_pt_zzj_production", "Leading Jet pT (zzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_zzj_production = ROOT.TH1F("hist_lepton_eta_zzj_production", "Lepton Eta (zzj_production); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_zzj_production = ROOT.TH1F("hist_delta_r_zzj_production", "Delta R (zzj_production); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_zzj_production = ROOT.TH1F("hist_missing_et_zzj_production", "MET (zzj_production); MET [GeV]; Entries", num_bins, *met_range)
@@ -636,8 +637,8 @@ hist_m_w_leptonic_zzj_production = ROOT.TH1F("hist_m_w_leptonic_zzj_production",
 
 
 # === WZJ PRODUCTION ===
-hist_lepton_wzj_production = ROOT.TH1F("hist_lepton_wzj_production", "Lepton pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_wzj_production = ROOT.TH1F("hist_leading_jet_wzj_production", "Leading Jet pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_pt_wzj_production = ROOT.TH1F("hist_lepton_pt_wzj_production", "Lepton pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_wzj_production = ROOT.TH1F("hist_leading_jet_pt_wzj_production", "Leading Jet pT (wzj_production); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
 hist_lepton_eta_wzj_production = ROOT.TH1F("hist_lepton_eta_wzj_production", "Lepton Eta (wzj_production); #eta; Entries", num_bins, *eta_range)
 hist_delta_r_wzj_production = ROOT.TH1F("hist_delta_r_wzj_production", "Delta R (wzj_production); ΔR; Entries", num_bins, *delta_r_range)
 hist_missing_et_wzj_production = ROOT.TH1F("hist_missing_et_wzj_production", "MET (wzj_production); MET [GeV]; Entries", num_bins, *met_range)
@@ -703,141 +704,141 @@ for signal_name, file_path in signal_files.items():
 
 # Auto-generated background process blocks with eta_lepton efficiency
 
-(hist_lepton_aa_ww, hist_leading_jet_aa_ww, hist_lepton_eta_aa_ww, hist_delta_r_aa_ww,
+(hist_lepton_pt_aa_ww, hist_leading_jet_pt_aa_ww, hist_lepton_eta_aa_ww, hist_delta_r_aa_ww,
  hist_missing_et_aa_ww, hist_subleading_jet_eta_aa_ww, hist_leading_jet_eta_aa_ww, hist_jet_centrality_aa_ww,
  hist_delta_eta_jj_aa_ww, hist_m_w_leptonic_aa_ww, hist_m_w_hadronic_aa_ww,
  background_efficiency_pre_lepton_aa_ww, background_efficiency_pre_jets_aa_ww,
  background_efficiency_eta_lepton_aa_ww, background_efficiency_jet_centrality_aa_ww,
  background_efficiency_pre_aa_ww, background_efficiency_final_aa_ww) = process_file(
-    aa_ww_background_file_path, hist_lepton_aa_ww, hist_leading_jet_aa_ww, hist_lepton_eta_aa_ww,
+    aa_ww_background_file_path, hist_lepton_pt_aa_ww, hist_leading_jet_pt_aa_ww, hist_lepton_eta_aa_ww,
     hist_delta_r_aa_ww, hist_missing_et_aa_ww, hist_subleading_jet_eta_aa_ww, hist_leading_jet_eta_aa_ww,
     hist_jet_centrality_aa_ww, hist_delta_eta_jj_aa_ww, hist_m_w_leptonic_aa_ww, hist_m_w_hadronic_aa_ww
 )
 
 
 
-(hist_lepton_aa_ttbar, hist_leading_jet_aa_ttbar, hist_lepton_eta_aa_ttbar, hist_delta_r_aa_ttbar,
+(hist_lepton_pt_aa_ttbar, hist_leading_jet_pt_aa_ttbar, hist_lepton_eta_aa_ttbar, hist_delta_r_aa_ttbar,
  hist_missing_et_aa_ttbar, hist_subleading_jet_eta_aa_ttbar, hist_leading_jet_eta_aa_ttbar, hist_jet_centrality_aa_ttbar,
  hist_delta_eta_jj_aa_ttbar, hist_m_w_leptonic_aa_ttbar, hist_m_w_hadronic_aa_ttbar,
  background_efficiency_pre_lepton_aa_ttbar, background_efficiency_pre_jets_aa_ttbar,
  background_efficiency_eta_lepton_aa_ttbar, background_efficiency_jet_centrality_aa_ttbar,
  background_efficiency_pre_aa_ttbar, background_efficiency_final_aa_ttbar) = process_file(
-    aa_ttbar_background_file_path, hist_lepton_aa_ttbar, hist_leading_jet_aa_ttbar, hist_lepton_eta_aa_ttbar,
+    aa_ttbar_background_file_path, hist_lepton_pt_aa_ttbar, hist_leading_jet_pt_aa_ttbar, hist_lepton_eta_aa_ttbar,
     hist_delta_r_aa_ttbar, hist_missing_et_aa_ttbar, hist_subleading_jet_eta_aa_ttbar, hist_leading_jet_eta_aa_ttbar,
     hist_jet_centrality_aa_ttbar, hist_delta_eta_jj_aa_ttbar, hist_m_w_leptonic_aa_ttbar, hist_m_w_hadronic_aa_ttbar
 )
 
 
 
-(hist_lepton_aa_tautau, hist_leading_jet_aa_tautau, hist_lepton_eta_aa_tautau, hist_delta_r_aa_tautau,
+(hist_lepton_pt_aa_tautau, hist_leading_jet_pt_aa_tautau, hist_lepton_eta_aa_tautau, hist_delta_r_aa_tautau,
  hist_missing_et_aa_tautau, hist_subleading_jet_eta_aa_tautau, hist_leading_jet_eta_aa_tautau, hist_jet_centrality_aa_tautau,
  hist_delta_eta_jj_aa_tautau, hist_m_w_leptonic_aa_tautau, hist_m_w_hadronic_aa_tautau,
  background_efficiency_pre_lepton_aa_tautau, background_efficiency_pre_jets_aa_tautau,
  background_efficiency_eta_lepton_aa_tautau, background_efficiency_jet_centrality_aa_tautau,
  background_efficiency_pre_aa_tautau, background_efficiency_final_aa_tautau) = process_file(
-    aa_tautau_background_file_path, hist_lepton_aa_tautau, hist_leading_jet_aa_tautau, hist_lepton_eta_aa_tautau,
+    aa_tautau_background_file_path, hist_lepton_pt_aa_tautau, hist_leading_jet_pt_aa_tautau, hist_lepton_eta_aa_tautau,
     hist_delta_r_aa_tautau, hist_missing_et_aa_tautau, hist_subleading_jet_eta_aa_tautau, hist_leading_jet_eta_aa_tautau,
     hist_jet_centrality_aa_tautau, hist_delta_eta_jj_aa_tautau, hist_m_w_leptonic_aa_tautau, hist_m_w_hadronic_aa_tautau
 )
 
 
 
-(hist_lepton_aa_mumu, hist_leading_jet_aa_mumu, hist_lepton_eta_aa_mumu, hist_delta_r_aa_mumu,
+(hist_lepton_pt_aa_mumu, hist_leading_jet_pt_aa_mumu, hist_lepton_eta_aa_mumu, hist_delta_r_aa_mumu,
  hist_missing_et_aa_mumu, hist_subleading_jet_eta_aa_mumu, hist_leading_jet_eta_aa_mumu, hist_jet_centrality_aa_mumu,
  hist_delta_eta_jj_aa_mumu, hist_m_w_leptonic_aa_mumu, hist_m_w_hadronic_aa_mumu,
  background_efficiency_pre_lepton_aa_mumu, background_efficiency_pre_jets_aa_mumu,
  background_efficiency_eta_lepton_aa_mumu, background_efficiency_jet_centrality_aa_mumu,
  background_efficiency_pre_aa_mumu, background_efficiency_final_aa_mumu) = process_file(
-    aa_mumu_background_file_path, hist_lepton_aa_mumu, hist_leading_jet_aa_mumu, hist_lepton_eta_aa_mumu,
+    aa_mumu_background_file_path, hist_lepton_pt_aa_mumu, hist_leading_jet_pt_aa_mumu, hist_lepton_eta_aa_mumu,
     hist_delta_r_aa_mumu, hist_missing_et_aa_mumu, hist_subleading_jet_eta_aa_mumu, hist_leading_jet_eta_aa_mumu,
     hist_jet_centrality_aa_mumu, hist_delta_eta_jj_aa_mumu, hist_m_w_leptonic_aa_mumu, hist_m_w_hadronic_aa_mumu
 )
 
 
 
-(hist_lepton_inclusive_ttbar, hist_leading_jet_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar, hist_delta_r_inclusive_ttbar,
+(hist_lepton_pt_inclusive_ttbar, hist_leading_jet_pt_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar, hist_delta_r_inclusive_ttbar,
  hist_missing_et_inclusive_ttbar, hist_subleading_jet_eta_inclusive_ttbar, hist_leading_jet_eta_inclusive_ttbar, hist_jet_centrality_inclusive_ttbar,
  hist_delta_eta_jj_inclusive_ttbar, hist_m_w_leptonic_inclusive_ttbar, hist_m_w_hadronic_inclusive_ttbar,
  background_efficiency_pre_lepton_inclusive_ttbar, background_efficiency_pre_jets_inclusive_ttbar,
  background_efficiency_eta_lepton_inclusive_ttbar, background_efficiency_jet_centrality_inclusive_ttbar,
  background_efficiency_pre_inclusive_ttbar, background_efficiency_final_inclusive_ttbar) = process_file(
-    inclusive_ttbar_background_file_path, hist_lepton_inclusive_ttbar, hist_leading_jet_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar,
+    inclusive_ttbar_background_file_path, hist_lepton_pt_inclusive_ttbar, hist_leading_jet_pt_inclusive_ttbar, hist_lepton_eta_inclusive_ttbar,
     hist_delta_r_inclusive_ttbar, hist_missing_et_inclusive_ttbar, hist_subleading_jet_eta_inclusive_ttbar, hist_leading_jet_eta_inclusive_ttbar,
     hist_jet_centrality_inclusive_ttbar, hist_delta_eta_jj_inclusive_ttbar, hist_m_w_leptonic_inclusive_ttbar, hist_m_w_hadronic_inclusive_ttbar
 )
 
 
 
-(hist_lepton_single_top, hist_leading_jet_single_top, hist_lepton_eta_single_top, hist_delta_r_single_top,
+(hist_lepton_pt_single_top, hist_leading_jet_pt_single_top, hist_lepton_eta_single_top, hist_delta_r_single_top,
  hist_missing_et_single_top, hist_subleading_jet_eta_single_top, hist_leading_jet_eta_single_top, hist_jet_centrality_single_top,
  hist_delta_eta_jj_single_top, hist_m_w_leptonic_single_top, hist_m_w_hadronic_single_top,
  background_efficiency_pre_lepton_single_top, background_efficiency_pre_jets_single_top,
  background_efficiency_eta_lepton_single_top, background_efficiency_jet_centrality_single_top,
  background_efficiency_pre_single_top, background_efficiency_final_single_top) = process_file(
-    single_top_background_file_path, hist_lepton_single_top, hist_leading_jet_single_top, hist_lepton_eta_single_top,
+    single_top_background_file_path, hist_lepton_pt_single_top, hist_leading_jet_pt_single_top, hist_lepton_eta_single_top,
     hist_delta_r_single_top, hist_missing_et_single_top, hist_subleading_jet_eta_single_top, hist_leading_jet_eta_single_top,
     hist_jet_centrality_single_top, hist_delta_eta_jj_single_top, hist_m_w_leptonic_single_top, hist_m_w_hadronic_single_top
 )
 
 
 
-(hist_lepton_w_production, hist_leading_jet_w_production, hist_lepton_eta_w_production, hist_delta_r_w_production,
+(hist_lepton_pt_w_production, hist_leading_jet_pt_w_production, hist_lepton_eta_w_production, hist_delta_r_w_production,
  hist_missing_et_w_production, hist_subleading_jet_eta_w_production, hist_leading_jet_eta_w_production, hist_jet_centrality_w_production,
  hist_delta_eta_jj_w_production, hist_m_w_leptonic_w_production, hist_m_w_hadronic_w_production,
  background_efficiency_pre_lepton_w_production, background_efficiency_pre_jets_w_production,
  background_efficiency_eta_lepton_w_production, background_efficiency_jet_centrality_w_production,
  background_efficiency_pre_w_production, background_efficiency_final_w_production) = process_file(
-    w_production_background_file_path, hist_lepton_w_production, hist_leading_jet_w_production, hist_lepton_eta_w_production,
+    w_production_background_file_path, hist_lepton_pt_w_production, hist_leading_jet_pt_w_production, hist_lepton_eta_w_production,
     hist_delta_r_w_production, hist_missing_et_w_production, hist_subleading_jet_eta_w_production, hist_leading_jet_eta_w_production,
     hist_jet_centrality_w_production, hist_delta_eta_jj_w_production, hist_m_w_leptonic_w_production, hist_m_w_hadronic_w_production
 )
 
 
 
-(hist_lepton_z_production, hist_leading_jet_z_production, hist_lepton_eta_z_production, hist_delta_r_z_production,
+(hist_lepton_pt_z_production, hist_leading_jet_pt_z_production, hist_lepton_eta_z_production, hist_delta_r_z_production,
  hist_missing_et_z_production, hist_subleading_jet_eta_z_production, hist_leading_jet_eta_z_production, hist_jet_centrality_z_production,
  hist_delta_eta_jj_z_production, hist_m_w_leptonic_z_production, hist_m_w_hadronic_z_production,
  background_efficiency_pre_lepton_z_production, background_efficiency_pre_jets_z_production,
  background_efficiency_eta_lepton_z_production, background_efficiency_jet_centrality_z_production,
  background_efficiency_pre_z_production, background_efficiency_final_z_production) = process_file(
-    z_production_background_file_path, hist_lepton_z_production, hist_leading_jet_z_production, hist_lepton_eta_z_production,
+    z_production_background_file_path, hist_lepton_pt_z_production, hist_leading_jet_pt_z_production, hist_lepton_eta_z_production,
     hist_delta_r_z_production, hist_missing_et_z_production, hist_subleading_jet_eta_z_production, hist_leading_jet_eta_z_production,
     hist_jet_centrality_z_production, hist_delta_eta_jj_z_production, hist_m_w_leptonic_z_production, hist_m_w_hadronic_z_production
 )
 
 
 
-(hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production, hist_delta_r_wwj_production,
+(hist_lepton_pt_wwj_production, hist_leading_jet_pt_wwj_production, hist_lepton_eta_wwj_production, hist_delta_r_wwj_production,
  hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production, hist_jet_centrality_wwj_production,
  hist_delta_eta_jj_wwj_production, hist_m_w_leptonic_wwj_production, hist_m_w_hadronic_wwj_production,
  background_efficiency_pre_lepton_wwj_production, background_efficiency_pre_jets_wwj_production,
  background_efficiency_eta_lepton_wwj_production, background_efficiency_jet_centrality_wwj_production,
  background_efficiency_pre_wwj_production, background_efficiency_final_wwj_production) = process_file(
-    wwj_production_background_file_path, hist_lepton_wwj_production, hist_leading_jet_wwj_production, hist_lepton_eta_wwj_production,
+    wwj_production_background_file_path, hist_lepton_pt_wwj_production, hist_leading_jet_pt_wwj_production, hist_lepton_eta_wwj_production,
     hist_delta_r_wwj_production, hist_missing_et_wwj_production, hist_subleading_jet_eta_wwj_production, hist_leading_jet_eta_wwj_production,
     hist_jet_centrality_wwj_production, hist_delta_eta_jj_wwj_production, hist_m_w_leptonic_wwj_production, hist_m_w_hadronic_wwj_production
 )
 
 
-(hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production, hist_delta_r_zzj_production,
+(hist_lepton_pt_zzj_production, hist_leading_jet_pt_zzj_production, hist_lepton_eta_zzj_production, hist_delta_r_zzj_production,
  hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production, hist_jet_centrality_zzj_production,
  hist_delta_eta_jj_zzj_production, hist_m_w_leptonic_zzj_production, hist_m_w_hadronic_zzj_production,
  background_efficiency_pre_lepton_zzj_production, background_efficiency_pre_jets_zzj_production,
  background_efficiency_eta_lepton_zzj_production, background_efficiency_jet_centrality_zzj_production,
  background_efficiency_pre_zzj_production, background_efficiency_final_zzj_production) = process_file(
-    zzj_production_background_file_path, hist_lepton_zzj_production, hist_leading_jet_zzj_production, hist_lepton_eta_zzj_production,
+    zzj_production_background_file_path, hist_lepton_pt_zzj_production, hist_leading_jet_pt_zzj_production, hist_lepton_eta_zzj_production,
     hist_delta_r_zzj_production, hist_missing_et_zzj_production, hist_subleading_jet_eta_zzj_production, hist_leading_jet_eta_zzj_production,
     hist_jet_centrality_zzj_production, hist_delta_eta_jj_zzj_production, hist_m_w_leptonic_zzj_production, hist_m_w_hadronic_zzj_production
 )
 
 
-(hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production, hist_delta_r_wzj_production,
+(hist_lepton_pt_wzj_production, hist_leading_jet_pt_wzj_production, hist_lepton_eta_wzj_production, hist_delta_r_wzj_production,
  hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production, hist_jet_centrality_wzj_production,
  hist_delta_eta_jj_wzj_production, hist_m_w_leptonic_wzj_production, hist_m_w_hadronic_wzj_production,
  background_efficiency_pre_lepton_wzj_production, background_efficiency_pre_jets_wzj_production,
  background_efficiency_eta_lepton_wzj_production, background_efficiency_jet_centrality_wzj_production,
  background_efficiency_pre_wzj_production, background_efficiency_final_wzj_production) = process_file(
-    wzj_production_background_file_path, hist_lepton_wzj_production, hist_leading_jet_wzj_production, hist_lepton_eta_wzj_production,
+    wzj_production_background_file_path, hist_lepton_pt_wzj_production, hist_leading_jet_pt_wzj_production, hist_lepton_eta_wzj_production,
     hist_delta_r_wzj_production, hist_missing_et_wzj_production, hist_subleading_jet_eta_wzj_production, hist_leading_jet_eta_wzj_production,
     hist_jet_centrality_wzj_production, hist_delta_eta_jj_wzj_production, hist_m_w_leptonic_wzj_production, hist_m_w_hadronic_wzj_production
 )
@@ -948,8 +949,8 @@ for signal_name, histograms in signal_histograms.items():
 
 # === Differential cross-sections for aa_ww background ===
 background_dsigma_aa_ww = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_aa_ww, aa_ww_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_aa_ww, aa_ww_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_aa_ww, aa_ww_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_aa_ww, aa_ww_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_aa_ww, aa_ww_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_aa_ww, aa_ww_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_aa_ww, aa_ww_background_cross_section, bin_width_met),
@@ -963,8 +964,8 @@ background_dsigma_aa_ww = {
 
 # === Differential cross-sections for aa_ttbar background ===
 background_dsigma_aa_ttbar = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_aa_ttbar, aa_ttbar_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_aa_ttbar, aa_ttbar_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_aa_ttbar, aa_ttbar_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_aa_ttbar, aa_ttbar_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_aa_ttbar, aa_ttbar_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_aa_ttbar, aa_ttbar_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_aa_ttbar, aa_ttbar_background_cross_section, bin_width_met),
@@ -978,8 +979,8 @@ background_dsigma_aa_ttbar = {
 
 # === Differential cross-sections for aa_tautau background ===
 background_dsigma_aa_tautau = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_aa_tautau, aa_tautau_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_aa_tautau, aa_tautau_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_aa_tautau, aa_tautau_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_aa_tautau, aa_tautau_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_aa_tautau, aa_tautau_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_aa_tautau, aa_tautau_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_aa_tautau, aa_tautau_background_cross_section, bin_width_met),
@@ -993,8 +994,8 @@ background_dsigma_aa_tautau = {
 
 # === Differential cross-sections for aa_mumu background ===
 background_dsigma_aa_mumu = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_aa_mumu, aa_mumu_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_aa_mumu, aa_mumu_background_cross_section, bin_width_met),
@@ -1008,8 +1009,8 @@ background_dsigma_aa_mumu = {
 
 # === Differential cross-sections for inclusive_ttbar background ===
 background_dsigma_inclusive_ttbar = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_inclusive_ttbar, inclusive_ttbar_background_cross_section, bin_width_met),
@@ -1023,8 +1024,8 @@ background_dsigma_inclusive_ttbar = {
 
 # === Differential cross-sections for single_top background ===
 background_dsigma_single_top = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_single_top, single_top_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_single_top, single_top_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_single_top, single_top_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_single_top, single_top_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_single_top, single_top_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_single_top, single_top_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_single_top, single_top_background_cross_section, bin_width_met),
@@ -1038,8 +1039,8 @@ background_dsigma_single_top = {
 
 # === Differential cross-sections for w_production background ===
 background_dsigma_w_production = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_w_production, w_production_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_w_production, w_production_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_w_production, w_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_w_production, w_production_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_w_production, w_production_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_w_production, w_production_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_w_production, w_production_background_cross_section, bin_width_met),
@@ -1053,8 +1054,8 @@ background_dsigma_w_production = {
 
 # === Differential cross-sections for z_production background ===
 background_dsigma_z_production = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_z_production, z_production_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_z_production, z_production_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_z_production, z_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_z_production, z_production_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_z_production, z_production_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_z_production, z_production_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_z_production, z_production_background_cross_section, bin_width_met),
@@ -1071,8 +1072,8 @@ background_dsigma_z_production = {
 
 # === Differential cross-sections for wwj_production background ===
 background_dsigma_wwj_production = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_wwj_production, wwj_production_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_wwj_production, wwj_production_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_wwj_production, wwj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_wwj_production, wwj_production_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_wwj_production, wwj_production_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_wwj_production, wwj_production_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_wwj_production, wwj_production_background_cross_section, bin_width_met),
@@ -1089,8 +1090,8 @@ background_dsigma_wwj_production = {
 
 # === Differential cross-sections for zzj_production background ===
 background_dsigma_zzj_production = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_zzj_production, zzj_production_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_zzj_production, zzj_production_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_zzj_production, zzj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_zzj_production, zzj_production_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_zzj_production, zzj_production_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_zzj_production, zzj_production_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_zzj_production, zzj_production_background_cross_section, bin_width_met),
@@ -1106,8 +1107,8 @@ background_dsigma_zzj_production = {
 
 # === Differential cross-sections for wzj_production background ===
 background_dsigma_wzj_production = {
-    "pt_bins_lepton": calculate_dsigma(hist_lepton_wzj_production, wzj_production_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet": calculate_dsigma(hist_leading_jet_wzj_production, wzj_production_background_cross_section, bin_width_pt_jet),
+    "pt_bins_lepton": calculate_dsigma(hist_lepton_pt_wzj_production, wzj_production_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet": calculate_dsigma(hist_leading_jet_pt_wzj_production, wzj_production_background_cross_section, bin_width_pt_jet),
     "eta_bins_lepton": calculate_dsigma(hist_lepton_eta_wzj_production, wzj_production_background_cross_section, bin_width_eta),
     "delta_r_bins": calculate_dsigma(hist_delta_r_wzj_production, wzj_production_background_cross_section, bin_width_delta_r),
     "met_bins": calculate_dsigma(hist_missing_et_wzj_production, wzj_production_background_cross_section, bin_width_met),
@@ -1140,7 +1141,7 @@ plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 signal_colors = {
     "$FM_{0} / \Lambda^4$": "green",
     "$FM_{1} / \Lambda^4$": "purple",
-    "$FM_{2} / \Lambda^4$": "red",
+    "FM2_Lambda4": "red",
     "$FM_{3} / \Lambda^4$": "orange"
 }
 
@@ -1832,14 +1833,14 @@ try:
     # ✅ Create signal directories with sanitized names
     signal_dirs = {}
     for signal_name in signal_files.keys():
-        clean_signal_name = signal_name.replace("$", "").replace("{", "").replace("}", "").replace("\\", "").replace(" ", "_")
-        signal_dirs[signal_name] = output_file.mkdir(f"signal_{clean_signal_name}")
+        signal_dirs[signal_name] = output_file.mkdir(f"signal_{signal_name}")
+
 
     # ✅ Define background histograms
     background_histogram_sets = {
         "aa_ww": {
-            "hist_lepton_pt": hist_lepton_aa_ww,
-            "hist_leading_jet_pt": hist_leading_jet_aa_ww,
+            "hist_lepton_pt": hist_lepton_pt_aa_ww,
+            "hist_leading_jet_pt": hist_leading_jet_pt_aa_ww,
             "hist_lepton_eta": hist_lepton_eta_aa_ww,
             "hist_delta_r": hist_delta_r_aa_ww,
             "hist_missing_et": hist_missing_et_aa_ww,
@@ -1851,8 +1852,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_ww
         },
         "aa_ttbar": {
-            "hist_lepton_pt": hist_lepton_aa_ttbar,
-            "hist_leading_jet_pt": hist_leading_jet_aa_ttbar,
+            "hist_lepton_pt": hist_lepton_pt_aa_ttbar,
+            "hist_leading_jet_pt": hist_leading_jet_pt_aa_ttbar,
             "hist_lepton_eta": hist_lepton_eta_aa_ttbar,
             "hist_delta_r": hist_delta_r_aa_ttbar,
             "hist_missing_et": hist_missing_et_aa_ttbar,
@@ -1864,8 +1865,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_ttbar
         },
         "aa_tautau": {
-            "hist_lepton_pt": hist_lepton_aa_tautau,
-            "hist_leading_jet_pt": hist_leading_jet_aa_tautau,
+            "hist_lepton_pt": hist_lepton_pt_aa_tautau,
+            "hist_leading_jet_pt": hist_leading_jet_pt_aa_tautau,
             "hist_lepton_eta": hist_lepton_eta_aa_tautau,
             "hist_delta_r": hist_delta_r_aa_tautau,
             "hist_missing_et": hist_missing_et_aa_tautau,
@@ -1877,8 +1878,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_tautau
         },
         "aa_mumu": {
-            "hist_lepton_pt": hist_lepton_aa_mumu,
-            "hist_leading_jet_pt": hist_leading_jet_aa_mumu,
+            "hist_lepton_pt": hist_lepton_pt_aa_mumu,
+            "hist_leading_jet_pt": hist_leading_jet_pt_aa_mumu,
             "hist_lepton_eta": hist_lepton_eta_aa_mumu,
             "hist_delta_r": hist_delta_r_aa_mumu,
             "hist_missing_et": hist_missing_et_aa_mumu,
@@ -1890,8 +1891,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_aa_mumu
         },
         "inclusive_ttbar": {
-            "hist_lepton_pt": hist_lepton_inclusive_ttbar,
-            "hist_leading_jet_pt": hist_leading_jet_inclusive_ttbar,
+            "hist_lepton_pt": hist_lepton_pt_inclusive_ttbar,
+            "hist_leading_jet_pt": hist_leading_jet_pt_inclusive_ttbar,
             "hist_lepton_eta": hist_lepton_eta_inclusive_ttbar,
             "hist_delta_r": hist_delta_r_inclusive_ttbar,
             "hist_missing_et": hist_missing_et_inclusive_ttbar,
@@ -1903,8 +1904,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_inclusive_ttbar
         },
         "single_top": {
-            "hist_lepton_pt": hist_lepton_single_top,
-            "hist_leading_jet_pt": hist_leading_jet_single_top,
+            "hist_lepton_pt": hist_lepton_pt_single_top,
+            "hist_leading_jet_pt": hist_leading_jet_pt_single_top,
             "hist_lepton_eta": hist_lepton_eta_single_top,
             "hist_delta_r": hist_delta_r_single_top,
             "hist_missing_et": hist_missing_et_single_top,
@@ -1916,8 +1917,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_single_top
         },
         "w_production": {
-            "hist_lepton_pt": hist_lepton_w_production,
-            "hist_leading_jet_pt": hist_leading_jet_w_production,
+            "hist_lepton_pt": hist_lepton_pt_w_production,
+            "hist_leading_jet_pt": hist_leading_jet_pt_w_production,
             "hist_lepton_eta": hist_lepton_eta_w_production,
             "hist_delta_r": hist_delta_r_w_production,
             "hist_missing_et": hist_missing_et_w_production,
@@ -1929,8 +1930,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_w_production
         },
         "z_production": {
-            "hist_lepton_pt": hist_lepton_z_production,
-            "hist_leading_jet_pt": hist_leading_jet_z_production,
+            "hist_lepton_pt": hist_lepton_pt_z_production,
+            "hist_leading_jet_pt": hist_leading_jet_pt_z_production,
             "hist_lepton_eta": hist_lepton_eta_z_production,
             "hist_delta_r": hist_delta_r_z_production,
             "hist_missing_et": hist_missing_et_z_production,
@@ -1942,8 +1943,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_z_production
         },
         "wwj": {
-            "hist_lepton_pt": hist_lepton_wwj_production,
-            "hist_leading_jet_pt": hist_leading_jet_wwj_production,
+            "hist_lepton_pt": hist_lepton_pt_wwj_production,
+            "hist_leading_jet_pt": hist_leading_jet_pt_wwj_production,
             "hist_lepton_eta": hist_lepton_eta_wwj_production,
             "hist_delta_r": hist_delta_r_wwj_production,
             "hist_missing_et": hist_missing_et_wwj_production,
@@ -1955,8 +1956,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_wwj_production
         },
         "zzj": {
-            "hist_lepton_pt": hist_lepton_zzj_production,
-            "hist_leading_jet_pt": hist_leading_jet_zzj_production,
+            "hist_lepton_pt": hist_lepton_pt_zzj_production,
+            "hist_leading_jet_pt": hist_leading_jet_pt_zzj_production,
             "hist_lepton_eta": hist_lepton_eta_zzj_production,
             "hist_delta_r": hist_delta_r_zzj_production,
             "hist_missing_et": hist_missing_et_zzj_production,
@@ -1968,8 +1969,8 @@ try:
             "hist_m_w_leptonic": hist_m_w_leptonic_zzj_production
         },
         "wzj": {
-            "hist_lepton_pt": hist_lepton_wzj_production,
-            "hist_leading_jet_pt": hist_leading_jet_wzj_production,
+            "hist_lepton_pt": hist_lepton_pt_wzj_production,
+            "hist_leading_jet_pt": hist_leading_jet_pt_wzj_production,
             "hist_lepton_eta": hist_lepton_eta_wzj_production,
             "hist_delta_r": hist_delta_r_wzj_production,
             "hist_missing_et": hist_missing_et_wzj_production,
