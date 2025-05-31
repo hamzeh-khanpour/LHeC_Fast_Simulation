@@ -9,9 +9,12 @@ n_samples = 100000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_pb = 0.02142500
+signal_cross_section_pb = 0.014288200000000001
+
 background_cross_sections_pb = {
-    "aa_ww": 0.0150743,
+    "aa_ww": 0.0099465,
+#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
+#  0.0150743   for  aa_ww_semi_leptonic_SM
     "aa_ttbar": 4.824851e-03 / 100.0,
     "aa_tautau": 2.51510000,
     "aa_mumu": 2.57270000,

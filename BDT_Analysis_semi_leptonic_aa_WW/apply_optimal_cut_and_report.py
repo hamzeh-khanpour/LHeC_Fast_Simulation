@@ -15,12 +15,16 @@ n_generated = 1_000_000
 luminosity_fb = 100.0
 luminosity_pb = luminosity_fb * 1000.0  # [pb^-1]
 
-signal_cross_section_pb = 0.02142500    # [pb] FM2
-sigma_SM = 0.0150                       # [pb] (Standard Model-only signal prediction)
+signal_cross_section_pb = 0.014288200000000001    # [pb] FM2
+sigma_SM = 0.0099465                              # [pb] (Standard Model-only signal prediction)
+#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
+#  0.0150743   for  aa_ww_semi_leptonic_SM
 
 # Cross sections (pb) for backgrounds
 background_cross_sections_pb = {
-    "aa_ww": 0.0150743,
+    "aa_ww": 0.0099465,
+#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
+#  0.0150743   for  aa_ww_semi_leptonic_SM
     "aa_ttbar": 4.824851e-03 / 100.0,
     "aa_tautau": 2.51510000,
     "aa_mumu": 2.57270000,
