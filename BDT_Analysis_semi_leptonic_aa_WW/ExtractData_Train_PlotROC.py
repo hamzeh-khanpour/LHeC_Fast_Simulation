@@ -2,10 +2,29 @@ import ROOT
 import numpy as np
 import pandas as pd
 
-# Open ROOT file
-file = ROOT.TFile.Open("output_histograms.root")
+#-------------------------------
+# SETTINGS
+#-------------------------------
+n_samples = 100000
+luminosity_fb = 100.0  # Target luminosity
 
-# Mapping between logical observable names and actual ROOT histogram names
+# Cross sections (pb)
+signal_cross_section_pb = 0.02142500
+background_cross_sections_pb = {
+    "aa_ww": 0.0150743,
+    "aa_ttbar": 4.824851e-03 / 100.0,
+    "aa_tautau": 2.51510000,
+    "aa_mumu": 2.57270000,
+    "inclusive_ttbar": 0.0065764,
+    "single_top": 1.36209,
+    "w_production": 1.910288,
+    "z_production": 0.24064758729900002,
+    "wwj": 0.016080595320336195,
+    "zzj": 6.694889944457796e-03 / 100.0,
+    "wzj": 0.0023785292894910495
+}
+
+# Histogram names
 observable_map = {
     "lepton_pt": "hist_lepton_pt",
     "lepton_eta": "hist_lepton_eta",
@@ -20,61 +39,71 @@ observable_map = {
     "m_w_leptonic": "hist_m_w_leptonic"
 }
 
-n_samples = 10000
+special_suffix = {"wwj", "zzj", "wzj"}
+background_keys = list(background_cross_sections_pb.keys())
 
+#-------------------------------
+# FUNCTIONS
+#-------------------------------
 def sample_from_hist(hist, n):
     values = []
     for i in range(hist.GetNbinsX()):
-        count = int(hist.GetBinContent(i+1))
-        xlow = hist.GetBinLowEdge(i+1)
-        xhigh = hist.GetBinLowEdge(i+2)
+        count = int(hist.GetBinContent(i + 1))
+        xlow = hist.GetBinLowEdge(i + 1)
+        xhigh = hist.GetBinLowEdge(i + 2)
         if count > 0:
             values.extend(np.random.uniform(xlow, xhigh, size=count))
     if len(values) == 0:
         return np.full(n, np.nan)
     return np.random.choice(values, size=n, replace=True)
 
-# --- Signal ---
+#-------------------------------
+# PROCESS SIGNAL
+#-------------------------------
+file = ROOT.TFile.Open("output_histograms.root")
 signal_data = {}
-for obs, hist_root_name in observable_map.items():
-    full_hist_name = f"{hist_root_name}_FM2_Lambda4"
+for obs, hist_base in observable_map.items():
+    full_hist_name = f"{hist_base}_FM2_Lambda4"
     hist = file.Get(f"signal_FM2_Lambda4/{full_hist_name}")
     if hist:
         signal_data[obs] = sample_from_hist(hist, n_samples)
     else:
         print(f"❌ Missing: {full_hist_name} in signal")
         signal_data[obs] = np.full(n_samples, np.nan)
+
 signal_df = pd.DataFrame(signal_data)
 signal_df["label"] = 1
+signal_df["weight"] = signal_cross_section_pb * luminosity_fb * 1000.0
+signal_df["process"] = "FM2_Lambda4"
 
-# --- Backgrounds ---
-background_keys = [
-    "aa_ww", "aa_ttbar", "aa_tautau", "aa_mumu",
-    "inclusive_ttbar", "single_top", "w_production",
-    "z_production", "wwj", "zzj", "wzj"
-]
-
-special_suffix = {"wwj", "zzj", "wzj"}
-background_data = []
-
+#-------------------------------
+# PROCESS BACKGROUNDS
+#-------------------------------
+background_dataframes = []
 for bkg in background_keys:
-    bkg_obs_data = {}
+    bkg_data = {}
     suffix = "_production" if bkg in special_suffix else ""
-    for obs, hist_root_name in observable_map.items():
-        full_hist_name = f"{hist_root_name}_{bkg}{suffix}"
+    for obs, hist_base in observable_map.items():
+        full_hist_name = f"{hist_base}_{bkg}{suffix}"
         hist = file.Get(f"background_{bkg}/{full_hist_name}")
         if hist:
-            bkg_obs_data[obs] = sample_from_hist(hist, n_samples)
+            bkg_data[obs] = sample_from_hist(hist, n_samples)
         else:
             print(f"⚠️ Missing: {full_hist_name} in {bkg}")
-            bkg_obs_data[obs] = np.full(n_samples, np.nan)
-    df_bkg = pd.DataFrame(bkg_obs_data)
+            bkg_data[obs] = np.full(n_samples, np.nan)
+    df_bkg = pd.DataFrame(bkg_data)
     df_bkg["label"] = 0
-    background_data.append(df_bkg)
+    df_bkg["weight"] = background_cross_sections_pb[bkg] * luminosity_fb * 1000.0
+    df_bkg["process"] = bkg  # 🆕 Track process name
+    background_dataframes.append(df_bkg)
 
-background_df = pd.concat(background_data, ignore_index=True)
+#-------------------------------
+# MERGE, CLEAN, SAVE
+#-------------------------------
+background_df = pd.concat(background_dataframes, ignore_index=True)
 full_df = pd.concat([signal_df, background_df], ignore_index=True)
-
 full_df.dropna(inplace=True)
+
+# Save
 full_df.to_csv("ml_input_from_histograms.csv", index=False)
-print("✅ Saved: ml_input_from_histograms.csv with", full_df.shape[0], "events")
+print(f"✅ Saved: ml_input_from_histograms.csv with {full_df.shape[0]} events and weights for {luminosity_fb:.1f} fb^-1.")

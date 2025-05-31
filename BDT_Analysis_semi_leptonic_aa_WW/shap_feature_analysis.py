@@ -5,10 +5,14 @@ import matplotlib.pyplot as plt
 
 # Load data
 df = pd.read_csv("ml_input_from_histograms.csv")
-X = df.drop(columns=["label"])
+
+drop_cols = ["label"]
+if "process" in df.columns:
+    drop_cols.append("process")
+X = df.drop(columns=drop_cols)
 y = df["label"]
 
-# Train model (or reuse)
+# Train model
 model = xgb.XGBClassifier(
     n_estimators=200,
     max_depth=4,
@@ -29,8 +33,11 @@ plt.tight_layout()
 plt.savefig("shap_summary_plot.pdf")
 plt.close()
 
-# 2️⃣ Dependence plot for key features
-shap.dependence_plot("jet_centrality", shap_values.values, X, interaction_index="leading_jet_eta", show=False)
+# 2️⃣ Dependence plot
+shap.dependence_plot(
+    "jet_centrality", shap_values.values, X,
+    interaction_index="leading_jet_eta", show=False
+)
 plt.title("SHAP: jet_centrality vs leading_jet_eta")
 plt.tight_layout()
 plt.savefig("shap_jet_centrality_vs_leading_eta.pdf")

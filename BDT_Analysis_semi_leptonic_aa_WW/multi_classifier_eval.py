@@ -10,36 +10,38 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.neural_network import MLPClassifier
 import xgboost as xgb
 
-# Load data
+# Load dataset
 df = pd.read_csv("ml_input_from_histograms.csv")
-X = df.drop(columns=["label"])
+
+drop_cols = ["label", "weight"]
+if "process" in df.columns:
+    drop_cols.append("process")
+
+X = df.drop(columns=drop_cols)
 y = df["label"]
+weights = df["weight"]
+
 
 # Train/test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(
+    X, y, weights, stratify=y, test_size=0.3, random_state=42
+)
 
-# Normalize features
+# Normalize
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train)
 X_test_scaled = scaler.transform(X_test)
 
-# Uniform weights (no actual weighting)
-weights_train = np.ones_like(y_train)
-weights_test = np.ones_like(y_test)
-
-# Define models
+# Models
 models = {
     "DecisionTree": DecisionTreeClassifier(),
     "RandomForest": RandomForestClassifier(n_estimators=100),
     "AdaBoost": AdaBoostClassifier(n_estimators=200),
     "KNN": KNeighborsClassifier(n_neighbors=5),
     "SVM": SVC(probability=True, kernel="rbf"),
-#    "LDA": LinearDiscriminantAnalysis(),
     "MLP": MLPClassifier(hidden_layer_sizes=(50,), max_iter=1000),
     "TMVABDT": xgb.XGBClassifier(
         n_estimators=850, learning_rate=0.5, max_depth=3, subsample=0.5,
@@ -47,10 +49,10 @@ models = {
     )
 }
 
-# Models that do NOT support sample_weight
+# Classifiers that do NOT support sample_weight
 no_weight_support = ["KNN", "SVM", "MLP"]
 
-# Plot ROC curves
+# ROC curve plot
 plt.figure(figsize=(10, 8))
 
 for name, model in models.items():
@@ -59,20 +61,22 @@ for name, model in models.items():
     if name in no_weight_support:
         model.fit(X_train_scaled, y_train)
     else:
-        model.fit(X_train_scaled, y_train, sample_weight=weights_train)
+        model.fit(X_train_scaled, y_train, sample_weight=w_train)
 
     if hasattr(model, "predict_proba"):
         y_scores = model.predict_proba(X_test_scaled)[:, 1]
     else:
         y_scores = model.decision_function(X_test_scaled)
 
-    fpr, tpr, _ = roc_curve(y_test, y_scores, sample_weight=weights_test)
+    # ROC and AUC with test weights
+    fpr, tpr, _ = roc_curve(y_test, y_scores, sample_weight=w_test)
     auc_val = auc(fpr, tpr)
 
-    plt.plot(fpr, tpr, label=f"{name} (AUC = {auc_val:.3f})")
-
+    # Accuracy (unweighted)
     y_pred = model.predict(X_test_scaled)
     acc = accuracy_score(y_test, y_pred)
+
+    plt.plot(fpr, tpr, label=f"{name} (AUC = {auc_val:.3f})")
     print(f"✅ {name} Accuracy: {acc:.4f}")
 
 # Finalize ROC plot
