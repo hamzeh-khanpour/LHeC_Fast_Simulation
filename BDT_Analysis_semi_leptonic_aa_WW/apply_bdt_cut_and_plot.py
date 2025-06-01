@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 
 # Parameters
-BDT_THRESHOLD = 0.374  # ← Ideally retrieved from optimize_bdt_cut.py
+BDT_THRESHOLD = 0.212  # ← Ideally retrieved from optimize_bdt_cut.py
 
 # Load dataset
 df = pd.read_csv("ml_input_from_histograms.csv")
@@ -34,7 +34,7 @@ print(f"💘 Events surviving BDT > {BDT_THRESHOLD}: {len(df_selected)}")
 
 # Features to plot
 features_to_plot = [
-    "lepton_pt", "missing_et", "jet_centrality", "m_w_leptonic"
+    "lepton_pt", "missing_et", "leading_jet_pt", "m_w_leptonic"
 ]
 
 # Plot before/after cut using event weights

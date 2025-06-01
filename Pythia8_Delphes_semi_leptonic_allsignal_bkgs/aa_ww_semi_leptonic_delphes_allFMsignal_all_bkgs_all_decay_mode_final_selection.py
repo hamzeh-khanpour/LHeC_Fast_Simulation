@@ -43,11 +43,13 @@ hep.style.use("CMS")
 signal_files = {
 #    "$FM_{0} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM0_100.root",
 #    "$FM_{1} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM1_100.root",
-    "FM2_Lambda4": "aa_ww_semi_leptonic_NP_1_FM2_100.root",
+    "FM2_Lambda4": "aa_ww_semi_leptonic_NP_1_FM2_Correct.root",
 #    "$FM_{3} / \Lambda^4$": "aa_ww_semi_leptonic_NP_1_FM3_100.root",
 }
 
-aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_decay.root"
+
+aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_NP_1_FMi_0.root"   # SM aa to WW
+
 
 aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay.root"
 aa_tautau_background_file_path = "aa_tautau_full_decay.root"
@@ -99,7 +101,7 @@ def process_file(
 
     # Create ExRootTreeReader object
     treeReader = ROOT.ExRootTreeReader(chain)
-    numberOfEntries = treeReader.GetEntries()
+    numberOfEntries =  treeReader.GetEntries()
 
     # Counters for efficiency calculation
     # ✅ Initialize selection counters
@@ -224,7 +226,7 @@ def process_file(
 
 
         if hist_delta_eta_jj is not None:
-            delta_eta_jj = abs(jets[0].Eta() - jets[1].Eta())
+            delta_eta_jj = (jets[0].Eta() - jets[1].Eta())
             hist_delta_eta_jj.Fill(delta_eta_jj)
 
 
@@ -290,10 +292,10 @@ def process_file(
 
 
 # ✅ Apply cuts in sequence: η_lepton → jet_centrality → W mass window
-        if abs(leptons[0].Eta()) > 0.5:
+        if abs(leptons[0].Eta()) > -10000.0:    # 0.5:
             selected_events_pre_eta_lepton += 1
 
-            if jet_centrality > 2.0:
+            if jet_centrality > -10000.0:   #   2.0:
                 selected_events_pre_jet_centrality += 1
 
                 if 65 < w_leptonic.M() < 95 and 65 < w_hadronic.M() < 95:
@@ -363,12 +365,14 @@ def process_file(
 signal_cross_sections = {
     "$FM_{0} / \Lambda^4$": 0.01490319,   # pb
     "$FM_{1} / \Lambda^4$": 0.01508150,   # pb
-    "FM2_Lambda4": 0.02142500,   # pb
+    "FM2_Lambda4": 0.014288200000000001,   # pb
     "$FM_{3} / \Lambda^4$": 0.01644609    # pb
 }
 
 
-aa_ww_background_cross_section = 0.0150743  # pb
+aa_ww_background_cross_section = 0.0099465 # 0.0150743  # pb
+#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
+#  0.0150743   for  aa_ww_semi_leptonic_SM
 
 
 aa_ttbar_background_cross_section  = 4.824851e-05 * 100.0  # pb  * 10^{+2}
@@ -397,7 +401,7 @@ met_range = (0, 300)           # Range for Missing Transverse Energy (MET)
 centrality_range = (-3, 6)     # Range for centrality
 exp_centrality_range = (-3, 6)  # Range for exponential centrality
 jet_centrality_range = (-1, 6)  # Range for jet centrality
-delta_eta_jj_range = (0, 6)    # Range for Delta Eta between jets
+delta_eta_jj_range = (-6, 6)    # Range for Delta Eta between jets
 
 
 # Define ranges for invariant masses
@@ -1816,6 +1820,64 @@ plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8
 plt.show()
 
 
+
+
+
+
+
+
+# ===================================================
+# ✅ Normalized Δη_{jj} Distribution (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Normalized Signal Distributions
+for signal_name, dsigma_data in signal_dsigma.items():
+    delta_eta_jj_bins, dsigma = dsigma_data["delta_eta_jj_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = dsigma / np.sum(dsigma)
+        plt.step(delta_eta_jj_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Normalized Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "crimson", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "slateblue", (0, (3, 2, 1, 2)))
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    delta_eta_jj_bins, dsigma = dsigma_dict["delta_eta_jj_bins"]
+    if np.sum(dsigma) > 0:
+        normalized_dsigma = dsigma / np.sum(dsigma)
+        plt.step(delta_eta_jj_bins, normalized_dsigma, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\Delta\eta(j_1, j_2)$")
+plt.ylabel("Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.ylim(0.0, 0.20)
+
+# ✅ Legend and Layout
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# ✅ Save and Show
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_delta_eta_jj_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+plt.show()
 
 
 

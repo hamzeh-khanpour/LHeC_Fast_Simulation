@@ -71,6 +71,9 @@ best_threshold = max(
 )
 df_cut = df[df["bdt_score"] > best_threshold]
 
+
+
+
 #-------------------------
 # Signal stats
 #-------------------------
@@ -125,6 +128,9 @@ f.Close()
 
 
 
+
+
+
 #-------------------------
 # Significance calculations
 #-------------------------
@@ -144,6 +150,36 @@ N95 = 1.64 * np.sqrt(expected_background_yield)
 sigma_95 = N95 / (eff_total_sig * luminosity_pb)
 
 
+
+
+
+
+#-------------------------
+# Save filtered events
+#-------------------------
+df_cut[df_cut["label"] == 1].to_csv("signal_after_cut.csv", index=False)
+df_cut[df_cut["label"] == 0].to_csv("background_after_cut.csv", index=False)
+
+#-------------------------
+# Plot BDT score
+#-------------------------
+plt.figure(figsize=(8, 6))
+plt.hist(df[df["label"] == 1]["bdt_score"], bins=50, alpha=0.5, label="Signal", density=True)
+plt.hist(df[df["label"] == 0]["bdt_score"], bins=50, alpha=0.5, label="Background", density=True)
+plt.axvline(best_threshold, color='red', linestyle='--', label=f"Cut = {best_threshold:.3f}")
+plt.xlabel("BDT Score")
+plt.ylabel("Normalized Entries")
+plt.title("BDT Score with Optimal Cut")
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.5)
+plt.tight_layout()
+plt.savefig("bdt_cut_applied.pdf")
+plt.show()
+
+
+
+
+
 #-------------------------
 # Reporting
 #-------------------------
@@ -160,6 +196,8 @@ print(f"🔒 Expected 95% CL upper limit on signal yield: {N95:.2f}")
 print(f"🔒 Corresponding cross section upper limit: {sigma_95:.4f} pb")
 print(f"\n📊 Background yields by process (from DataFrame sum):")
 print(df_bkg_cut.groupby("process")["weight"].sum().sort_values(ascending=False).to_string())
+
+
 
 
 

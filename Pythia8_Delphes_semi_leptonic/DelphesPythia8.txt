@@ -22,6 +22,8 @@ make HAS_PYTHIA8=true
 ./DelphesPythia8 cards/delphes_card_CMS.tcl examples/Pythia8/configNoLHE.cmnd delphes_nolhe.root
 
 
+./DelphesPythia8 cards/delphes_card_LHeC.tcl examples/Pythia8/configLHE_Final.cmnd  aa_ww_semi_leptonic_SM_NP_1_FMi_0_Delphes_Pythia.root
+
 
 export PYTHIA8=/home/hamzeh-khanpour/local/
 make HAS_PYTHIA8=true
