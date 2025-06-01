@@ -1,0 +1,9 @@
+Processing signal: FM2_Lambda4
+
+=== Signal Selection Efficiencies ===
+FM2_Lambda4 Selection Efficiency (1lepton + lepton pT>10 GeV + MET >10 GeV)     : 90.35%
+FM2_Lambda4 Selection Efficiency (2jest + iet pT > 10 GeV)        : 83.94%
+
+
+=== Background Selection Efficiencies ===
+aa ww          : 1lepton + lepton pT>10 GeV + MET >10 GeV = 87.31%, 2jest + iet pT > 10 GeV = 79.62%
