@@ -8,6 +8,7 @@ import scipy.optimize as opt
 import scipy.integrate as integrate
 from scipy.stats import poisson
 
+
 #-------------------------
 # Settings
 #-------------------------
@@ -19,6 +20,7 @@ signal_cross_section_pb = 0.014288200000000001    # [pb] FM2
 sigma_SM = 0.0099465                              # [pb] (Standard Model-only signal prediction)
 #  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
 #  0.0150743   for  aa_ww_semi_leptonic_SM
+
 
 # Cross sections (pb) for backgrounds
 background_cross_sections_pb = {
@@ -37,6 +39,8 @@ background_cross_sections_pb = {
     "wzj": 0.0023785292894910495
 }
 
+
+
 #-------------------------
 # Load ML dataset
 #-------------------------
@@ -46,6 +50,8 @@ has_process = "process" in df.columns
 X = df.drop(columns=["label", "weight"] + (["process"] if has_process else []))
 y = df["label"]
 weights = df["weight"]
+
+
 
 #-------------------------
 # Train BDT
@@ -59,6 +65,8 @@ model = xgb.XGBClassifier(
 )
 model.fit(X, y, sample_weight=weights)
 df["bdt_score"] = model.predict_proba(X)[:, 1]
+
+
 
 #-------------------------
 # Optimal threshold
@@ -90,6 +98,7 @@ efficiency_bdt = s_after / s_total if s_total > 0 else 0.0
 eff_total_sig = eff_preselection_sig * efficiency_bdt
 
 
+
 #-------------------------
 # Background stats
 #-------------------------
@@ -103,6 +112,7 @@ else:
     df_bkg_cut["process"] = "Unknown"
 
 eff_bkg_total = df_bkg_cut.shape[0] / df_bkg.shape[0]
+
 
 
 #-------------------------
@@ -131,6 +141,7 @@ f.Close()
 
 
 
+
 #-------------------------
 # Significance calculations
 #-------------------------
@@ -141,6 +152,7 @@ Z = expected_signal_yield / np.sqrt(expected_signal_yield + expected_background_
 Z_asimov = np.sqrt(2 * ((expected_signal_yield + expected_background_yield) *
                         np.log(1 + expected_signal_yield / (expected_background_yield + 1e-9)) -
                         expected_signal_yield))
+
 
 
 #-------------------------
