@@ -55,7 +55,11 @@ y_fit = quad_func(x_fit, *popt)
 
 
 # Plot main curve
-plt.figure(figsize=(8, 5))
+
+
+# Plot the data
+plt.figure(figsize=(10, 8))
+
 plt.plot(fm2_scaled, xsec_vals, 'o', label='Data')
 plt.plot(x_fit, y_fit, '-', label='Fit: $a x^2 + b$')
 
@@ -79,7 +83,11 @@ plt.show()
 
 # Residuals
 residuals = xsec_vals - quad_func(fm2_scaled, *popt)
-plt.figure(figsize=(8, 3))
+
+
+# Plot the data
+plt.figure(figsize=(10, 8))
+
 plt.axhline(0, color='gray', linestyle='--')
 plt.plot(fm2_scaled, residuals, 'o')
 plt.xlabel('FM2 Value (scaled by $10^{-12}$)')
