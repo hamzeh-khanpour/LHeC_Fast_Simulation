@@ -8,8 +8,8 @@ import numpy as np
 # Experiment Setup
 luminosity_fb = 100.0
 luminosity_pb = luminosity_fb * 1000.0         # Convert to pb^-1
-signal_efficiency = 2.33 / 100.0                     # Final signal efficiency
-background_efficiency = 0.41 / 100.0                  # Final background efficiency
+signal_efficiency = 14.73 / 100.0                 # Final signal efficiency
+background_efficiency = 4.46 / 100.0           # Final background efficiency
 sigma_background_pb = 0.0099465                # SM WW cross-section [pb]
 
 # Compute expected number of background events
