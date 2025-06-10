@@ -28,7 +28,7 @@ fm2_scaled = fm2_vals / 1e-12  # rescale
 
 # Fit function
 def symmetric_poly(x, a, b, c):
-    return a * x**4 + b * x**2 + c
+    return a * x + b * x**2 + c
 
 # Perform fit
 popt, pcov = curve_fit(symmetric_poly, fm2_scaled, xsec_vals)
@@ -41,7 +41,7 @@ y_fit = symmetric_poly(x_fit, *popt)
 # Plot
 plt.figure(figsize=(8, 5))
 plt.plot(fm2_scaled, xsec_vals, 'o', label='Data')
-plt.plot(x_fit, y_fit, '-', label='Fit: $a x^4 + b x^2 + c$')
+plt.plot(x_fit, y_fit, '-', label='Fit: $a x + b x^2 + c$')
 
 # Add fitted values as text box
 fit_text = f"Fit coefficients:\n" \
