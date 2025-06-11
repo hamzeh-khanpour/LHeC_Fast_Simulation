@@ -49,7 +49,7 @@ perr = np.sqrt(np.diag(pcov))  # uncertainties
 # =============================
 # 4. Plot: Data + Fit + Residuals
 # =============================
-x_fit = np.linspace(-100, 100, 500)
+x_fit = np.linspace(-1100, 1100, 500)
 y_fit = quad_func(x_fit, *popt)
 
 
@@ -80,7 +80,7 @@ plt.yscale('log')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
-plt.savefig("fit_cross_section_vs_FM2_x2.pdf")
+plt.savefig("fit_cross_section_vs_FM2_x2_full.pdf")
 plt.show()
 
 
