@@ -26,7 +26,7 @@ model.fit(X_train, y_train, sample_weight=w_train)
 y_scores = model.predict_proba(X_test)[:, 1]
 
 # Define BDT score cut
-cut = 0.232
+cut = 0.343
 pass_cut = y_scores > cut
 
 # Signal and background masks
