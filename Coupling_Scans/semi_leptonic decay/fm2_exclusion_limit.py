@@ -10,8 +10,8 @@ from scipy.optimize import fsolve
 # Experiment Setup
 luminosity_fb = 100.0
 luminosity_pb = luminosity_fb * 1000.0         # Convert to pb^-1
-signal_efficiency = 14.73 / 100.0              # Final signal efficiency
-background_efficiency = 4.46 / 100.0           # Final background efficiency
+signal_efficiency = 20.54 / 100.0              # Final signal efficiency
+background_efficiency = 16.92 / 100.0           # Final background efficiency
 sigma_background_pb = 0.0099465                # SM WW cross-section [pb]
 
 
