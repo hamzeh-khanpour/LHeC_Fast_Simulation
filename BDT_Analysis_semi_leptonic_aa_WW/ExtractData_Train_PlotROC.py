@@ -63,7 +63,7 @@ def sample_from_hist(hist, n):
 #-------------------------------
 # PROCESS SIGNAL
 #-------------------------------
-file = ROOT.TFile.Open("output_histograms_Delphes_Pythia.root")
+file = ROOT.TFile.Open("output_histograms.root")
 signal_data = {}
 for obs, hist_base in observable_map.items():
     full_hist_name = f"{hist_base}_FM2_Lambda4"
