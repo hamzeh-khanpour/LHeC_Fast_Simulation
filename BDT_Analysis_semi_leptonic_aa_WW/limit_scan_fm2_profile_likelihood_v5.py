@@ -1,3 +1,11 @@
+
+
+## ================================================================================
+##        Hamzeh Khanpour  --- June 2025
+## ================================================================================
+
+
+
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,7 +18,9 @@ import ROOT
 # 🎯 Fixed Parameters
 # ================================
 luminosity_fb = 100.0
+
 sigma_background_fb = 9.9465  # SM-only gamma-gamma -> WW [fb]
+
 delta_sys_frac = 0.10
 n_bins = 20
 n_generated = 1_000_000  # Total generated events
@@ -93,7 +103,7 @@ print(f"✅ ML Efficiencies → signal: {signal_eff_ml:.4f}, background: {backgr
 # =================================
 # ⚙️ Preselection Efficiencies
 # =================================
-root_file = ROOT.TFile.Open("output_histograms.root")
+root_file = ROOT.TFile.Open("output_histograms_FM3.root")
 
 # Signal preselection efficiency
 hist_sig_pre = root_file.Get("signal_FM2_Lambda4/hist_jet_centrality_FM2_Lambda4")
@@ -193,20 +203,20 @@ fm2_vals = np.linspace(-1.0, 1.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))
-plt.plot(fm2_vals, q_vals, label=r'$q(f_{M2}/\Lambda^4)$', linewidth=2)
+plt.plot(fm2_vals, q_vals, label=r'$q(f_{M0}/\Lambda^4)$', linewidth=2)
 plt.axhline(3.84, color='red', linestyle='--', label='95% CL Threshold', linewidth=2)
 if fm2_lower and fm2_upper:
     plt.axvline(fm2_lower, color='gray', linestyle=':', label=f'Lower limit: {fm2_lower:.4f}', linewidth=2)
     plt.axvline(fm2_upper, color='gray', linestyle=':', label=f'Upper limit: {fm2_upper:.4f}', linewidth=2)
 
-plt.xlabel(r'$f_{M2}/\Lambda^4$ [$\mathrm{TeV}^{-4}$]')
-plt.ylabel(r'$q(f_{M2}/\Lambda^4)$')
-plt.title('Profile Likelihood Scan over $f_{M2}/\Lambda^4$')
+plt.xlabel(r'$f_{M0}/\Lambda^4$ [$\mathrm{TeV}^{-4}$]')
+plt.ylabel(r'$q(f_{M0}/\Lambda^4)$')
+plt.title('Profile Likelihood Scan over $f_{M0}/\Lambda^4$')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
 
-plt.savefig("limit_scan_fm2_profile_likelihood_v5.pdf")
+plt.savefig("limit_scan_fm2_profile_likelihood_v5_FM3.pdf")
 print("✅ Saved as 'limit_scan_fm2_profile_likelihood_v5.pdf'")
 plt.show()
 

@@ -1,3 +1,9 @@
+
+## ================================================================================
+##        Hamzeh Khanpour  --- June 2025
+## ================================================================================
+
+
 import ROOT
 import numpy as np
 import pandas as pd
@@ -9,10 +15,10 @@ n_samples = 10000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_fb = 0.00994160 * 1000.0  #FM0
+#signal_cross_section_fb = 0.00994160 * 1000.0  #FM0
 #signal_cross_section_fb = 0.01005810 * 1000.0  #FM1
 #signal_cross_section_fb = 0.01428821 * 1000.0  #FM2
-#signal_cross_section_fb = 0.01097280 * 1000.0  #FM3
+signal_cross_section_fb = 0.01097280 * 1000.0  #FM3
 
 background_cross_sections_fb = {
     "aa_ww": 0.0099465 * 1000.0,
@@ -68,7 +74,7 @@ def sample_from_hist(hist, n):
 #-------------------------------
 # PROCESS SIGNAL
 #-------------------------------
-file = ROOT.TFile.Open("output_histograms.root")
+file = ROOT.TFile.Open("output_histograms_FM3.root")
 signal_data = {}
 for obs, hist_base in observable_map.items():
     full_hist_name = f"{hist_base}_FM2_Lambda4"
