@@ -8,7 +8,7 @@ import ROOT
 # Settings
 #-------------------------
 n_generated = 1_000_000
-luminosity_fb = 100.0
+luminosity_fb = 100.0 # [fb^-1]
 luminosity_pb = luminosity_fb * 1000.0  # [pb^-1]
 
 signal_cross_section_pb = 0.014288200000000001    # [pb] FM2
