@@ -9,7 +9,10 @@ n_samples = 10000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_fb = 0.014288200000000001* 1000.0
+signal_cross_section_fb = 0.00994160 * 1000.0  #FM0
+#signal_cross_section_fb = 0.01005810 * 1000.0  #FM1
+#signal_cross_section_fb = 0.01428821 * 1000.0  #FM2
+#signal_cross_section_fb = 0.01097280 * 1000.0  #FM3
 
 background_cross_sections_fb = {
     "aa_ww": 0.0099465 * 1000.0,
