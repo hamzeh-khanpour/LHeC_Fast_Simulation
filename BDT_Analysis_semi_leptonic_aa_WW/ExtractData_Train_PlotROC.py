@@ -5,26 +5,26 @@ import pandas as pd
 #-------------------------------
 # SETTINGS
 #-------------------------------
-n_samples = 100000
+n_samples = 10000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_pb = 0.014288200000000001
+signal_cross_section_fb = 0.014288200000000001* 1000.0
 
-background_cross_sections_pb = {
-    "aa_ww": 0.0099465,
+background_cross_sections_fb = {
+    "aa_ww": 0.0099465 * 1000.0,
 #  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
 #  0.0150743   for  aa_ww_semi_leptonic_SM
-    "aa_ttbar": 4.824851e-03 / 100.0,
-    "aa_tautau": 2.51510000,
-    "aa_mumu": 2.57270000,
-    "inclusive_ttbar": 0.0065764,
-    "single_top": 1.36209,
-    "w_production": 1.910288,
-    "z_production": 0.24064758729900002,
-    "wwj": 0.016080595320336195,
-    "zzj": 6.694889944457796e-03 / 100.0,
-    "wzj": 0.0023785292894910495
+    "aa_ttbar": 4.824851e-03 / 100.0 * 1000.0,
+    "aa_tautau": 2.51510000 * 1000.0,
+    "aa_mumu": 2.57270000 * 1000.0,
+    "inclusive_ttbar": 0.0065764 * 1000.0,
+    "single_top": 1.36209 * 1000.0,
+    "w_production": 1.910288 * 1000.0,
+    "z_production": 0.24064758729900002 * 1000.0,
+    "wwj": 0.016080595320336195 * 1000.0,
+    "zzj": 6.694889944457796e-03 / 100.0 * 1000.0,
+    "wzj": 0.0023785292894910495 * 1000.0
 }
 
 # Histogram names
@@ -43,7 +43,8 @@ observable_map = {
 }
 
 special_suffix = {"wwj", "zzj", "wzj"}
-background_keys = list(background_cross_sections_pb.keys())
+background_keys = list(background_cross_sections_fb.keys())
+
 
 #-------------------------------
 # FUNCTIONS
@@ -59,6 +60,7 @@ def sample_from_hist(hist, n):
     if len(values) == 0:
         return np.full(n, np.nan)
     return np.random.choice(values, size=n, replace=True)
+
 
 #-------------------------------
 # PROCESS SIGNAL
@@ -76,8 +78,9 @@ for obs, hist_base in observable_map.items():
 
 signal_df = pd.DataFrame(signal_data)
 signal_df["label"] = 1
-signal_df["weight"] = signal_cross_section_pb * luminosity_fb * 1000.0
+signal_df["weight"] = signal_cross_section_fb * luminosity_fb
 signal_df["process"] = "FM2_Lambda4"
+
 
 #-------------------------------
 # PROCESS BACKGROUNDS
@@ -96,9 +99,10 @@ for bkg in background_keys:
             bkg_data[obs] = np.full(n_samples, np.nan)
     df_bkg = pd.DataFrame(bkg_data)
     df_bkg["label"] = 0
-    df_bkg["weight"] = background_cross_sections_pb[bkg] * luminosity_fb * 1000.0
+    df_bkg["weight"] = background_cross_sections_fb[bkg] * luminosity_fb
     df_bkg["process"] = bkg  # 🆕 Track process name
     background_dataframes.append(df_bkg)
+
 
 #-------------------------------
 # MERGE, CLEAN, SAVE
@@ -107,6 +111,8 @@ background_df = pd.concat(background_dataframes, ignore_index=True)
 full_df = pd.concat([signal_df, background_df], ignore_index=True)
 full_df.dropna(inplace=True)
 
+
 # Save
 full_df.to_csv("ml_input_from_histograms.csv", index=False)
 print(f"✅ Saved: ml_input_from_histograms.csv with {full_df.shape[0]} events and weights for {luminosity_fb:.1f} fb^-1.")
+

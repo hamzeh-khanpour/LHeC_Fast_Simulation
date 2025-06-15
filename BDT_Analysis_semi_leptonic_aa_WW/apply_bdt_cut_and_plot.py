@@ -62,5 +62,7 @@ for feature in features_to_plot:
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
     plt.savefig(f"{feature}_bdt_cut_comparison.pdf")
+    plt.show()
+
 
 print("✅ All plots saved with BDT selection overlay.")

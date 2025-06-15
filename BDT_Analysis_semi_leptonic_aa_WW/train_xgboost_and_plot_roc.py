@@ -3,22 +3,26 @@ import xgboost as xgb
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import roc_curve, auc
+from sklearn.metrics import roc_curve, roc_auc_score
 
 import mplhep as hep
-
-hep.style.use("CMS")
+#hep.style.use("CMS")
 
 
 # Load dataset
 df = pd.read_csv("ml_input_from_histograms.csv")
-X = df.drop(columns=["label", "weight", "process"])
 
+# Extract label, weight, process before splitting
 y = df["label"]
 weights = df["weight"]
+process = df["process"]
 
-# Split
-X_train, X_test, y_train, y_test, w_train, w_test = train_test_split(
-    X, y, weights, test_size=0.25, stratify=y, random_state=42
+# Remove non-feature columns
+X = df.drop(columns=["label", "weight", "process"])
+
+# Split including process
+X_train, X_test, y_train, y_test, w_train, w_test, proc_train, proc_test = train_test_split(
+    X, y, weights, process, test_size=0.25, stratify=y, random_state=42
 )
 
 # Train XGBoost with weights
@@ -31,15 +35,26 @@ model = xgb.XGBClassifier(
 )
 model.fit(X_train, y_train, sample_weight=w_train)
 
-
 # Predict probabilities
 y_scores = model.predict_proba(X_test)[:, 1]
 
-# ROC curve
-fpr, tpr, _ = roc_curve(y_test, y_scores)
-roc_auc = auc(fpr, tpr)
+# Save for limit setting
+df_out = pd.DataFrame({
+    "bdt_score": y_scores,
+    "label": y_test.values,
+    "weight": w_test.values,
+    "process": proc_test.values
+})
+df_out.to_csv("ml_with_bdt_scores.csv", index=False)
+print("✅ Saved: ml_with_bdt_scores.csv with BDT scores, labels, weights, and processes.")
 
-plt.figure(figsize=(10, 8))
+
+fpr, tpr, _ = roc_curve(y_test, y_scores)
+roc_auc = roc_auc_score(y_test, y_scores)
+
+
+plt.figure(figsize=(8, 6))
+
 
 plt.plot(fpr, tpr, label=f"AUC = {roc_auc:.4f}", linewidth=2)
 plt.plot([0, 1], [0, 1], 'k--', alpha=0.5)
@@ -55,7 +70,7 @@ plt.show()
 
 
 # Feature importances
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(8, 6))
 xgb.plot_importance(model, importance_type="gain", show_values=False)
 plt.title("Feature Importances (Gain)")
 plt.tight_layout()
@@ -64,15 +79,3 @@ plt.show()
 
 
 
-# BDT score distribution
-plt.figure(figsize=(10, 8))
-plt.hist(y_scores[y_test == 1], bins=50, alpha=0.6, label="Signal", density=True)
-plt.hist(y_scores[y_test == 0], bins=50, alpha=0.6, label="Background", density=True)
-plt.xlabel("XGBoost BDT Score")
-plt.ylabel("Normalized Events")
-plt.title("BDT Score Distribution")
-plt.legend()
-plt.grid(True, linestyle="--", alpha=0.5)
-plt.tight_layout()
-plt.savefig("bdt_score_distribution.pdf")
-plt.show()
