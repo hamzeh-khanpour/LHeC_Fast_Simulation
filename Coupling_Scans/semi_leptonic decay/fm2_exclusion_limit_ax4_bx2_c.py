@@ -2,8 +2,8 @@
 import numpy as np
 
 # === Setup ===
-luminosity_fb = 100.0
-luminosity_pb = luminosity_fb * 1000.0
+luminosity_fb = 100.0  # in fb⁻¹
+luminosity_pb = luminosity_fb * 1000.0  # in fb⁻¹     ?
 signal_efficiency = 14.73 / 100.0
 background_efficiency = 4.46 / 100.0
 sigma_background_pb = 0.0099465  # pb
