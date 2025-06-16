@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 
 # Load data from file
-filename = "cross_sections_FM2.txt"
+filename = "cross_sections_FM3.txt"
 fm2_vals = []
 xsec_vals = []
 
 with open(filename, 'r') as file:
     for line in file:
-        if line.startswith("FM2") or not line.strip():
+        if line.startswith("FM3") or not line.strip():
             continue
         parts = line.strip().split()
         if len(parts) >= 2:
@@ -35,11 +35,11 @@ popt, pcov = curve_fit(symmetric_poly, fm2_scaled, xsec_vals)
 a, b, c = popt
 
 # Create fit curve
-x_fit = np.linspace(-110, 110, 500)
+x_fit = np.linspace(-1100, 1100, 500)
 y_fit = symmetric_poly(x_fit, *popt)
 
 # Plot
-plt.figure(figsize=(8, 5))
+plt.figure(figsize=(8, 6))
 plt.plot(fm2_scaled, xsec_vals, 'o', label='Data')
 plt.plot(x_fit, y_fit, '-', label='Fit: $a x + b x^2 + c$')
 
@@ -53,15 +53,15 @@ plt.text(0.05, 0.95, fit_text, transform=plt.gca().transAxes,
          bbox=dict(boxstyle='round', facecolor='white', alpha=0.9))
 
 # Labels and style
-plt.xlabel('FM2 Value (scaled by $10^{-12}$)')
+plt.xlabel('$f_{M2}/\Lambda^4$ Value (scaled by $10^{-12}$)')
 plt.ylabel('Cross-section (pb)')
-plt.title('Cross-section vs FM2 (Fit)')
+plt.title('Cross-section vs $f_{M2}/\Lambda^4$ (Fit)')
 plt.grid(True)
 plt.legend()
 plt.tight_layout()
 
 # Save plot as PDF
-plt.savefig("fit_cross_section_vs_FM2.pdf", format='pdf')
+plt.savefig("fit_cross_section_vs_FM3.pdf", format='pdf')
 
 # Show plot
 plt.show()
