@@ -15,25 +15,24 @@ n_samples = 100000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_fb = 0.00994160 * 1000.0  #FM0
-#signal_cross_section_fb = 0.01005810 * 1000.0  #FM1
-#signal_cross_section_fb = 0.01428821 * 1000.0  #FM2
-#signal_cross_section_fb = 0.01097280 * 1000.0  #FM3
+signal_cross_section_fb = 0.01490778 * 1000.0  #FM0
+#signal_cross_section_fb = 0.0150846 * 1000.0  #FM1
+#signal_cross_section_fb = 0.0214318 * 1000.0  #FM2
+#signal_cross_section_fb = 0.0164548 * 1000.0  #FM3
 
 background_cross_sections_fb = {
-    "aa_ww": 0.0099465 * 1000.0,
-#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
-#  0.0150743   for  aa_ww_semi_leptonic_SM
-    "aa_ttbar": 4.824851e-03 / 100.0 * 1000.0,
-    "aa_tautau": 2.51510000 * 1000.0,
-    "aa_mumu": 2.57270000 * 1000.0,
-    "inclusive_ttbar": 0.0065764 * 1000.0,
-    "single_top": 1.36209 * 1000.0,
-    "w_production": 1.910288 * 1000.0,
-    "z_production": 0.24064758729900002 * 1000.0,
-    "wwj": 0.016080595320336195 * 1000.0,
-    "zzj": 6.694889944457796e-03 / 100.0 * 1000.0,
-    "wzj": 0.0023785292894910495 * 1000.0
+    "aa_ww": 0.0139124 * 1000.0,
+#  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
+    "aa_ttbar": 4.824851e-05 * 1000.0,
+    "aa_tautau": 14.46100 * 1000.0,
+    "aa_mumu": 15.77700 * 1000.0,
+    "inclusive_ttbar": 0.00817729 * 1000.0,
+    "single_top": 1.36209000   * 1000.0,
+    "w_production": 2.68341400 * 1000.0,
+    "z_production": 0.35079000 * 1000.0,
+    "wwj": 0.02033281625797406 * 1000.0,
+    "zzj": 8.098369938127394e-05 * 1000.0,
+    "wzj": 0.002858915860372209  * 1000.0
 }
 
 # Histogram names

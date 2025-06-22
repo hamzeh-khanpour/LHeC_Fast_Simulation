@@ -19,7 +19,7 @@ import ROOT
 # ================================
 luminosity_fb = 100.0
 
-sigma_background_fb = 9.9465  # SM-only gamma-gamma -> WW [fb]
+sigma_background_fb = 0.0139124 * 1000.0  # SM-only gamma-gamma -> WW [fb]
 
 delta_sys_frac = 0.10
 n_bins = 20
@@ -29,17 +29,18 @@ n_generated = 1_000_000  # Total generated events
 
 # Background preselection efficiencies
 background_cross_sections_fb = {
-    "aa_ww": 0.0099465 * 1000.0,
-    "aa_ttbar": 4.824851e-03 / 100.0 * 1000.0,
-    "aa_tautau": 2.51510000 * 1000.0,
-    "aa_mumu": 2.57270000 * 1000.0,
-    "inclusive_ttbar": 0.0065764 * 1000.0,
-    "single_top": 1.36209 * 1000.0,
-    "w_production": 1.910288 * 1000.0,
-    "z_production": 0.24064758729900002 * 1000.0,
-    "wwj": 0.016080595320336195 * 1000.0,
-    "zzj": 6.694889944457796e-03 / 100.0 * 1000.0,
-    "wzj": 0.0023785292894910495 * 1000.0
+    "aa_ww": 0.0139124 * 1000.0,
+#  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
+    "aa_ttbar": 4.824851e-05 * 1000.0,
+    "aa_tautau": 14.46100 * 1000.0,
+    "aa_mumu": 15.77700 * 1000.0,
+    "inclusive_ttbar": 0.00817729 * 1000.0,
+    "single_top": 1.36209000   * 1000.0,
+    "w_production": 2.68341400 * 1000.0,
+    "z_production": 0.35079000 * 1000.0,
+    "wwj": 0.02033281625797406 * 1000.0,
+    "zzj": 8.098369938127394e-05 * 1000.0,
+    "wzj": 0.002858915860372209  * 1000.0
 }
 
 
