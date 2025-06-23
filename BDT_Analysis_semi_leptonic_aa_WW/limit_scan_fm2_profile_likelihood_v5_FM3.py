@@ -19,7 +19,7 @@ import ROOT
 # ================================
 luminosity_fb = 100.0
 
-sigma_background_fb = 0.0139124 * 1000.0  # SM-only gamma-gamma -> WW [fb]
+sigma_background_fb = 0.0149124 * 1000.0  # SM-only gamma-gamma -> WW [fb]
 
 delta_sys_frac = 0.10
 n_bins = 20
@@ -29,7 +29,7 @@ n_generated = 1_000_000  # Total generated events
 
 # Background preselection efficiencies
 background_cross_sections_fb = {
-    "aa_ww": 0.0139124 * 1000.0,
+    "aa_ww": 0.0149124 * 1000.0,
 #  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
     "aa_ttbar": 4.824851e-05 * 1000.0,
     "aa_tautau": 14.46100 * 1000.0,
@@ -49,9 +49,9 @@ background_cross_sections_fb = {
 # 📐 Cross section function σ(fM2)
 # ===================================
 def sigma_fm2_fb(fm2):
-    a =  -8.615e-3
-    b =  5.221e-4
-    c =  9.9465
+    a =  9.447076e-03
+    b =  5.893059e-05
+    c =  1.490645e+01
     return a * fm2 + b * fm2**2 + c
 
 
