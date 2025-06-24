@@ -19,7 +19,7 @@ import ROOT
 # ================================
 luminosity_fb = 100.0
 
-sigma_background_fb = 0.0149124 * 1000.0  # SM-only gamma-gamma -> WW [fb]
+sigma_background_fb = 0.0149219 * 1000.0  # SM-only gamma-gamma -> WW [fb]
 
 delta_sys_frac = 0.10
 n_bins = 20
@@ -29,7 +29,7 @@ n_generated = 1_000_000  # Total generated events
 
 # Background preselection efficiencies
 background_cross_sections_fb = {
-    "aa_ww": 0.0149124 * 1000.0,
+    "aa_ww": 0.0149219 * 1000.0,
 #  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
     "aa_ttbar": 4.824851e-05 * 1000.0,
     "aa_tautau": 14.46100 * 1000.0,
