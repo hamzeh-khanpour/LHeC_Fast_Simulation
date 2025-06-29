@@ -104,7 +104,7 @@ print(f"✅ ML Efficiencies → signal: {signal_eff_ml:.4f}, background: {backgr
 # =================================
 # ⚙️ Preselection Efficiencies
 # =================================
-root_file = ROOT.TFile.Open("output_histograms_FM2.root")
+root_file = ROOT.TFile.Open("output_histograms_FM2_Delphes_Pythia.root")
 
 # Signal preselection efficiency
 hist_sig_pre = root_file.Get("signal_FM2_Lambda4/hist_jet_centrality_FM2_Lambda4")
