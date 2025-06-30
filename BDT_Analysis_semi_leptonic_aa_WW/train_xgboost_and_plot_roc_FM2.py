@@ -58,6 +58,15 @@ model = xgb.XGBClassifier(
 )
 
 
+## Train XGBoost with weights
+#model = xgb.XGBClassifier(
+    #n_estimators=200,
+    #max_depth=4,
+    #learning_rate=0.05,
+    #use_label_encoder=False,
+    #eval_metric="logloss"
+#)
+
 
 
 model.fit(X_train, y_train, sample_weight=w_train)
@@ -209,7 +218,8 @@ bdt_thresholds = []
 
 # Loop over BDT cut values
 for cut in bdt_cut_bins:
-    selected = df[df["bdt_score"] >= cut]
+    selected = df_out[df_out["bdt_score"] >= cut]
+
     S = selected[selected["label"] == 1]["weight"].sum()
     B = selected[selected["label"] == 0]["weight"].sum()
 

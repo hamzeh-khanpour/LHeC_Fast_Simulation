@@ -15,40 +15,54 @@ n_samples = 100000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-#signal_cross_section_fb = 0.01490778 * 1000.0  #FM0
-#signal_cross_section_fb = 0.0150846 * 1000.0  #FM1
-#signal_cross_section_fb = 0.0214318 * 1000.0  #FM2
-signal_cross_section_fb = 0.0164548 * 1000.0  #FM3
+#signal_cross_section_fb = 0.015395800000000001 * 1000.0  #FM0
+#signal_cross_section_fb = 0.015587299999999998 * 1000.0  #FM1
+#signal_cross_section_fb = 0.022850099999999998 * 1000.0  #FM2
+signal_cross_section_fb = 0.017148100000000000 * 1000.0  #FM3
 
 background_cross_sections_fb = {
     "aa_ww": 0.0149219 * 1000.0,
-#  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
-    "aa_ttbar": 4.824851e-05 * 1000.0,
-    "aa_tautau": 14.46100 * 1000.0,
-    "aa_mumu": 15.77700 * 1000.0,
-    "inclusive_ttbar": 0.00817729 * 1000.0,
-    "single_top": 1.36209000   * 1000.0,
-    "w_production": 2.68341400 * 1000.0,
-    "z_production": 0.35079000 * 1000.0,
-    "wwj": 0.02033281625797406 * 1000.0,
-    "zzj": 8.098369938127394e-05 * 1000.0,
-    "wzj": 0.002858915860372209  * 1000.0
+    "aa_ttbar": 4.824774e-05 * 1000.0,
+    "aa_tautau": 1.806765e-01 * 1000.0,
+    "inclusive_ttbar": 0.00817326 * 1000.0,
+    "single_top": 1.36211000   * 1000.0,
+    "w_production": 1.965201542 * 1000.0,
+    "z_production": 0.159347434 * 1000.0,
+    "wwj": 0.02031491612402401   * 1000.0,
+    "zzj": 8.106588466651764e-05 * 1000.0,
+    "wzj": 0.0028587542003382592 * 1000.0
 }
 
-# Histogram names
+
+
 observable_map = {
     "lepton_pt": "hist_lepton_pt",
-    "lepton_eta": "hist_lepton_eta",
     "leading_jet_pt": "hist_leading_jet_pt",
-    "leading_jet_eta": "hist_leading_jet_eta",
-    "subleading_jet_eta": "hist_subleading_jet_eta",
-    "missing_et": "hist_missing_et",
+    "lepton_eta": "hist_lepton_eta",
     "delta_r": "hist_delta_r",
-    "jet_centrality": "hist_jet_centrality",
+    "missing_et": "hist_missing_et",
+    "subleading_jet_eta": "hist_subleading_jet_eta",
+    "leading_jet_eta": "hist_leading_jet_eta",
+#    "jet_centrality": "hist_jet_centrality",
     "delta_eta_jj": "hist_delta_eta_jj",
     "m_w_hadronic": "hist_m_w_hadronic",
-    "m_w_leptonic": "hist_m_w_leptonic"
+    "m_w_leptonic": "hist_m_w_leptonic",
+
+    # ✅ Newly added discriminating observables
+    "pt_w_leptonic": "hist_pt_w_leptonic",
+    "pt_w_hadronic": "hist_pt_w_hadronic",
+    "delta_phi_lep_met": "hist_delta_phi_lep_met",
+    "mt_w_leptonic": "hist_mt_w_leptonic",
+    "ht_total": "hist_ht_total",
+#    "delta_phi_jj": "hist_delta_phi_jj",
+#    "delta_phi_wl_wh": "hist_delta_phi_wl_wh",
+#    "delta_eta_wl_wh": "hist_delta_eta_wl_wh",
+#    "m_jj": "hist_m_jj",
+    "m_lvjj": "hist_m_lvjj"
 }
+
+
+
 
 special_suffix = {"wwj", "zzj", "wzj"}
 background_keys = list(background_cross_sections_fb.keys())

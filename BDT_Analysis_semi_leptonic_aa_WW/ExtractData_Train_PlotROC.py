@@ -12,7 +12,7 @@ import pandas as pd
 # SETTINGS
 #-------------------------------
 n_samples = 10000
-luminosity_fb = 100.0  # Target luminosity
+luminosity_fb = 300.0  # Target luminosity
 
 # Cross sections (pb)
 #signal_cross_section_fb = 0.00994160 * 1000.0  #FM0

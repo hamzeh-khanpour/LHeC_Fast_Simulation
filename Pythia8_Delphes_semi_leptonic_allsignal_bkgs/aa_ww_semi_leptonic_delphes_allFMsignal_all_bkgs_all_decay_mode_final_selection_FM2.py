@@ -52,7 +52,8 @@ aa_ww_background_file_path = "aa_ww_semi_leptonic_SM_NP_0_FMi_0_Delphes_Pythia.r
 
 
 aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay_Delphes_Pythia.root"
-aa_tautau_background_file_path = "aa_tautau_Delphes_Pythia.root"
+#aa_tautau_background_file_path = "aa_tautau_Delphes_Pythia.root"
+aa_tautau_background_file_path = "cepgen-gammagammatotautau-pt2p5-eta5_tauola.root"   # Laurent
 
 aa_mumu_background_file_path   = "aa_mumu_Delphes_Pythia.root"
 
@@ -465,8 +466,12 @@ aa_ww_background_cross_section = 0.0149219 # aa_ww_semi_leptonic_SM_NP_0_FMi_0
 
 
 aa_ttbar_background_cross_section  = 4.824774e-05 * 100.0  # pb  * 10^{+2}
-aa_tautau_background_cross_section = 14.46200  # pb
-aa_mumu_background_cross_section   = 15.78000  # pb
+
+#aa_tautau_background_cross_section = 14.46200  # pb
+aa_tautau_background_cross_section   = 1.806765e-01  # pb  Laurent
+
+aa_mumu_background_cross_section = 15.78  # pb
+
 
 
 
@@ -2035,7 +2040,7 @@ plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Distribution")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.6)
+plt.ylim(1e-5, 0.4)
 # ✅ Legend, Grid, and Save
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
@@ -2149,7 +2154,7 @@ plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Distribution")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 \ TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.3)
+plt.ylim(1e-5, 0.20)
 # ✅ Legend and Layout
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
@@ -2262,7 +2267,7 @@ plt.xlabel(r"$\eta^{\ell}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.3)
+plt.ylim(1e-5, 0.2)
 # ✅ Legend and Layout
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
@@ -2375,7 +2380,7 @@ for label, dsigma_dict, color, style in background_styles:
 plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 #plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
@@ -2490,7 +2495,7 @@ plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 
 # ✅ Legend and Save
 plt.legend()
@@ -2609,7 +2614,7 @@ for label, dsigma_dict, color, style in background_styles:
 plt.xlabel(r"$M_W^{\ell \nu_\ell} \ \mathrm{[GeV]}$")
 plt.ylabel("Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
-plt.ylim(0.0, 0.4)
+plt.ylim(0.0, 0.3)
 
 # ✅ Legend and Layout
 plt.legend()
@@ -2968,7 +2973,7 @@ plt.xlabel(r"$p_T^{W^{\mathrm{lep}}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 
 # ✅ Legend, Grid, Save
 plt.legend()
@@ -3088,7 +3093,7 @@ plt.xlabel(r"$p_T^{W^{\mathrm{had}}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 
 # ✅ Legend, Grid, Save
 plt.legend()
@@ -3206,7 +3211,7 @@ plt.xlabel(r"$\Delta\phi(\ell, \mathrm{MET})$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.2)
 
 # ✅ Legend, Grid, Save
 plt.legend()
@@ -3325,7 +3330,7 @@ plt.xlabel(r"$M_T(W^\mathrm{lep}) \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized $\frac{1}{\sigma} \frac{d\sigma}{dM_T}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 
 # ✅ Legend and Save
 plt.legend()
@@ -3445,7 +3450,7 @@ plt.xlabel(r"$H_T^\mathrm{total} \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.4)
+plt.ylim(1e-5, 0.3)
 
 # ✅ Legend and Save
 plt.legend()
@@ -3813,7 +3818,7 @@ plt.xlabel(r"$\Delta\eta(W^{lep}, W^{had})$")
 plt.ylabel(r"Normalized $\frac{1}{\sigma} \frac{d\sigma}{d\Delta\eta_{WW}}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.3)
+plt.ylim(1e-5, 0.2)
 
 # ✅ Legend, Grid, Save
 plt.legend()
@@ -4054,7 +4059,7 @@ plt.xlabel(r"$m(\ell \nu jj) \ \mathrm{[GeV]}$")
 plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 #plt.yscale("log")
-plt.ylim(1e-5, 0.3)
+plt.ylim(1e-5, 0.2)
 
 # ✅ Legend and Save
 plt.legend()

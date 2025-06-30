@@ -12,7 +12,7 @@ import pandas as pd
 # SETTINGS
 #-------------------------------
 n_samples = 100000
-luminosity_fb = 1000.0  # Target luminosity
+luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
 #signal_cross_section_fb = 0.015395800000000001 * 1000.0  #FM0
@@ -22,10 +22,8 @@ signal_cross_section_fb = 0.022850099999999998 * 1000.0  #FM2
 
 background_cross_sections_fb = {
     "aa_ww": 0.0149219 * 1000.0,
-#  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
     "aa_ttbar": 4.824774e-05 * 1000.0,
-    "aa_tautau": 14.46200 * 1000.0,
-#    "aa_mumu": 15.7800 * 1000.0,
+    "aa_tautau": 1.806765e-01 * 1000.0,
     "inclusive_ttbar": 0.00817326 * 1000.0,
     "single_top": 1.36211000   * 1000.0,
     "w_production": 1.965201542 * 1000.0,
@@ -45,7 +43,7 @@ observable_map = {
     "missing_et": "hist_missing_et",
     "subleading_jet_eta": "hist_subleading_jet_eta",
     "leading_jet_eta": "hist_leading_jet_eta",
-    "jet_centrality": "hist_jet_centrality",
+#    "jet_centrality": "hist_jet_centrality",
     "delta_eta_jj": "hist_delta_eta_jj",
     "m_w_hadronic": "hist_m_w_hadronic",
     "m_w_leptonic": "hist_m_w_leptonic",
@@ -56,10 +54,10 @@ observable_map = {
     "delta_phi_lep_met": "hist_delta_phi_lep_met",
     "mt_w_leptonic": "hist_mt_w_leptonic",
     "ht_total": "hist_ht_total",
-    "delta_phi_jj": "hist_delta_phi_jj",
-    "delta_phi_wl_wh": "hist_delta_phi_wl_wh",
-    "delta_eta_wl_wh": "hist_delta_eta_wl_wh",
-    "m_jj": "hist_m_jj",
+#    "delta_phi_jj": "hist_delta_phi_jj",
+#    "delta_phi_wl_wh": "hist_delta_phi_wl_wh",
+#    "delta_eta_wl_wh": "hist_delta_eta_wl_wh",
+#    "m_jj": "hist_m_jj",
     "m_lvjj": "hist_m_lvjj"
 }
 
@@ -89,7 +87,7 @@ def sample_from_hist(hist, n):
 #-------------------------------
 # PROCESS SIGNAL
 #-------------------------------
-file = ROOT.TFile.Open("output_histograms_FM2_Delphes_Pythia.root")
+file = ROOT.TFile.Open("output_histograms_FM2.root")
 signal_data = {}
 for obs, hist_base in observable_map.items():
     full_hist_name = f"{hist_base}_FM2_Lambda4"

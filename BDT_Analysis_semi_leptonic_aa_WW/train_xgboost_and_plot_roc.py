@@ -41,6 +41,7 @@ model = xgb.XGBClassifier(
     use_label_encoder=False,
     eval_metric="logloss"
 )
+
 model.fit(X_train, y_train, sample_weight=w_train)
 
 # Predict probabilities
