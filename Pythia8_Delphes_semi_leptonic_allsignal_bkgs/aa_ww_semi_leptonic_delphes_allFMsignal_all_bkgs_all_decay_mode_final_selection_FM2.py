@@ -159,7 +159,7 @@ def process_file(
 
         if hist_missing_et is not None and branchMissingET.GetEntries() > 0:
             missing_et = branchMissingET.At(0)
-            hist_missing_et.Fill(missing_et.MET)
+
 
 
         # Count the number of jets
@@ -182,15 +182,15 @@ def process_file(
 
 
         # ----------------------------------------
-        # Step 1: Lepton requirement (1 lepton + pT > 5 GeV)
+        # Step 1: Lepton requirement (1 lepton + pT > 10 GeV)
 
         if len(leptons) != 1:
             continue
-        if leptons[0].Pt() <= 5:
+        if leptons[0].Pt() <= 10:
             continue
 
            # ✅ MET cut  :   # Skip event if MET is too low
-        if missing_et.MET < 5:
+        if missing_et.MET < 10:
             continue
 
         selected_events_pre_lepton += 1
@@ -199,10 +199,10 @@ def process_file(
 
         # ----------------------------------------
 
-        # Step 2: Exactly 2 jets with pT > 5 GeV
+        # Step 2: Exactly 2 jets with pT > 10 GeV
         if len(jets) != 2:
             continue
-        if jets[0].Pt() <= 5 or jets[1].Pt() <= 5:
+        if jets[0].Pt() <= 10 or jets[1].Pt() <= 10:
             continue
         selected_events_pre_jets += 1
 
@@ -216,6 +216,11 @@ def process_file(
         # Fill histogram with leading jet pT
         leading_jet = jets[0] if jets[0].Pt() > jets[1].Pt() else jets[1]
         hist_leading_jet_pt.Fill(leading_jet.Pt())
+
+
+        # Fill histogram with missing_et.MET
+        hist_missing_et.Fill(missing_et.MET)
+
 
 
         # Fill optional histograms  Fill histogram with leading jet pT
@@ -322,28 +327,34 @@ def process_file(
                 hist_ht_total.Fill(ht_total)
 
 
+
+
             # =========================================
             # ✅ Extended Kinematic Observables (Optional)
             # =========================================
 
             if 'hist_delta_phi_jj' in locals() and hist_delta_phi_jj is not None:
-                delta_phi_jj = abs(jets[0].Phi() - jets[1].Phi())
+                delta_phi_jj = (jets[0].Phi() - jets[1].Phi())
                 if delta_phi_jj > np.pi:
                     delta_phi_jj = 2 * np.pi - delta_phi_jj
                 hist_delta_phi_jj.Fill(delta_phi_jj)
 
+
             if 'hist_delta_phi_wl_wh' in locals() and hist_delta_phi_wl_wh is not None:
-                delta_phi_wl_wh = abs(w_leptonic.Phi() - w_hadronic.Phi())
+                delta_phi_wl_wh = (w_leptonic.Phi() - w_hadronic.Phi())
                 if delta_phi_wl_wh > np.pi:
                     delta_phi_wl_wh = 2 * np.pi - delta_phi_wl_wh
                 hist_delta_phi_wl_wh.Fill(delta_phi_wl_wh)
+
 
             if 'hist_delta_eta_wl_wh' in locals() and hist_delta_eta_wl_wh is not None:
                 delta_eta_wl_wh = w_leptonic.Eta() - w_hadronic.Eta()
                 hist_delta_eta_wl_wh.Fill(delta_eta_wl_wh)
 
+
             if 'hist_m_jj' in locals() and hist_m_jj is not None:
                 hist_m_jj.Fill(w_hadronic.M())  # Already computed as dijet mass
+
 
             if 'hist_m_lvjj' in locals() and hist_m_lvjj is not None:
                 lvjj = leptons[0] + neutrino_vec + jets[0] + jets[1]
@@ -419,7 +430,6 @@ def process_file(
         efficiency_pre,
         efficiency_final,
     )
-
 
 
 
@@ -1917,11 +1927,6 @@ background_dsigma_wzj_production = {
 
 
 
-plt.figure(figsize=(11, 12))  # Create a new figure for the leading jet η plot
-plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
-
-
-
 # Define colors for each signal
 signal_colors = {
     "$FM_{0} / \Lambda^4$": "green",
@@ -1939,6 +1944,8 @@ signal_colors = {
 # ===================================================
 
 
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # ✅ Plot Signals
 for signal_name, dsigma_data in signal_dsigma.items():
@@ -1946,14 +1953,13 @@ for signal_name, dsigma_data in signal_dsigma.items():
     plt.step(pt_bins, dsigma, where="mid", alpha=0.7,
              label=f"Signal ($W^+W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
-
 # ✅ Plot Backgrounds
 # Each entry: (label, dsigma_dict, color, linestyle)
 background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -1962,21 +1968,17 @@ background_styles = [
     (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
     (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
 ]
-
-
 for label, dsigma_dict, color, style in background_styles:
     pt_bins, dsigma = dsigma_dict["pt_bins_lepton"]
     if sum(dsigma) > 0:
         plt.step(pt_bins, dsigma, where="mid", alpha=0.7,
                  label=label, color=color, linestyle=style, linewidth=3)
-
 # ✅ Axis labels and title
 plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{\ell}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
-
 # ✅ Legend, Grid, and Save
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
@@ -1984,6 +1986,64 @@ plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/differential_cross_section_lepton_pt_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
 
 plt.show()
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Lepton \( p_T \) Normalized Distribution (Semi-Leptonic)
+# ===================================================
+
+
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    pt_bins, dsigma = dsigma_data["pt_bins_lepton"]
+    dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+    plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+             label=f"Signal ($W^+W^-$) [{signal_name}]",
+             color=signal_colors.get(signal_name, "black"), linewidth=3)
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+for label, dsigma_dict, color, style in background_styles:
+    pt_bins, dsigma = dsigma_dict["pt_bins_lepton"]
+    if np.sum(dsigma) > 0:
+        dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+# ✅ Axis labels and title
+plt.xlabel(r"$p_T^{\ell} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Distribution")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.6)
+# ✅ Legend, Grid, and Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_distribution_lepton_pt_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+
+plt.show()
+
 
 
 
@@ -2011,7 +2071,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2049,6 +2109,63 @@ plt.show()
 
 
 
+
+# ===================================================
+# ✅ Leading Jet \( p_T \) Normalized Distribution (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    pt_bins, dsigma = dsigma_data["pt_bins_jet"]
+    dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+    plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+             label=f"Signal ($W^+W^-$) [{signal_name}]",
+             color=signal_colors.get(signal_name, "black"), linewidth=3)
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "firebrick", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "mediumslateblue", (0, (3, 2, 1, 2)))
+]
+for label, dsigma_dict, color, style in background_styles:
+    pt_bins, dsigma = dsigma_dict["pt_bins_jet"]
+    if np.sum(dsigma) > 0:
+        dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+# ✅ Axis Labels and Title
+plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Distribution")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 \ TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.3)
+# ✅ Legend and Layout
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+# ✅ Save and Show
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_distribution_jet_pt_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+
+
 # ===================================================
 # ✅ Lepton \( \eta \) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
@@ -2068,7 +2185,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2106,6 +2223,60 @@ plt.show()
 
 
 
+
+# ===================================================
+# ✅ Lepton \( \eta \) Normalized Distribution (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    eta_bins, dsigma = dsigma_data["eta_bins_lepton"]
+    dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+    plt.step(eta_bins, dsigma_norm, where="mid", alpha=0.7,
+             label=f"Signal ($W^+W^-$) [{signal_name}]",
+             color=signal_colors.get(signal_name, "black"), linewidth=3)
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", (0, (5, 2))),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "firebrick", (0, (1, 1))),
+    (r"$WZj$", background_dsigma_wzj_production, "mediumslateblue", (0, (3, 2, 1, 2)))
+]
+for label, dsigma_dict, color, style in background_styles:
+    eta_bins, dsigma = dsigma_dict["eta_bins_lepton"]
+    if np.sum(dsigma) > 0:
+        dsigma_norm = dsigma / (np.sum(dsigma) + 1e-12)
+        plt.step(eta_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\eta^{\ell}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.3)
+# ✅ Legend and Layout
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+# ✅ Save and Show
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_distribution_lepton_eta_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
+
 # ===================================================
 # ✅ ΔR(ℓ, jet) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
@@ -2125,7 +2296,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2162,8 +2333,6 @@ plt.show()
 
 
 
-
-
 # ===================================================
 # ✅ Normalized ΔR(ℓ, jet) Distribution (Semi-Leptonic)
 # ===================================================
@@ -2181,6 +2350,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
                  color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Normalized Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     delta_r_bins, dsigma = dsigma_dict["delta_r_bins"]
     if np.sum(dsigma) > 0:
@@ -2190,14 +2373,16 @@ for label, dsigma_dict, color, style in background_styles:
 
 # ✅ Axis Labels and Title
 plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
-plt.ylabel("Normalized Entries")
+plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
-plt.ylim(0.0, 0.25)
+plt.ylim(1e-5, 0.4)
+#plt.yscale("log")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_delta_r_allFMsignal_allbkgs_all_decay_mode.pdf", dpi=600)
 plt.show()
+
 
 
 
@@ -2224,7 +2409,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2262,7 +2447,6 @@ plt.show()
 
 
 
-
 # ===================================================
 # ✅ Normalized MET Distribution (Semi-Leptonic)
 # ===================================================
@@ -2280,6 +2464,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
                  color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Normalized Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     met_bins, dsigma = dsigma_dict["met_bins"]
     if np.sum(dsigma) > 0:
@@ -2289,9 +2487,12 @@ for label, dsigma_dict, color, style in background_styles:
 
 # ✅ Axis Labels and Title
 plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
-plt.ylabel("Normalized Entries")
+plt.ylabel(r"Normalized Entries")
 plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
-plt.ylim(0.0, 0.4)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend and Save
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
@@ -2325,7 +2526,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "purple", "-"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2386,7 +2587,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2445,7 +2646,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2506,7 +2707,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2565,7 +2766,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2628,7 +2829,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2667,7 +2868,7 @@ plt.show()
 
 
 # ===================================================
-# ✅ Leptonic W \( p_T \) Differential Cross-Section
+# ✅ Leptonic W \( p_T \) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # Create a new figure for W_lep pT
@@ -2681,6 +2882,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     pt_bins, dsigma = dsigma_dict["pt_w_leptonic_bins"]
     if sum(dsigma) > 0:
@@ -2690,12 +2905,12 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis Labels and Title
 plt.xlabel(r"$p_T^{W^{\mathrm{lep}}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{W^{\mathrm{lep}}}} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
 # ✅ Legend, Grid, Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/differential_cross_section_pt_w_leptonic_allFMsignal_allbkgs.pdf", dpi=600)
@@ -2709,7 +2924,71 @@ plt.show()
 
 
 # ===================================================
-# ✅ Hadronic W \( p_T \) Differential Cross-Section
+# ✅ Leptonic W \( p_T \) Differential Cross-Section (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # Create a new figure for W_lep pT
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    pt_bins, dsigma = dsigma_data["pt_w_leptonic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    pt_bins, dsigma = dsigma_dict["pt_w_leptonic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$p_T^{W^{\mathrm{lep}}} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend, Grid, Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_differential_cross_section_pt_w_leptonic_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Hadronic W \( p_T \) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # New figure for hadronic W pT
@@ -2723,6 +3002,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     pt_bins, dsigma = dsigma_dict["pt_w_hadronic_bins"]
     if sum(dsigma) > 0:
@@ -2732,12 +3025,12 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis Labels and Title
 plt.xlabel(r"$p_T^{W^{\mathrm{had}}} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dp_T^{W^{\mathrm{had}}}} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
 # ✅ Legend, Grid, Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/differential_cross_section_pt_w_hadronic_allFMsignal_allbkgs.pdf", dpi=600)
@@ -2749,8 +3042,72 @@ plt.show()
 
 
 
+
 # ===================================================
-# ✅ Δϕ(ℓ, MET) Differential Cross-Section
+# ✅ Hadronic W \( p_T \) Differential Cross-Section (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for hadronic W pT
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    pt_bins, dsigma = dsigma_data["pt_w_hadronic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    pt_bins, dsigma = dsigma_dict["pt_w_hadronic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(pt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$p_T^{W^{\mathrm{had}}} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend, Grid, Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_differential_cross_section_pt_w_hadronic_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Δϕ(ℓ, MET) Differential Cross-Section (Semi-Leptonic)
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # Create a new figure for Δϕ(l, MET)
@@ -2764,21 +3121,35 @@ for signal_name, dsigma_data in signal_dsigma.items():
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     delta_phi_bins, dsigma = dsigma_dict["delta_phi_lep_met_bins"]
     if sum(dsigma) > 0:
         plt.step(delta_phi_bins, dsigma, where="mid", alpha=0.7,
                  label=label, color=color, linestyle=style, linewidth=3)
 
-# ✅ Labels and Style
+# ✅ Labels and Title
 plt.xlabel(r"$\Delta\phi(\ell, \mathrm{MET})$")
 plt.ylabel(r"$\frac{d\sigma}{d\Delta\phi(\ell, \mathrm{MET})} \ \mathrm{[pb]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-5, 1e0)
+plt.ylim(1e-5, 1e1)
 
-# ✅ Legend and Grid
-plt.legend(loc="best", fontsize=12, ncol=2)
+# ✅ Legend, Grid, Save
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_phi_lep_met_allFMsignal_allbkgs.pdf", dpi=600)
@@ -2790,9 +3161,72 @@ plt.show()
 
 
 
+# ===================================================
+# ✅ Δϕ(ℓ, MET) Differential Cross-Section (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # Create a new figure for Δϕ(l, MET)
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    delta_phi_bins, dsigma = dsigma_data["delta_phi_lep_met_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(delta_phi_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    delta_phi_bins, dsigma = dsigma_dict["delta_phi_lep_met_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(delta_phi_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Labels and Title
+plt.xlabel(r"$\Delta\phi(\ell, \mathrm{MET})$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend, Grid, Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_delta_phi_lep_met_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+
+
 
 # ===================================================
-# ✅ Transverse Mass of Leptonic W (M_T)
+# ✅ Transverse Mass of Leptonic W (M_T) (Semi-Leptonic)
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # New figure for MT(W_lep)
@@ -2806,6 +3240,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     mt_bins, dsigma = dsigma_dict["mt_w_leptonic_bins"]
     if sum(dsigma) > 0:
@@ -2815,12 +3263,12 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis labels and layout
 plt.xlabel(r"$M_T(W^\mathrm{lep}) \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dM_T} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-5, 1e0)
+plt.ylim(1e-5, 1e1)
 
 # ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_mt_w_leptonic_allFMsignal_allbkgs.pdf", dpi=600)
@@ -2832,9 +3280,72 @@ plt.show()
 
 
 
+# ===================================================
+# ✅ Transverse Mass of Leptonic W (M_T) (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for MT(W_lep)
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    mt_bins, dsigma = dsigma_data["mt_w_leptonic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    mt_bins, dsigma = dsigma_dict["mt_w_leptonic_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mt_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis labels and layout
+plt.xlabel(r"$M_T(W^\mathrm{lep}) \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized $\frac{1}{\sigma} \frac{d\sigma}{dM_T}$")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend and Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_mt_w_leptonic_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+
+
 
 # ===================================================
-# ✅ Total Scalar Transverse Energy \( H_T \)
+# ✅ Total Scalar Transverse Energy \( H_T \) (Semi-Leptonic)
 # ===================================================
 
 plt.figure(figsize=(11, 12))  # New figure for H_T
@@ -2848,6 +3359,20 @@ for signal_name, dsigma_data in signal_dsigma.items():
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
 # ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 for label, dsigma_dict, color, style in background_styles:
     ht_bins, dsigma = dsigma_dict["ht_total_bins"]
     if sum(dsigma) > 0:
@@ -2857,15 +3382,135 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis labels and layout
 plt.xlabel(r"$H_T^\mathrm{total} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dH_T} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
 # ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_ht_total_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Total Scalar Transverse Energy \( H_T \) (Semi-Leptonic)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for H_T
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    ht_bins, dsigma = dsigma_data["ht_total_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(ht_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Plot Backgrounds
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+for label, dsigma_dict, color, style in background_styles:
+    ht_bins, dsigma = dsigma_dict["ht_total_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(ht_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis labels and layout
+plt.xlabel(r"$H_T^\mathrm{total} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.4)
+
+# ✅ Legend and Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_ht_total_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Azimuthal Angle Difference Between Jets \( \Delta\phi_{jj} \)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for Δϕ(jj)
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    phi_bins, dsigma = dsigma_data["delta_phi_jj_bins"]
+    plt.step(phi_bins, dsigma, where="mid", alpha=0.7,
+             label=f"Signal ($W^+W^-$) [{signal_name}]",
+             color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Background Styles (re-declared to ensure consistency if run standalone)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+# ✅ Plot Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    phi_bins, dsigma = dsigma_dict["delta_phi_jj_bins"]
+    if sum(dsigma) > 0:
+        plt.step(phi_bins, dsigma, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis labels and title
+plt.xlabel(r"$\Delta\phi_{jj}$")
+plt.ylabel(r"$\frac{d\sigma}{d\Delta\phi_{jj}} \ \mathrm{[pb]}$")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+plt.yscale("log")
+plt.ylim(1e-5, 1e1)
+
+# ✅ Legend, Grid, Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_phi_jj_allFMsignal_allbkgs.pdf", dpi=600)
 
 plt.show()
 
@@ -2878,35 +3523,55 @@ plt.show()
 # ✅ Azimuthal Angle Difference Between Jets \( \Delta\phi_{jj} \)
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # New figure for Delta Phi (jj)
+plt.figure(figsize=(11, 12))  # New figure for Δϕ(jj)
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # ✅ Plot Signals
 for signal_name, dsigma_data in signal_dsigma.items():
     phi_bins, dsigma = dsigma_data["delta_phi_jj_bins"]
-    plt.step(phi_bins, dsigma, where="mid", alpha=0.7,
-             label=f"Signal ($W^+W^-$) [{signal_name}]",
-             color=signal_colors.get(signal_name, "black"), linewidth=3)
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(phi_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Background Styles (re-declared to ensure consistency if run standalone)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
 
 # ✅ Plot Backgrounds
 for label, dsigma_dict, color, style in background_styles:
     phi_bins, dsigma = dsigma_dict["delta_phi_jj_bins"]
-    if sum(dsigma) > 0:
-        plt.step(phi_bins, dsigma, where="mid", alpha=0.7,
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(phi_bins, dsigma_norm, where="mid", alpha=0.7,
                  label=label, color=color, linestyle=style, linewidth=3)
 
 # ✅ Axis labels and title
 plt.xlabel(r"$\Delta\phi_{jj}$")
-plt.ylabel(r"$\frac{d\sigma}{d\Delta\phi_{jj}} \ \mathrm{[pb]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
-plt.yscale("log")
-plt.ylim(1e-5, 1e0)
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.2)
 
-# ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+# ✅ Legend, Grid, Save
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_phi_jj_allFMsignal_allbkgs.pdf", dpi=600)
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_delta_phi_jj_allFMsignal_allbkgs.pdf", dpi=600)
 
 plt.show()
 
@@ -2914,11 +3579,15 @@ plt.show()
 
 
 
+
+
+
+
 # ===================================================
-# ✅ Azimuthal Angle Difference Between Leptonic and Hadronic W Bosons
+# ✅ Azimuthal Angle Difference Between Leptonic and Hadronic W Bosons \( \Delta\phi_{WW} \)
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # New figure for Delta Phi (Wlep, Whad)
+plt.figure(figsize=(11, 12))  # New figure for Δϕ(Wlep, Whad)
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # ✅ Plot Signals
@@ -2928,6 +3597,21 @@ for signal_name, dsigma_data in signal_dsigma.items():
              label=f"Signal ($W^+W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
+# ✅ Background Styles (ensures standalone use)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 # ✅ Plot Backgrounds
 for label, dsigma_dict, color, style in background_styles:
     phi_bins, dsigma = dsigma_dict["delta_phi_wl_wh_bins"]
@@ -2935,30 +3619,100 @@ for label, dsigma_dict, color, style in background_styles:
         plt.step(phi_bins, dsigma, where="mid", alpha=0.7,
                  label=label, color=color, linestyle=style, linewidth=3)
 
-# ✅ Axis labels and title
+# ✅ Axis Labels and Title
 plt.xlabel(r"$\Delta\phi(W^{lep}, W^{had})$")
 plt.ylabel(r"$\frac{d\sigma}{d\Delta\phi_{WW}} \ \mathrm{[pb]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
-# ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+# ✅ Legend and Layout
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_phi_wl_wh_allFMsignal_allbkgs.pdf", dpi=600)
 
+# ✅ Save and Show
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_phi_wl_wh_allFMsignal_allbkgs.pdf", dpi=600)
 plt.show()
 
 
 
 
 
+
+
+
 # ===================================================
-# ✅ Pseudorapidity Difference Between Leptonic and Hadronic W Bosons
+# ✅ Azimuthal Angle Difference Between Leptonic and Hadronic W Bosons \( \Delta\phi_{WW} \)
 # ===================================================
 
-plt.figure(figsize=(11, 12))  # New figure for Delta Eta (Wlep, Whad)
+plt.figure(figsize=(11, 12))  # New figure for Δϕ(Wlep, Whad)
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    phi_bins, dsigma = dsigma_data["delta_phi_wl_wh_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(phi_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Background Styles (ensures standalone use)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+# ✅ Plot Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    phi_bins, dsigma = dsigma_dict["delta_phi_wl_wh_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(phi_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\Delta\phi(W^{lep}, W^{had})$")
+plt.ylabel(r"Normalized $\frac{1}{\sigma} \frac{d\sigma}{d\Delta\phi_{WW}}$")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 1e0)
+
+# ✅ Legend and Layout
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+
+# ✅ Save and Show
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_delta_phi_wl_wh_allFMsignal_allbkgs.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Pseudorapidity Difference Between Leptonic and Hadronic W Bosons \( \Delta\eta_{WW} \)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for Δη(Wlep, Whad)
 plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
 
 # ✅ Plot Signals
@@ -2968,6 +3722,21 @@ for signal_name, dsigma_data in signal_dsigma.items():
              label=f"Signal ($W^+W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
+# ✅ Background Styles
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 # ✅ Plot Backgrounds
 for label, dsigma_dict, color, style in background_styles:
     eta_bins, dsigma = dsigma_dict["delta_eta_wl_wh_bins"]
@@ -2975,20 +3744,88 @@ for label, dsigma_dict, color, style in background_styles:
         plt.step(eta_bins, dsigma, where="mid", alpha=0.7,
                  label=label, color=color, linestyle=style, linewidth=3)
 
-# ✅ Axis labels and title
+# ✅ Axis Labels and Title
 plt.xlabel(r"$\Delta\eta(W^{lep}, W^{had})$")
 plt.ylabel(r"$\frac{d\sigma}{d\Delta\eta_{WW}} \ \mathrm{[pb]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
-plt.ylim(1e-5, 1e0)
+plt.ylim(1e-5, 1e1)
 
-# ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+# ✅ Legend, Grid, Save
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_delta_eta_wl_wh_allFMsignal_allbkgs.pdf", dpi=600)
-
 plt.show()
+
+
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Pseudorapidity Difference Between Leptonic and Hadronic W Bosons \( \Delta\eta_{WW} \)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for Δη(Wlep, Whad)
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    eta_bins, dsigma = dsigma_data["delta_eta_wl_wh_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(eta_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Background Styles
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+# ✅ Plot Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    eta_bins, dsigma = dsigma_dict["delta_eta_wl_wh_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(eta_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis Labels and Title
+plt.xlabel(r"$\Delta\eta(W^{lep}, W^{had})$")
+plt.ylabel(r"Normalized $\frac{1}{\sigma} \frac{d\sigma}{d\Delta\eta_{WW}}$")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.3)
+
+# ✅ Legend, Grid, Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_delta_eta_wl_wh_allFMsignal_allbkgs.pdf", dpi=600)
+plt.show()
+
+
+
+
+
 
 
 
@@ -3007,6 +3844,21 @@ for signal_name, dsigma_data in signal_dsigma.items():
              label=f"Signal ($W^+W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
+# ✅ Background styles (reuse consistent style block if not global)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 # ✅ Plot Backgrounds
 for label, dsigma_dict, color, style in background_styles:
     mjj_bins, dsigma = dsigma_dict["m_jj_bins"]
@@ -3017,17 +3869,83 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis labels and title
 plt.xlabel(r"$m_{jj} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dm_{jj}} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
 # ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_m_jj_allFMsignal_allbkgs.pdf", dpi=600)
 
 plt.show()
+
+
+
+
+
+
+
+
+# ===================================================
+# ✅ Dijet Invariant Mass \( m_{jj} \) Differential Cross-Section (Normalized)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for m_jj
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals
+for signal_name, dsigma_data in signal_dsigma.items():
+    mjj_bins, dsigma = dsigma_data["m_jj_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mjj_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Background styles (reuse consistent style block if not global)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+# ✅ Plot Backgrounds
+for label, dsigma_dict, color, style in background_styles:
+    mjj_bins, dsigma = dsigma_dict["m_jj_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mjj_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis labels and title
+plt.xlabel(r"$m_{jj} \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.6)
+
+# ✅ Legend and Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_m_jj_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
+
 
 
 
@@ -3049,6 +3967,21 @@ for signal_name, dsigma_data in signal_dsigma.items():
              label=f"Signal ($W^+W^-$) [{signal_name}]",
              color=signal_colors.get(signal_name, "black"), linewidth=3)
 
+# ✅ Backgrounds (same consistent style)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
 # ✅ Plot Backgrounds
 for label, dsigma_dict, color, style in background_styles:
     mlvjj_bins, dsigma = dsigma_dict["m_lvjj_bins"]
@@ -3059,17 +3992,79 @@ for label, dsigma_dict, color, style in background_styles:
 # ✅ Axis labels and title
 plt.xlabel(r"$m(\ell \nu jj) \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dm(\ell \nu jj)} \ \mathrm{[pb/GeV]}$")
-plt.title(r"Delphes simulation: $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ at LHeC ($\sqrt{s} = 1.2$ TeV)", fontsize=20)
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
 plt.yscale("log")
 plt.ylim(1e-5, 1e0)
 
 # ✅ Legend and Save
-plt.legend(loc="best", fontsize=12, ncol=2)
+plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_m_lvjj_allFMsignal_allbkgs.pdf", dpi=600)
 
 plt.show()
+
+
+
+
+
+# ===================================================
+# ✅ Invariant Mass \( m(\ell\nu jj) \) Differential Cross-Section (Normalized)
+# ===================================================
+
+plt.figure(figsize=(11, 12))  # New figure for m_lvjj
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+# ✅ Plot Signals (normalized)
+for signal_name, dsigma_data in signal_dsigma.items():
+    mlvjj_bins, dsigma = dsigma_data["m_lvjj_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mlvjj_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=f"Signal ($W^+W^-$) [{signal_name}]",
+                 color=signal_colors.get(signal_name, "black"), linewidth=3)
+
+# ✅ Backgrounds (same consistent style, normalized)
+background_styles = [
+    (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
+    (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
+    (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
+#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
+    (r"Single Top", background_dsigma_single_top, "teal", "--"),
+    (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
+    (r"Z Production", background_dsigma_z_production, "darkred", ":"),
+    (r"$WWj$", background_dsigma_wwj_production, "royalblue", "--"),
+    (r"$ZZj$ $(\times 10^2)$", background_dsigma_zzj_production, "mediumvioletred", "-."),
+    (r"$WZj$", background_dsigma_wzj_production, "slategray", ":")
+]
+
+# ✅ Plot Backgrounds (normalized)
+for label, dsigma_dict, color, style in background_styles:
+    mlvjj_bins, dsigma = dsigma_dict["m_lvjj_bins"]
+    total = sum(dsigma)
+    if total > 0:
+        dsigma_norm = [x / total for x in dsigma]
+        plt.step(mlvjj_bins, dsigma_norm, where="mid", alpha=0.7,
+                 label=label, color=color, linestyle=style, linewidth=3)
+
+# ✅ Axis labels and title
+plt.xlabel(r"$m(\ell \nu jj) \ \mathrm{[GeV]}$")
+plt.ylabel(r"Normalized Entries")
+plt.title(r"Delphes simulation : $e^- p \to e^- W^+ W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=20)
+#plt.yscale("log")
+plt.ylim(1e-5, 0.3)
+
+# ✅ Legend and Save
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_m_lvjj_allFMsignal_allbkgs.pdf", dpi=600)
+
+plt.show()
+
+
 
 
 
