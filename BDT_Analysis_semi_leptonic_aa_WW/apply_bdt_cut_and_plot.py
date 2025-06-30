@@ -6,7 +6,7 @@ import xgboost as xgb
 BDT_THRESHOLD = 0.212  # ← Ideally retrieved from optimize_bdt_cut.py
 
 # Load dataset
-df = pd.read_csv("ml_input_from_histograms.csv")
+df = pd.read_csv("ml_input_from_histograms_FM2.csv")
 
 # Drop any categorical columns if they exist
 drop_cols = ["label", "weight"]

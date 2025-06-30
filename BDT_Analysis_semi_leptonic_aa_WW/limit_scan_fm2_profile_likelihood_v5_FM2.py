@@ -31,16 +31,16 @@ n_generated = 1_000_000  # Total generated events
 background_cross_sections_fb = {
     "aa_ww": 0.0149219 * 1000.0,
 #  0.0139124   for  aa_ww_semi_leptonic_SM_NP_0_FMi_0
-    "aa_ttbar": 4.824851e-05 * 1000.0,
-    "aa_tautau": 14.46100 * 1000.0,
-    "aa_mumu": 15.77700 * 1000.0,
-    "inclusive_ttbar": 0.00817729 * 1000.0,
-    "single_top": 1.36209000   * 1000.0,
-    "w_production": 2.68341400 * 1000.0,
-    "z_production": 0.35079000 * 1000.0,
-    "wwj": 0.02033281625797406 * 1000.0,
-    "zzj": 8.098369938127394e-05 * 1000.0,
-    "wzj": 0.002858915860372209  * 1000.0
+    "aa_ttbar": 4.824774e-05 * 1000.0,
+    "aa_tautau": 14.46200 * 1000.0,
+#    "aa_mumu": 15.7800 * 1000.0,
+    "inclusive_ttbar": 0.00817326 * 1000.0,
+    "single_top": 1.36211000   * 1000.0,
+    "w_production": 1.965201542 * 1000.0,
+    "z_production": 0.159347434 * 1000.0,
+    "wwj": 0.02031491612402401   * 1000.0,
+    "zzj": 8.106588466651764e-05 * 1000.0,
+    "wzj": 0.0028587542003382592 * 1000.0
 }
 
 
@@ -73,7 +73,7 @@ ams_scores = []
 for cut in bdt_cuts:
     s = df[(df["label"] == 1) & (df["bdt_score"] > cut)]["weight"].sum()
     b = df[(df["label"] == 0) & (df["bdt_score"] > cut)]["weight"].sum()
-    ams = s / np.sqrt(b + 1e-6) if b > 0 else 0.0
+    ams = s / np.sqrt(s + b + 1e-6) if b > 0 else 0.0
     ams_scores.append(ams)
 
 idx_best = np.argmax(ams_scores)

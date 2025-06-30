@@ -4,17 +4,44 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_pdf import PdfPages
 import matplotlib.gridspec as gridspec
 
+import os
+
+
 # Load post-cut data
 signal_df = pd.read_csv("signal_after_cut.csv")
 background_df = pd.read_csv("background_after_cut.csv")
 
+
+# Directory to save plots
+output_dir = "post_cut_distributions"
+os.makedirs(output_dir, exist_ok=True)
+
+
 # Features to compare
 features = [
-    "lepton_pt", "lepton_eta",
-    "leading_jet_pt", "leading_jet_eta", "subleading_jet_eta",
-    "missing_et", "delta_r", "jet_centrality", "delta_eta_jj",
-    "m_w_leptonic", "m_w_hadronic"
+    "lepton_pt",
+    "lepton_eta",
+    "leading_jet_pt",
+    "leading_jet_eta",
+    "subleading_jet_eta",
+    "missing_et",
+    "delta_r",
+    "jet_centrality",
+    "delta_eta_jj",
+    "m_w_leptonic",
+    "m_w_hadronic",
+    "pt_w_leptonic",
+    "pt_w_hadronic",
+    "delta_phi_lep_met",
+    "mt_w_leptonic",
+    "ht_total",
+    "delta_phi_jj",
+    "delta_phi_wl_wh",
+    "delta_eta_wl_wh",
+    "m_jj",
+    "m_lvjj"
 ]
+
 
 # Create PDF summary report with S/B panel
 with PdfPages("post_cut_summary.pdf") as pdf:
@@ -46,24 +73,24 @@ with PdfPages("post_cut_summary.pdf") as pdf:
         ax0.legend()
         ax0.grid(True, linestyle="--", alpha=0.5)
 
-        # Bottom: S/B ratio
-        ratio = np.divide(sig_vals, bkg_vals + 1e-6)
+        # Bottom: S / √B ratio
+        ratio = np.divide(sig_vals, np.sqrt(bkg_vals + 1e-6))  # S / √B
         ax1.plot(bin_centers, ratio, drawstyle="steps-mid", color="black")
-        ax1.set_ylabel("S / B")
+        ax1.set_ylabel("S / √B")
         ax1.set_xlabel(feature.replace("_", " ").title())
         ax1.grid(True, linestyle="--", alpha=0.5)
 
         plt.tight_layout()
         pdf.savefig()
-        plt.savefig(f"post_cut_{feature}_with_ratio.pdf")
+        plt.savefig(os.path.join(output_dir, f"post_cut_{feature}_with_ratio.pdf"))
         plt.close()
 
     # Optional: Add metadata to PDF
     d = pdf.infodict()
     d['Title'] = 'Post-Cut Distribution Summary with Ratio Panels'
     d['Author'] = 'Your Analysis Pipeline'
-    d['Subject'] = 'Signal vs Background and S/B Distributions after BDT Cut'
+    d['Subject'] = 'Signal vs Background and S / √B Distributions after BDT Cut'
     d['Keywords'] = 'BDT Cut Physics ML XGBoost LHeC'
     d['CreationDate'] = pd.Timestamp.today()
 
-print("📄 Summary PDF with S/B panels saved as post_cut_summary.pdf ✅")
+print("📄 Summary PDF with S / √B panels saved as post_cut_summary.pdf ✅")

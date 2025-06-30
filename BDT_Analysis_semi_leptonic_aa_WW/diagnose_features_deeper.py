@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
 # Load the pre-cut ML input
-df = pd.read_csv("ml_input_from_histograms.csv")
+df = pd.read_csv("ml_input_from_histograms_FM2.csv")
 
 # Drop any non-numerical metadata columns
 drop_cols = ["label", "weight"]

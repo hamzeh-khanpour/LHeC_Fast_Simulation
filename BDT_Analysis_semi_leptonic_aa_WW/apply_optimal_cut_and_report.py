@@ -5,7 +5,7 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 
 # Load prepared CSV data
-df = pd.read_csv("ml_input_from_histograms.csv")
+df = pd.read_csv("ml_input_from_histograms_FM2.csv")
 
 # Features, labels, weights, process tags
 X = df.drop(columns=["label", "weight", "process"])

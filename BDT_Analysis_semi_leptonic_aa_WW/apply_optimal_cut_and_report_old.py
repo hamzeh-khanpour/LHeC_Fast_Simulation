@@ -36,7 +36,7 @@ background_cross_sections_pb = {
 #-------------------------
 # Load ML dataset
 #-------------------------
-df = pd.read_csv("ml_input_from_histograms.csv")
+df = pd.read_csv("ml_input_from_histograms_FM2.csv")
 has_process = "process" in df.columns
 
 X = df.drop(columns=["label", "weight"] + (["process"] if has_process else []))
@@ -75,7 +75,7 @@ s_after = df_cut[df_cut["label"] == 1]["weight"].sum()
 efficiency_bdt = s_after / s_total if s_total > 0 else 0.0
 
 # Signal preselection efficiency
-f = ROOT.TFile.Open("output_histograms.root")
+f = ROOT.TFile.Open("output_histograms_FM2_Delphes_Pythia.root")
 hist_preselected_sig = f.Get("signal_FM2_Lambda4/hist_jet_centrality_FM2_Lambda4")
 n_preselected_sig = hist_preselected_sig.Integral() if hist_preselected_sig else 0
 eff_preselection_sig = n_preselected_sig / n_generated
