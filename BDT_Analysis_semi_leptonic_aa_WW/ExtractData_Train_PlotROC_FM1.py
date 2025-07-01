@@ -15,8 +15,8 @@ n_samples = 100000
 luminosity_fb = 100.0  # Target luminosity
 
 # Cross sections (pb)
-signal_cross_section_fb = 0.015395800000000001 * 1000.0  #FM0
-#signal_cross_section_fb = 0.015587299999999998 * 1000.0  #FM1
+#signal_cross_section_fb = 0.015395800000000001 * 1000.0  #FM0
+signal_cross_section_fb = 0.015587299999999998 * 1000.0  #FM1
 #signal_cross_section_fb = 0.022850099999999998 * 1000.0  #FM2
 #signal_cross_section_fb = 0.017148100000000000 * 1000.0  #FM3
 
@@ -87,7 +87,7 @@ def sample_from_hist(hist, n):
 #-------------------------------
 # PROCESS SIGNAL
 #-------------------------------
-file = ROOT.TFile.Open("output_histograms_FM0.root")
+file = ROOT.TFile.Open("output_histograms_FM1.root")
 signal_data = {}
 for obs, hist_base in observable_map.items():
     full_hist_name = f"{hist_base}_FM2_Lambda4"
@@ -135,6 +135,6 @@ full_df.dropna(inplace=True)
 
 
 # Save
-full_df.to_csv("ml_input_from_histograms_FM0.csv", index=False)
-print(f"✅ Saved: ml_input_from_histograms_FM0.csv with {full_df.shape[0]} events and weights for {luminosity_fb:.1f} fb^-1.")
+full_df.to_csv("ml_input_from_histograms_FM1.csv", index=False)
+print(f"✅ Saved: ml_input_from_histograms_FM1.csv with {full_df.shape[0]} events and weights for {luminosity_fb:.1f} fb^-1.")
 

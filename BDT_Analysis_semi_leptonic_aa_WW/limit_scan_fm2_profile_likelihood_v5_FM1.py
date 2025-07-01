@@ -186,7 +186,7 @@ except:
 # ===================================
 # 📈 Plot q(FM2)
 # ===================================
-fm2_vals = np.linspace(-50.0, 50.0, 200)
+fm2_vals = np.linspace(-2000.0, 2000.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))
@@ -201,8 +201,8 @@ plt.title('Profile Likelihood Scan over $f_{M1}/\Lambda^4$')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("limit_scan_fm2_profile_likelihood_v5_FM1.pdf")
-print("✅ Saved as 'limit_scan_fm2_profile_likelihood_v5_FM1.pdf'")
+plt.savefig("limit_scan_fm1_profile_likelihood_v5_FM1.pdf")
+print("✅ Saved as 'limit_scan_fm1_profile_likelihood_v5_FM1.pdf'")
 plt.show()
 
 

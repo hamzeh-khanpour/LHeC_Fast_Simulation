@@ -186,7 +186,7 @@ except:
 # ===================================
 # 📈 Plot q(FM2)
 # ===================================
-fm2_vals = np.linspace(-50.0, 50.0, 200)
+fm2_vals = np.linspace(-500.0, 500.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))
@@ -201,8 +201,8 @@ plt.title('Profile Likelihood Scan over $f_{M3}/\Lambda^4$')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("limit_scan_fm2_profile_likelihood_v5_FM3.pdf")
-print("✅ Saved as 'limit_scan_fm2_profile_likelihood_v5_FM3.pdf'")
+plt.savefig("limit_scan_fm3_profile_likelihood_v5_FM3.pdf")
+print("✅ Saved as 'limit_scan_fm3_profile_likelihood_v5_FM3.pdf'")
 plt.show()
 
 
@@ -210,7 +210,7 @@ plt.show()
 # ===================================
 # 🖨️ Final Report
 # ===================================
-print("\n======== Final FM2 Limit Scan Report ========")
+print("\n======== Final FM3 Limit Scan Report ========")
 print(f"Signal Preselection Efficiency: {eff_preselection_sig:.4f}")
 print(f"Signal ML Efficiency:           {signal_eff_ml:.4f}")
 print(f"Signal Efficiency (total):      {signal_eff_total:.4f}\n")

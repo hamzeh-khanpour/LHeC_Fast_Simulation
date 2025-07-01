@@ -47,7 +47,7 @@ def sigma_fm2_fb(fm2):
 # ================================
 # 📥 Load Data
 # ================================
-df = pd.read_csv("ml_with_bdt_scores_FM2.csv")
+df = pd.read_csv("ml_with_bdt_scores_FM0.csv")
 has_process = "process" in df.columns
 
 
@@ -186,7 +186,7 @@ except:
 # ===================================
 # 📈 Plot q(FM2)
 # ===================================
-fm2_vals = np.linspace(-50.0, 50.0, 200)
+fm2_vals = np.linspace(-500.0, 500.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))
@@ -201,8 +201,8 @@ plt.title('Profile Likelihood Scan over $f_{M0}/\Lambda^4$')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("limit_scan_fm2_profile_likelihood_v5_FM2.pdf")
-print("✅ Saved as 'limit_scan_fm2_profile_likelihood_v5_FM2.pdf'")
+plt.savefig("limit_scan_fm0_profile_likelihood_v5_FM0.pdf")
+print("✅ Saved as 'limit_scan_fm0_profile_likelihood_v5_FM0.pdf'")
 plt.show()
 
 
