@@ -39,10 +39,17 @@ background_cross_sections_fb = {
 # 📐 Cross section function σ(fM2)
 # ===================================
 def sigma_fm2_fb(fm2):
-    a = -2.132226e-03
-    b = 2.007667e-05
-    c = 1.490756e+01
+    #a = -2.132226e-03
+    #b = 2.007667e-05
+    #c = 1.490756e+01
+
+    a = -2.251788e-03
+    b = 2.076935e-05
+    c = 1.540391e+01
+
     return a * fm2 + b * fm2**2 + c
+
+
 
 
 # ================================
@@ -176,8 +183,8 @@ def q_target(fm2):
     return q_mu(fm2) - 3.84
 
 try:
-    fm2_upper = root_scalar(q_target, bracket=(0.001, 500.0), method='brentq').root
-    fm2_lower = root_scalar(q_target, bracket=(-500.0, -0.001), method='brentq').root
+    fm2_upper = root_scalar(q_target, bracket=(0.001, 200.0), method='brentq').root
+    fm2_lower = root_scalar(q_target, bracket=(-200.0, -0.001), method='brentq').root
 except:
     fm2_upper = None
     fm2_lower = None
@@ -187,7 +194,7 @@ except:
 # ===================================
 # 📈 Plot q(FM2)
 # ===================================
-fm2_vals = np.linspace(-500.0, 500.0, 200)
+fm2_vals = np.linspace(-300.0, 300.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))

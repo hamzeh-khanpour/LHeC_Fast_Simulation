@@ -39,9 +39,14 @@ background_cross_sections_fb = {
 # 📐 Cross section function σ(fM2)
 # ===================================
 def sigma_fm2_fb(fm2):
-    a = 1.509977e-03
-    b = 1.525241e-06
-    c = 1.490387e+01
+    #a = 1.509977e-03
+    #b = 1.525241e-06
+    #c = 1.490387e+01
+
+    a = 1.609048e-03
+    b = 1.552446e-06
+    c = 1.540257e+01
+
     return a * fm2 + b * fm2**2 + c
 
 
