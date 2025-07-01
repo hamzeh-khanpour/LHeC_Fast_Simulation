@@ -24,6 +24,7 @@ background_cross_sections_fb = {
     "aa_ww": 0.0149219 * 1000.0,
     "aa_ttbar": 4.824774e-05 * 1000.0,
     "aa_tautau": 1.806765e-01 * 1000.0,
+    "aa_tautau_inel": 1.156165e-01 * 1000.0,
     "inclusive_ttbar": 0.00817326 * 1000.0,
     "single_top": 1.36211000   * 1000.0,
     "w_production": 1.965201542 * 1000.0,
@@ -43,7 +44,7 @@ observable_map = {
     "missing_et": "hist_missing_et",
     "subleading_jet_eta": "hist_subleading_jet_eta",
     "leading_jet_eta": "hist_leading_jet_eta",
-#    "jet_centrality": "hist_jet_centrality",
+    "jet_centrality": "hist_jet_centrality",
     "delta_eta_jj": "hist_delta_eta_jj",
     "m_w_hadronic": "hist_m_w_hadronic",
     "m_w_leptonic": "hist_m_w_leptonic",
@@ -54,10 +55,10 @@ observable_map = {
     "delta_phi_lep_met": "hist_delta_phi_lep_met",
     "mt_w_leptonic": "hist_mt_w_leptonic",
     "ht_total": "hist_ht_total",
-#    "delta_phi_jj": "hist_delta_phi_jj",
-#    "delta_phi_wl_wh": "hist_delta_phi_wl_wh",
-#    "delta_eta_wl_wh": "hist_delta_eta_wl_wh",
-#    "m_jj": "hist_m_jj",
+    "delta_phi_jj": "hist_delta_phi_jj",
+    "delta_phi_wl_wh": "hist_delta_phi_wl_wh",
+    "delta_eta_wl_wh": "hist_delta_eta_wl_wh",
+    "m_jj": "hist_m_jj",
     "m_lvjj": "hist_m_lvjj"
 }
 

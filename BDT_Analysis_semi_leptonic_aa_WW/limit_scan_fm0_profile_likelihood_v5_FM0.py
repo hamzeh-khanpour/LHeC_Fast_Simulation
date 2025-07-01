@@ -24,11 +24,12 @@ background_cross_sections_fb = {
     "aa_ww": 0.0149219 * 1000.0,
     "aa_ttbar": 4.824774e-05 * 1000.0,
     "aa_tautau": 1.806765e-01 * 1000.0,
+    "aa_tautau_inel": 1.156165e-01 * 1000.0,
     "inclusive_ttbar": 0.00817326 * 1000.0,
-    "single_top": 1.36211000 * 1000.0,
+    "single_top": 1.36211000   * 1000.0,
     "w_production": 1.965201542 * 1000.0,
     "z_production": 0.159347434 * 1000.0,
-    "wwj": 0.02031491612402401 * 1000.0,
+    "wwj": 0.02031491612402401   * 1000.0,
     "zzj": 8.106588466651764e-05 * 1000.0,
     "wzj": 0.0028587542003382592 * 1000.0
 }
@@ -38,16 +39,16 @@ background_cross_sections_fb = {
 # 📐 Cross section function σ(fM2)
 # ===================================
 def sigma_fm2_fb(fm2):
-    a = 9.447076e-03
-    b = 5.892978e-05
-    c = 1.490702e+01
+    a = -2.132226e-03
+    b = 2.007667e-05
+    c = 1.490756e+01
     return a * fm2 + b * fm2**2 + c
 
 
 # ================================
 # 📥 Load Data
 # ================================
-df = pd.read_csv("ml_with_bdt_scores_FM3.csv")
+df = pd.read_csv("ml_with_bdt_scores_FM0.csv")
 has_process = "process" in df.columns
 
 
@@ -87,7 +88,7 @@ print(f"✅ ML Efficiencies → signal: {signal_eff_ml:.4f}, background: {backgr
 # =================================
 # ⚙️ Preselection Efficiencies
 # =================================
-root_file = ROOT.TFile.Open("output_histograms_FM3.root")
+root_file = ROOT.TFile.Open("output_histograms_FM0.root")
 
 # Signal preselection efficiency
 hist_sig_pre = root_file.Get("signal_FM2_Lambda4/hist_lepton_pt_FM2_Lambda4")
@@ -175,8 +176,8 @@ def q_target(fm2):
     return q_mu(fm2) - 3.84
 
 try:
-    fm2_upper = root_scalar(q_target, bracket=(0.001, 50.0), method='brentq').root
-    fm2_lower = root_scalar(q_target, bracket=(-50.0, -0.001), method='brentq').root
+    fm2_upper = root_scalar(q_target, bracket=(0.001, 500.0), method='brentq').root
+    fm2_lower = root_scalar(q_target, bracket=(-500.0, -0.001), method='brentq').root
 except:
     fm2_upper = None
     fm2_lower = None
@@ -190,19 +191,19 @@ fm2_vals = np.linspace(-500.0, 500.0, 200)
 q_vals = [q_mu(fm2) for fm2 in fm2_vals]
 
 plt.figure(figsize=(8, 6))
-plt.plot(fm2_vals, q_vals, label=r'$q(f_{M3}/\Lambda^4)$', linewidth=2)
+plt.plot(fm2_vals, q_vals, label=r'$q(f_{M0}/\Lambda^4)$', linewidth=2)
 plt.axhline(3.84, color='red', linestyle='--', label='95% CL Threshold', linewidth=2)
 if fm2_lower and fm2_upper:
     plt.axvline(fm2_lower, color='gray', linestyle=':', label=f'Lower limit: {fm2_lower:.4f}', linewidth=2)
     plt.axvline(fm2_upper, color='gray', linestyle=':', label=f'Upper limit: {fm2_upper:.4f}', linewidth=2)
-plt.xlabel(r'$f_{M3}/\Lambda^4$ [$\mathrm{TeV}^{-4}$]')
-plt.ylabel(r'$q(f_{M3}/\Lambda^4)$')
-plt.title('Profile Likelihood Scan over $f_{M3}/\Lambda^4$')
+plt.xlabel(r'$f_{M0}/\Lambda^4$ [$\mathrm{TeV}^{-4}$]')
+plt.ylabel(r'$q(f_{M0}/\Lambda^4)$')
+plt.title('Profile Likelihood Scan over $f_{M0}/\Lambda^4$')
 plt.legend()
 plt.grid(True)
 plt.tight_layout()
-plt.savefig("limit_scan_fm3_profile_likelihood_v5_FM3.pdf")
-print("✅ Saved as 'limit_scan_fm3_profile_likelihood_v5_FM3.pdf'")
+plt.savefig("limit_scan_fm0_profile_likelihood_v5_FM0.pdf")
+print("✅ Saved as 'limit_scan_fm0_profile_likelihood_v5_FM0.pdf'")
 plt.show()
 
 
@@ -210,7 +211,7 @@ plt.show()
 # ===================================
 # 🖨️ Final Report
 # ===================================
-print("\n======== Final FM3 Limit Scan Report ========")
+print("\n======== Final FM0 Limit Scan Report ========")
 print(f"Signal Preselection Efficiency: {eff_preselection_sig:.4f}")
 print(f"Signal ML Efficiency:           {signal_eff_ml:.4f}")
 print(f"Signal Efficiency (total):      {signal_eff_total:.4f}\n")
@@ -222,9 +223,9 @@ for bkg in background_cross_sections_fb:
     print(f"  - {bkg:20s} | Preselection: {pre_eff:.6f} | Total (× ML): {total_eff:.6f}")
 print(f"\nBackground Efficiency (total weighted): {background_eff_total:.4f}")
 if fm2_lower and fm2_upper:
-    print(f"\n📉 95% CL Excluded FM3 Range: {fm2_lower:.4f} to {fm2_upper:.4f} [TeV^-4]")
+    print(f"\n📉 95% CL Excluded FM0 Range: {fm2_lower:.4f} to {fm2_upper:.4f} [TeV^-4]")
 else:
-    print("\n❌ No valid FM3 limits found in the scanned range.")
+    print("\n❌ No valid FM0 limits found in the scanned range.")
 
 
 
