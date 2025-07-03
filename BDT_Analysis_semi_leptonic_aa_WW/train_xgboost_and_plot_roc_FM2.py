@@ -121,7 +121,7 @@ plt.title("BDT Score Distribution (Test Set)")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
-plt.savefig("bdt_score_distribution_test.pdf")
+plt.savefig("bdt_score_distribution_test_FM2.pdf")
 plt.show()
 
 
@@ -140,7 +140,7 @@ plt.title("ROC Curve")
 plt.legend(loc="lower right")
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
-plt.savefig("roc_curve.pdf")
+plt.savefig("roc_curve_FM2.pdf")
 plt.show()
 
 
@@ -158,7 +158,7 @@ plt.title("Precision-Recall Curve")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
-plt.savefig("precision_recall_curve.pdf")
+plt.savefig("precision_recall_curve_FM2.pdf")
 plt.show()
 
 
@@ -169,7 +169,7 @@ plt.show()
 xgb.plot_importance(model, importance_type="gain", show_values=False)
 plt.title("Feature Importances (Gain)")
 plt.tight_layout()
-plt.savefig("feature_importances_gain.pdf")
+plt.savefig("feature_importances_gain_FM2.pdf")
 plt.show()
 
 
@@ -182,7 +182,7 @@ corr = X.corr()
 sns.heatmap(corr, cmap="coolwarm", square=True, cbar_kws={'label': 'Correlation'})
 plt.title("Correlation Matrix of Input Features")
 plt.tight_layout()
-plt.savefig("feature_correlation_matrix.pdf")
+plt.savefig("feature_correlation_matrix_FM2.pdf")
 plt.show()
 
 
@@ -202,7 +202,7 @@ plt.title("BDT Score by Background Process")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
-plt.savefig("bdt_score_by_process.pdf")
+plt.savefig("bdt_score_by_process_FM2.pdf")
 plt.show()
 
 print("✅ All BDT diagnostic plots saved successfully.")
@@ -245,7 +245,7 @@ plt.title("Signal Significance vs BDT Cut")
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.legend()
 plt.tight_layout()
-plt.savefig("significance_vs_bdt_cut.pdf")
+plt.savefig("significance_vs_bdt_cut_FM2.pdf")
 plt.show()
 
 

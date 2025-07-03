@@ -15,13 +15,26 @@ y = df["label"]
 weights = df["weight"]
 
 # Train XGBoost model using weights
+#model = xgb.XGBClassifier(
+    #n_estimators=200,
+    #max_depth=4,
+    #learning_rate=0.05,
+    #use_label_encoder=False,
+    #eval_metric="logloss"
+#)
+
+# Train XGBoost with weights
 model = xgb.XGBClassifier(
-    n_estimators=200,
-    max_depth=4,
-    learning_rate=0.05,
+    n_estimators=500,
+    max_depth=5,
+    learning_rate=0.02,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    min_child_weight=2,
     use_label_encoder=False,
-    eval_metric="logloss"
+    eval_metric="auc"
 )
+
 model.fit(X, y, sample_weight=weights)
 
 # Predict BDT scores
@@ -57,7 +70,7 @@ plt.ylabel("Significance (Z)")
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.legend()
 plt.tight_layout()
-plt.savefig("optimal_bdt_cut.pdf")
+plt.savefig("optimal_bdt_cut_FM2.pdf")
 plt.show()
 
 print(f"\n💘 Best BDT score cut: {best_threshold:.3f}")

@@ -8,8 +8,8 @@ import os
 
 
 # Load post-cut data
-signal_df = pd.read_csv("signal_after_cut.csv")
-background_df = pd.read_csv("background_after_cut.csv")
+signal_df = pd.read_csv("signal_after_cut_FM2.csv")
+background_df = pd.read_csv("background_after_cut_FM2.csv")
 
 
 # Directory to save plots
@@ -44,7 +44,7 @@ features = [
 
 
 # Create PDF summary report with S/B panel
-with PdfPages("post_cut_summary.pdf") as pdf:
+with PdfPages("post_cut_summary_FM2.pdf") as pdf:
     for feature in features:
         fig = plt.figure(figsize=(8, 8))
         gs = gridspec.GridSpec(2, 1, height_ratios=[3, 1], hspace=0.05)
@@ -82,7 +82,7 @@ with PdfPages("post_cut_summary.pdf") as pdf:
 
         plt.tight_layout()
         pdf.savefig()
-        plt.savefig(os.path.join(output_dir, f"post_cut_{feature}_with_ratio.pdf"))
+        plt.savefig(os.path.join(output_dir, f"post_cut_{feature}_with_ratio_FM2.pdf"))
         plt.close()
 
     # Optional: Add metadata to PDF

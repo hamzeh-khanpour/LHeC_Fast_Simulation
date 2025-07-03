@@ -11,26 +11,23 @@ n_generated = 1_000_000
 luminosity_fb = 100.0 # [fb^-1]
 luminosity_pb = luminosity_fb * 1000.0  # [pb^-1]
 
-signal_cross_section_pb = 0.014288200000000001    # [pb] FM2
-sigma_SM = 0.0099465                              # [pb] (Standard Model-only signal prediction)
-#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
-#  0.0150743   for  aa_ww_semi_leptonic_SM
+signal_cross_section_pb = 0.022850099999999998    # [pb] FM2
+sigma_SM = 0.0149219                              # [pb] (Standard Model-only signal prediction)
+
 
 # Cross sections (pb) for backgrounds
 background_cross_sections_pb = {
-    "aa_ww": 0.0099465,
-#  0.0099465   for  aa_ww_semi_leptonic_SM_NP_1_FMi_0
-#  0.0150743   for  aa_ww_semi_leptonic_SM
-    "aa_ttbar": 4.824851e-03 / 100.0,
-    "aa_tautau": 2.51510000,
-    "aa_mumu": 2.57270000,
-    "inclusive_ttbar": 0.0065764,
-    "single_top": 1.36209,
-    "w_production": 1.910288,
-    "z_production": 0.24064758729900002,
-    "wwj": 0.016080595320336195,
-    "zzj": 6.694889944457796e-03 / 100.0,
-    "wzj": 0.0023785292894910495
+    "aa_ww": 0.0149219,
+    "aa_ttbar": 4.824774e-05,
+    "aa_tautau": 1.806765e-01,
+    "aa_tautau_inel": 1.156165e-01,
+    "inclusive_ttbar": 0.00817326,
+    "single_top": 1.36211000,
+    "w_production": 1.965201542,
+    "z_production": 0.159347434,
+    "wwj": 0.02031491612402401,
+    "zzj": 8.106588466651764e-05,
+    "wzj": 0.0028587542003382592
 }
 
 #-------------------------
@@ -43,16 +40,32 @@ X = df.drop(columns=["label", "weight"] + (["process"] if has_process else []))
 y = df["label"]
 weights = df["weight"]
 
+
 #-------------------------
 # Train BDT
 #-------------------------
+#model = xgb.XGBClassifier(
+    #n_estimators=200,
+    #max_depth=4,
+    #learning_rate=0.05,
+    #use_label_encoder=False,
+    #eval_metric="logloss"
+#)
+
+
+# Train XGBoost with weights
 model = xgb.XGBClassifier(
-    n_estimators=200,
-    max_depth=4,
-    learning_rate=0.05,
+    n_estimators=500,
+    max_depth=5,
+    learning_rate=0.02,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    min_child_weight=2,
     use_label_encoder=False,
-    eval_metric="logloss"
+    eval_metric="auc"
 )
+
+
 model.fit(X, y, sample_weight=weights)
 df["bdt_score"] = model.predict_proba(X)[:, 1]
 
@@ -75,7 +88,7 @@ s_after = df_cut[df_cut["label"] == 1]["weight"].sum()
 efficiency_bdt = s_after / s_total if s_total > 0 else 0.0
 
 # Signal preselection efficiency
-f = ROOT.TFile.Open("output_histograms_FM2_Delphes_Pythia.root")
+f = ROOT.TFile.Open("output_histograms_FM2.root")
 hist_preselected_sig = f.Get("signal_FM2_Lambda4/hist_jet_centrality_FM2_Lambda4")
 n_preselected_sig = hist_preselected_sig.Integral() if hist_preselected_sig else 0
 eff_preselection_sig = n_preselected_sig / n_generated
@@ -137,8 +150,8 @@ print(bkg_cutflow.to_string())
 #-------------------------
 # Save filtered events
 #-------------------------
-df_cut[df_cut["label"] == 1].to_csv("signal_after_cut.csv", index=False)
-df_cut[df_cut["label"] == 0].to_csv("background_after_cut.csv", index=False)
+df_cut[df_cut["label"] == 1].to_csv("signal_after_cut_FM2.csv", index=False)
+df_cut[df_cut["label"] == 0].to_csv("background_after_cut_FM2.csv", index=False)
 
 #-------------------------
 # Plot BDT score
@@ -153,7 +166,6 @@ plt.title("BDT Score with Optimal Cut")
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.5)
 plt.tight_layout()
-plt.savefig("bdt_cut_applied.pdf")
+plt.savefig("bdt_cut_applied_FM2.pdf")
 plt.show()
-
 

@@ -3,8 +3,8 @@ import numpy as np  # ✅ Missing import
 import matplotlib.pyplot as plt
 
 # Load post-cut data
-signal_df = pd.read_csv("signal_after_cut.csv")
-background_df = pd.read_csv("background_after_cut.csv")
+signal_df = pd.read_csv("signal_after_cut_FM2.csv")
+background_df = pd.read_csv("background_after_cut_FM2.csv")
 
 # Features to compare
 features = [
@@ -41,7 +41,7 @@ for feature in features:
     plt.legend()
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
-    plt.savefig(f"post_cut_{feature}_stacked.pdf")
+    plt.savefig(f"post_cut_{feature}_stacked_FM2.pdf")
     plt.close()
 
 print("✅ All stacked post-cut distributions saved as PDF.")

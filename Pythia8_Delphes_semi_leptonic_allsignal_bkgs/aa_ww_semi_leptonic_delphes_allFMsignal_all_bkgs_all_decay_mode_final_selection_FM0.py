@@ -55,7 +55,7 @@ aa_ttbar_background_file_path  = "aa_ttbar_inclusive_decay_Delphes_Pythia.root"
 #aa_tautau_background_file_path = "aa_tautau_Delphes_Pythia.root"
 aa_tautau_background_file_path = "cepgen-gammagammatotautau-pt2p5-eta5_tauola.root"   # Laurent
 
-aa_mumu_background_file_path   = "aa_mumu_Delphes_Pythia.root"
+aa_tautau_inel_background_file_path   = "cepgen-gammagammatotautau_sd_luxlike-pt2p5-eta5_tauola-pythia6.root"  # Laurent
 
 
 
@@ -470,7 +470,7 @@ aa_ttbar_background_cross_section  = 4.824774e-05 * 100.0  # pb  * 10^{+2}
 #aa_tautau_background_cross_section = 14.46200  # pb
 aa_tautau_background_cross_section   = 1.806765e-01  # pb  Laurent
 
-aa_mumu_background_cross_section = 15.78  # pb
+aa_tautau_inel_background_cross_section = 1.156165e-01  # pb
 
 
 
@@ -547,8 +547,6 @@ bin_width_m_lvjj            = (m_lvjj_range[1] - m_lvjj_range[0]) / num_bins
 
 
 
-
-
 """
 # Function to calculate differential cross-section
 def calculate_dsigma(histogram, total_cross_section, bin_width):
@@ -563,6 +561,8 @@ def calculate_dsigma(histogram, total_cross_section, bin_width):
 
     return bin_edges[:-1], dsigma
 """
+
+
 
 
 
@@ -732,29 +732,29 @@ hist_m_lvjj_aa_tautau = ROOT.TH1F("hist_m_lvjj_aa_tautau", "m(lνjj) (aa_tautau)
 
 
 
-# === AA_MUMU ===
-hist_lepton_pt_aa_mumu = ROOT.TH1F("hist_lepton_pt_aa_mumu", "Lepton pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
-hist_leading_jet_pt_aa_mumu = ROOT.TH1F("hist_leading_jet_pt_aa_mumu", "Leading Jet pT (aa_mumu); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
-hist_lepton_eta_aa_mumu = ROOT.TH1F("hist_lepton_eta_aa_mumu", "Lepton Eta (aa_mumu); #eta; Entries", num_bins, *eta_range)
-hist_delta_r_aa_mumu = ROOT.TH1F("hist_delta_r_aa_mumu", "Delta R (aa_mumu); ΔR; Entries", num_bins, *delta_r_range)
-hist_missing_et_aa_mumu = ROOT.TH1F("hist_missing_et_aa_mumu", "MET (aa_mumu); MET [GeV]; Entries", num_bins, *met_range)
-hist_subleading_jet_eta_aa_mumu = ROOT.TH1F("hist_subleading_jet_eta_aa_mumu", "Centrality (aa_mumu); Centrality; Entries", num_bins, *centrality_range)
-hist_leading_jet_eta_aa_mumu = ROOT.TH1F("hist_leading_jet_eta_aa_mumu", "Exp Centrality (aa_mumu); exp(Centrality); Entries", num_bins, *exp_centrality_range)
-hist_jet_centrality_aa_mumu = ROOT.TH1F("hist_jet_centrality_aa_mumu", "Jet Centrality (aa_mumu); Jet Centrality; Entries", num_bins, *jet_centrality_range)
-hist_delta_eta_jj_aa_mumu = ROOT.TH1F("hist_delta_eta_jj_aa_mumu", "Delta Eta jj (aa_mumu); Δηjj; Entries", num_bins, *delta_eta_jj_range)
-hist_m_w_hadronic_aa_mumu = ROOT.TH1F("hist_m_w_hadronic_aa_mumu", "Hadronic W Mass (aa_mumu); m_{W}^{hadronic} [GeV]; Entries", num_bins, *m_w_hadronic_range)
-hist_m_w_leptonic_aa_mumu = ROOT.TH1F("hist_m_w_leptonic_aa_mumu", "Leptonic W Mass (aa_mumu); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
+# === AA_tautau_inel ===
+hist_lepton_pt_aa_tautau_inel = ROOT.TH1F("hist_lepton_pt_aa_tautau_inel", "Lepton pT (aa_tautau_inel); p_{T} [GeV]; Entries", num_bins, *pt_range_lepton)
+hist_leading_jet_pt_aa_tautau_inel = ROOT.TH1F("hist_leading_jet_pt_aa_tautau_inel", "Leading Jet pT (aa_tautau_inel); p_{T} [GeV]; Entries", num_bins, *pt_range_jet)
+hist_lepton_eta_aa_tautau_inel = ROOT.TH1F("hist_lepton_eta_aa_tautau_inel", "Lepton Eta (aa_tautau_inel); #eta; Entries", num_bins, *eta_range)
+hist_delta_r_aa_tautau_inel = ROOT.TH1F("hist_delta_r_aa_tautau_inel", "Delta R (aa_tautau_inel); ΔR; Entries", num_bins, *delta_r_range)
+hist_missing_et_aa_tautau_inel = ROOT.TH1F("hist_missing_et_aa_tautau_inel", "MET (aa_tautau_inel); MET [GeV]; Entries", num_bins, *met_range)
+hist_subleading_jet_eta_aa_tautau_inel = ROOT.TH1F("hist_subleading_jet_eta_aa_tautau_inel", "Centrality (aa_tautau_inel); Centrality; Entries", num_bins, *centrality_range)
+hist_leading_jet_eta_aa_tautau_inel = ROOT.TH1F("hist_leading_jet_eta_aa_tautau_inel", "Exp Centrality (aa_tautau_inel); exp(Centrality); Entries", num_bins, *exp_centrality_range)
+hist_jet_centrality_aa_tautau_inel = ROOT.TH1F("hist_jet_centrality_aa_tautau_inel", "Jet Centrality (aa_tautau_inel); Jet Centrality; Entries", num_bins, *jet_centrality_range)
+hist_delta_eta_jj_aa_tautau_inel = ROOT.TH1F("hist_delta_eta_jj_aa_tautau_inel", "Delta Eta jj (aa_tautau_inel); Δηjj; Entries", num_bins, *delta_eta_jj_range)
+hist_m_w_hadronic_aa_tautau_inel = ROOT.TH1F("hist_m_w_hadronic_aa_tautau_inel", "Hadronic W Mass (aa_tautau_inel); m_{W}^{hadronic} [GeV]; Entries", num_bins, *m_w_hadronic_range)
+hist_m_w_leptonic_aa_tautau_inel = ROOT.TH1F("hist_m_w_leptonic_aa_tautau_inel", "Leptonic W Mass (aa_tautau_inel); m_{W}^{leptonic} [GeV]; Entries", num_bins, *m_w_leptonic_range)
 # 10 new observables
-hist_pt_w_leptonic_aa_mumu = ROOT.TH1F("hist_pt_w_leptonic_aa_mumu", "pT(W^leptonic) (aa_mumu); p_{T} [GeV]; Entries", num_bins, 0, 400)
-hist_pt_w_hadronic_aa_mumu = ROOT.TH1F("hist_pt_w_hadronic_aa_mumu", "pT(W^hadronic) (aa_mumu); p_{T} [GeV]; Entries", num_bins, 0, 400)
-hist_delta_phi_lep_met_aa_mumu = ROOT.TH1F("hist_delta_phi_lep_met_aa_mumu", "Delta Phi (lep, MET) (aa_mumu); Δφ(ℓ, MET); Entries", num_bins, 0, np.pi)
-hist_mt_w_leptonic_aa_mumu = ROOT.TH1F("hist_mt_w_leptonic_aa_mumu", "MT(W^leptonic) (aa_mumu); M_{T} [GeV]; Entries", num_bins, 0, 400)
-hist_ht_total_aa_mumu = ROOT.TH1F("hist_ht_total_aa_mumu", "HT Total (aa_mumu); HT [GeV]; Entries", num_bins, 0, 1000)
-hist_delta_phi_jj_aa_mumu = ROOT.TH1F("hist_delta_phi_jj_aa_mumu", "Δφ(j1, j2) (aa_mumu); Δφ; Entries", num_bins, 0, np.pi)
-hist_delta_phi_wl_wh_aa_mumu = ROOT.TH1F("hist_delta_phi_wl_wh_aa_mumu", "Δφ(Wlep, Whad) (aa_mumu); Δφ; Entries", num_bins, 0, np.pi)
-hist_delta_eta_wl_wh_aa_mumu = ROOT.TH1F("hist_delta_eta_wl_wh_aa_mumu", "Δη(Wlep, Whad) (aa_mumu); Δη; Entries", num_bins, -6, 6)
-hist_m_jj_aa_mumu = ROOT.TH1F("hist_m_jj_aa_mumu", "Dijet Invariant Mass (aa_mumu); m_{jj} [GeV]; Entries", num_bins, 0, 400)
-hist_m_lvjj_aa_mumu = ROOT.TH1F("hist_m_lvjj_aa_mumu", "m(lνjj) (aa_mumu); m_{lνjj} [GeV]; Entries", num_bins, 0, 1000)
+hist_pt_w_leptonic_aa_tautau_inel = ROOT.TH1F("hist_pt_w_leptonic_aa_tautau_inel", "pT(W^leptonic) (aa_tautau_inel); p_{T} [GeV]; Entries", num_bins, 0, 400)
+hist_pt_w_hadronic_aa_tautau_inel = ROOT.TH1F("hist_pt_w_hadronic_aa_tautau_inel", "pT(W^hadronic) (aa_tautau_inel); p_{T} [GeV]; Entries", num_bins, 0, 400)
+hist_delta_phi_lep_met_aa_tautau_inel = ROOT.TH1F("hist_delta_phi_lep_met_aa_tautau_inel", "Delta Phi (lep, MET) (aa_tautau_inel); Δφ(ℓ, MET); Entries", num_bins, 0, np.pi)
+hist_mt_w_leptonic_aa_tautau_inel = ROOT.TH1F("hist_mt_w_leptonic_aa_tautau_inel", "MT(W^leptonic) (aa_tautau_inel); M_{T} [GeV]; Entries", num_bins, 0, 400)
+hist_ht_total_aa_tautau_inel = ROOT.TH1F("hist_ht_total_aa_tautau_inel", "HT Total (aa_tautau_inel); HT [GeV]; Entries", num_bins, 0, 1000)
+hist_delta_phi_jj_aa_tautau_inel = ROOT.TH1F("hist_delta_phi_jj_aa_tautau_inel", "Δφ(j1, j2) (aa_tautau_inel); Δφ; Entries", num_bins, 0, np.pi)
+hist_delta_phi_wl_wh_aa_tautau_inel = ROOT.TH1F("hist_delta_phi_wl_wh_aa_tautau_inel", "Δφ(Wlep, Whad) (aa_tautau_inel); Δφ; Entries", num_bins, 0, np.pi)
+hist_delta_eta_wl_wh_aa_tautau_inel = ROOT.TH1F("hist_delta_eta_wl_wh_aa_tautau_inel", "Δη(Wlep, Whad) (aa_tautau_inel); Δη; Entries", num_bins, -6, 6)
+hist_m_jj_aa_tautau_inel = ROOT.TH1F("hist_m_jj_aa_tautau_inel", "Dijet Invariant Mass (aa_tautau_inel); m_{jj} [GeV]; Entries", num_bins, 0, 400)
+hist_m_lvjj_aa_tautau_inel = ROOT.TH1F("hist_m_lvjj_aa_tautau_inel", "m(lνjj) (aa_tautau_inel); m_{lνjj} [GeV]; Entries", num_bins, 0, 1000)
 
 
 
@@ -1158,37 +1158,37 @@ for signal_name, file_path in signal_files.items():
 
 
 
-(hist_lepton_pt_aa_mumu, hist_leading_jet_pt_aa_mumu, hist_lepton_eta_aa_mumu, hist_delta_r_aa_mumu,
- hist_missing_et_aa_mumu, hist_subleading_jet_eta_aa_mumu, hist_leading_jet_eta_aa_mumu, hist_jet_centrality_aa_mumu,
- hist_delta_eta_jj_aa_mumu, hist_m_w_leptonic_aa_mumu, hist_m_w_hadronic_aa_mumu,
- hist_pt_w_leptonic_aa_mumu, hist_pt_w_hadronic_aa_mumu, hist_delta_phi_lep_met_aa_mumu, hist_mt_w_leptonic_aa_mumu,
- hist_ht_total_aa_mumu, hist_delta_phi_jj_aa_mumu, hist_delta_phi_wl_wh_aa_mumu, hist_delta_eta_wl_wh_aa_mumu,
- hist_m_jj_aa_mumu, hist_m_lvjj_aa_mumu,
- background_efficiency_pre_lepton_aa_mumu, background_efficiency_pre_jets_aa_mumu,
- background_efficiency_eta_lepton_aa_mumu, background_efficiency_jet_centrality_aa_mumu,
- background_efficiency_pre_aa_mumu, background_efficiency_final_aa_mumu) = process_file(
-    aa_mumu_background_file_path,
-    hist_lepton_pt_aa_mumu,
-    hist_leading_jet_pt_aa_mumu,
-    hist_lepton_eta_aa_mumu,
-    hist_delta_r_aa_mumu,
-    hist_missing_et_aa_mumu,
-    hist_subleading_jet_eta_aa_mumu,
-    hist_leading_jet_eta_aa_mumu,
-    hist_jet_centrality_aa_mumu,
-    hist_delta_eta_jj_aa_mumu,
-    hist_m_w_leptonic_aa_mumu,
-    hist_m_w_hadronic_aa_mumu,
-    hist_pt_w_leptonic_aa_mumu,
-    hist_pt_w_hadronic_aa_mumu,
-    hist_delta_phi_lep_met_aa_mumu,
-    hist_mt_w_leptonic_aa_mumu,
-    hist_ht_total_aa_mumu,
-    hist_delta_phi_jj_aa_mumu,
-    hist_delta_phi_wl_wh_aa_mumu,
-    hist_delta_eta_wl_wh_aa_mumu,
-    hist_m_jj_aa_mumu,
-    hist_m_lvjj_aa_mumu
+(hist_lepton_pt_aa_tautau_inel, hist_leading_jet_pt_aa_tautau_inel, hist_lepton_eta_aa_tautau_inel, hist_delta_r_aa_tautau_inel,
+ hist_missing_et_aa_tautau_inel, hist_subleading_jet_eta_aa_tautau_inel, hist_leading_jet_eta_aa_tautau_inel, hist_jet_centrality_aa_tautau_inel,
+ hist_delta_eta_jj_aa_tautau_inel, hist_m_w_leptonic_aa_tautau_inel, hist_m_w_hadronic_aa_tautau_inel,
+ hist_pt_w_leptonic_aa_tautau_inel, hist_pt_w_hadronic_aa_tautau_inel, hist_delta_phi_lep_met_aa_tautau_inel, hist_mt_w_leptonic_aa_tautau_inel,
+ hist_ht_total_aa_tautau_inel, hist_delta_phi_jj_aa_tautau_inel, hist_delta_phi_wl_wh_aa_tautau_inel, hist_delta_eta_wl_wh_aa_tautau_inel,
+ hist_m_jj_aa_tautau_inel, hist_m_lvjj_aa_tautau_inel,
+ background_efficiency_pre_lepton_aa_tautau_inel, background_efficiency_pre_jets_aa_tautau_inel,
+ background_efficiency_eta_lepton_aa_tautau_inel, background_efficiency_jet_centrality_aa_tautau_inel,
+ background_efficiency_pre_aa_tautau_inel, background_efficiency_final_aa_tautau_inel) = process_file(
+    aa_tautau_inel_background_file_path,
+    hist_lepton_pt_aa_tautau_inel,
+    hist_leading_jet_pt_aa_tautau_inel,
+    hist_lepton_eta_aa_tautau_inel,
+    hist_delta_r_aa_tautau_inel,
+    hist_missing_et_aa_tautau_inel,
+    hist_subleading_jet_eta_aa_tautau_inel,
+    hist_leading_jet_eta_aa_tautau_inel,
+    hist_jet_centrality_aa_tautau_inel,
+    hist_delta_eta_jj_aa_tautau_inel,
+    hist_m_w_leptonic_aa_tautau_inel,
+    hist_m_w_hadronic_aa_tautau_inel,
+    hist_pt_w_leptonic_aa_tautau_inel,
+    hist_pt_w_hadronic_aa_tautau_inel,
+    hist_delta_phi_lep_met_aa_tautau_inel,
+    hist_mt_w_leptonic_aa_tautau_inel,
+    hist_ht_total_aa_tautau_inel,
+    hist_delta_phi_jj_aa_tautau_inel,
+    hist_delta_phi_wl_wh_aa_tautau_inel,
+    hist_delta_eta_wl_wh_aa_tautau_inel,
+    hist_m_jj_aa_tautau_inel,
+    hist_m_lvjj_aa_tautau_inel
 )
 
 
@@ -1490,9 +1490,9 @@ print_efficiencies("aa tautau", background_efficiency_pre_lepton_aa_tautau, back
                    background_efficiency_eta_lepton_aa_tautau, background_efficiency_jet_centrality_aa_tautau,
                    background_efficiency_pre_aa_tautau, background_efficiency_final_aa_tautau)
 
-print_efficiencies("aa mumu", background_efficiency_pre_lepton_aa_mumu, background_efficiency_pre_jets_aa_mumu,
-                   background_efficiency_eta_lepton_aa_mumu, background_efficiency_jet_centrality_aa_mumu,
-                   background_efficiency_pre_aa_mumu, background_efficiency_final_aa_mumu)
+print_efficiencies("aa tautau_inel", background_efficiency_pre_lepton_aa_tautau_inel, background_efficiency_pre_jets_aa_tautau_inel,
+                   background_efficiency_eta_lepton_aa_tautau_inel, background_efficiency_jet_centrality_aa_tautau_inel,
+                   background_efficiency_pre_aa_tautau_inel, background_efficiency_final_aa_tautau_inel)
 
 print_efficiencies("inclusive ttbar", background_efficiency_pre_lepton_inclusive_ttbar, background_efficiency_pre_jets_inclusive_ttbar,
                    background_efficiency_eta_lepton_inclusive_ttbar, background_efficiency_jet_centrality_inclusive_ttbar,
@@ -1667,31 +1667,31 @@ background_dsigma_aa_tautau = {
 
 
 
-# === Differential cross-sections for aa_mumu background ===
-background_dsigma_aa_mumu = {
-    "pt_bins_lepton"          : calculate_dsigma(hist_lepton_pt_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_lepton),
-    "pt_bins_jet"             : calculate_dsigma(hist_leading_jet_pt_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
-    "eta_bins_lepton"         : calculate_dsigma(hist_lepton_eta_aa_mumu, aa_mumu_background_cross_section, bin_width_eta),
-    "delta_r_bins"            : calculate_dsigma(hist_delta_r_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_r),
-    "met_bins"                : calculate_dsigma(hist_missing_et_aa_mumu, aa_mumu_background_cross_section, bin_width_met),
-    "centrality_bins"         : calculate_dsigma(hist_subleading_jet_eta_aa_mumu, aa_mumu_background_cross_section, bin_width_centrality),
-    "exp_centrality_bins"     : calculate_dsigma(hist_leading_jet_eta_aa_mumu, aa_mumu_background_cross_section, bin_width_exp_centrality),
-    "jet_centrality_bins"     : calculate_dsigma(hist_jet_centrality_aa_mumu, aa_mumu_background_cross_section, bin_width_jet_centrality),
-    "delta_eta_jj_bins"       : calculate_dsigma(hist_delta_eta_jj_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_eta_jj),
-    "m_w_hadronic_bins"       : calculate_dsigma(hist_m_w_hadronic_aa_mumu, aa_mumu_background_cross_section, bin_width_m_w_hadronic),
-    "m_w_leptonic_bins"       : calculate_dsigma(hist_m_w_leptonic_aa_mumu, aa_mumu_background_cross_section, bin_width_m_w_leptonic),
+# === Differential cross-sections for aa_tautau_inel background ===
+background_dsigma_aa_tautau_inel = {
+    "pt_bins_lepton"          : calculate_dsigma(hist_lepton_pt_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_pt_lepton),
+    "pt_bins_jet"             : calculate_dsigma(hist_leading_jet_pt_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_pt_jet),
+    "eta_bins_lepton"         : calculate_dsigma(hist_lepton_eta_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_eta),
+    "delta_r_bins"            : calculate_dsigma(hist_delta_r_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_r),
+    "met_bins"                : calculate_dsigma(hist_missing_et_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_met),
+    "centrality_bins"         : calculate_dsigma(hist_subleading_jet_eta_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_centrality),
+    "exp_centrality_bins"     : calculate_dsigma(hist_leading_jet_eta_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_exp_centrality),
+    "jet_centrality_bins"     : calculate_dsigma(hist_jet_centrality_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_jet_centrality),
+    "delta_eta_jj_bins"       : calculate_dsigma(hist_delta_eta_jj_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_eta_jj),
+    "m_w_hadronic_bins"       : calculate_dsigma(hist_m_w_hadronic_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_m_w_hadronic),
+    "m_w_leptonic_bins"       : calculate_dsigma(hist_m_w_leptonic_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_m_w_leptonic),
 
     # ✅ Extended observables
-    "pt_w_leptonic_bins"      : calculate_dsigma(hist_pt_w_leptonic_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
-    "pt_w_hadronic_bins"      : calculate_dsigma(hist_pt_w_hadronic_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
-    "delta_phi_lep_met_bins"  : calculate_dsigma(hist_delta_phi_lep_met_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_r),
-    "mt_w_leptonic_bins"      : calculate_dsigma(hist_mt_w_leptonic_aa_mumu, aa_mumu_background_cross_section, bin_width_m_w_leptonic),
-    "ht_total_bins"           : calculate_dsigma(hist_ht_total_aa_mumu, aa_mumu_background_cross_section, bin_width_pt_jet),
-    "delta_phi_jj_bins"       : calculate_dsigma(hist_delta_phi_jj_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_r),
-    "delta_phi_wl_wh_bins"    : calculate_dsigma(hist_delta_phi_wl_wh_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_r),
-    "delta_eta_wl_wh_bins"    : calculate_dsigma(hist_delta_eta_wl_wh_aa_mumu, aa_mumu_background_cross_section, bin_width_delta_eta_jj),
-    "m_jj_bins"               : calculate_dsigma(hist_m_jj_aa_mumu, aa_mumu_background_cross_section, bin_width_m_w_hadronic),
-    "m_lvjj_bins"             : calculate_dsigma(hist_m_lvjj_aa_mumu, aa_mumu_background_cross_section, bin_width_m_w_leptonic),
+    "pt_w_leptonic_bins"      : calculate_dsigma(hist_pt_w_leptonic_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_pt_jet),
+    "pt_w_hadronic_bins"      : calculate_dsigma(hist_pt_w_hadronic_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_pt_jet),
+    "delta_phi_lep_met_bins"  : calculate_dsigma(hist_delta_phi_lep_met_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_r),
+    "mt_w_leptonic_bins"      : calculate_dsigma(hist_mt_w_leptonic_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_m_w_leptonic),
+    "ht_total_bins"           : calculate_dsigma(hist_ht_total_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_pt_jet),
+    "delta_phi_jj_bins"       : calculate_dsigma(hist_delta_phi_jj_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_r),
+    "delta_phi_wl_wh_bins"    : calculate_dsigma(hist_delta_phi_wl_wh_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_r),
+    "delta_eta_wl_wh_bins"    : calculate_dsigma(hist_delta_eta_wl_wh_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_delta_eta_jj),
+    "m_jj_bins"               : calculate_dsigma(hist_m_jj_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_m_w_hadronic),
+    "m_lvjj_bins"             : calculate_dsigma(hist_m_lvjj_aa_tautau_inel, aa_tautau_inel_background_cross_section, bin_width_m_w_leptonic),
 }
 
 
@@ -1964,7 +1964,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2020,7 +2020,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2076,7 +2076,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2134,7 +2134,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2190,7 +2190,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2247,7 +2247,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2301,7 +2301,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2359,7 +2359,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2414,7 +2414,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2473,7 +2473,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2531,7 +2531,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "purple", "-"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2592,7 +2592,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2651,7 +2651,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2712,7 +2712,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2771,7 +2771,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2834,7 +2834,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2891,7 +2891,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -2950,7 +2950,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3011,7 +3011,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3070,7 +3070,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3130,7 +3130,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3188,7 +3188,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3249,7 +3249,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3307,7 +3307,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3368,7 +3368,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3427,7 +3427,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3487,7 +3487,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3546,7 +3546,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3607,7 +3607,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3669,7 +3669,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3732,7 +3732,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3794,7 +3794,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3854,7 +3854,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3915,7 +3915,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -3977,7 +3977,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -4035,7 +4035,7 @@ background_styles = [
     (r"SM ($\gamma\gamma \to W^+W^-$)", background_dsigma_aa_ww, "blue", "-"),
     (r"$\gamma\gamma \to t\bar{t}$ $(\times 10^2)$", background_dsigma_aa_ttbar, "teal", "--"),
     (r"$\gamma\gamma \to \tau^+\tau^-$", background_dsigma_aa_tautau, "orange", "-"),
-#    (r"$\gamma\gamma \to \mu^+\mu^-$", background_dsigma_aa_mumu, "brown", (0, (3, 1, 1, 1))),
+    (r"$\gamma\gamma \to \tau^+\tau^- (inel)$", background_dsigma_aa_tautau_inel, "brown", (0, (3, 1, 1, 1))),
     (r"Inclusive $t\bar{t}$", background_dsigma_inclusive_ttbar, "orchid", (0, (3, 1, 1, 1))),
     (r"Single Top", background_dsigma_single_top, "teal", "--"),
     (r"W Production", background_dsigma_w_production, "darkgreen", "-."),
@@ -4082,7 +4082,7 @@ plt.show()
 import ROOT
 
 # ✅ Set the output ROOT file path
-output_file = ROOT.TFile("/home/hamzeh-khanpour/Delphes-3.5.0/output_histograms_FM0_Delphes_Pythia.root", "RECREATE")
+output_file = ROOT.TFile("/home/hamzeh-khanpour/Delphes-3.5.0/output_histograms_FM0.root", "RECREATE")
 
 try:
     # ✅ Create signal directories with sanitized names
@@ -4164,29 +4164,29 @@ try:
             "hist_m_jj": hist_m_jj_aa_tautau,
             "hist_m_lvjj": hist_m_lvjj_aa_tautau
         },
-        "aa_mumu": {
-            "hist_lepton_pt": hist_lepton_pt_aa_mumu,
-            "hist_leading_jet_pt": hist_leading_jet_pt_aa_mumu,
-            "hist_lepton_eta": hist_lepton_eta_aa_mumu,
-            "hist_delta_r": hist_delta_r_aa_mumu,
-            "hist_missing_et": hist_missing_et_aa_mumu,
-            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_mumu,
-            "hist_leading_jet_eta": hist_leading_jet_eta_aa_mumu,
-            "hist_jet_centrality": hist_jet_centrality_aa_mumu,
-            "hist_delta_eta_jj": hist_delta_eta_jj_aa_mumu,
-            "hist_m_w_hadronic": hist_m_w_hadronic_aa_mumu,
-            "hist_m_w_leptonic": hist_m_w_leptonic_aa_mumu,
+        "aa_tautau_inel": {
+            "hist_lepton_pt": hist_lepton_pt_aa_tautau_inel,
+            "hist_leading_jet_pt": hist_leading_jet_pt_aa_tautau_inel,
+            "hist_lepton_eta": hist_lepton_eta_aa_tautau_inel,
+            "hist_delta_r": hist_delta_r_aa_tautau_inel,
+            "hist_missing_et": hist_missing_et_aa_tautau_inel,
+            "hist_subleading_jet_eta": hist_subleading_jet_eta_aa_tautau_inel,
+            "hist_leading_jet_eta": hist_leading_jet_eta_aa_tautau_inel,
+            "hist_jet_centrality": hist_jet_centrality_aa_tautau_inel,
+            "hist_delta_eta_jj": hist_delta_eta_jj_aa_tautau_inel,
+            "hist_m_w_hadronic": hist_m_w_hadronic_aa_tautau_inel,
+            "hist_m_w_leptonic": hist_m_w_leptonic_aa_tautau_inel,
             # ✅ New observables
-            "hist_pt_w_leptonic": hist_pt_w_leptonic_aa_mumu,
-            "hist_pt_w_hadronic": hist_pt_w_hadronic_aa_mumu,
-            "hist_delta_phi_lep_met": hist_delta_phi_lep_met_aa_mumu,
-            "hist_mt_w_leptonic": hist_mt_w_leptonic_aa_mumu,
-            "hist_ht_total": hist_ht_total_aa_mumu,
-            "hist_delta_phi_jj": hist_delta_phi_jj_aa_mumu,
-            "hist_delta_phi_wl_wh": hist_delta_phi_wl_wh_aa_mumu,
-            "hist_delta_eta_wl_wh": hist_delta_eta_wl_wh_aa_mumu,
-            "hist_m_jj": hist_m_jj_aa_mumu,
-            "hist_m_lvjj": hist_m_lvjj_aa_mumu
+            "hist_pt_w_leptonic": hist_pt_w_leptonic_aa_tautau_inel,
+            "hist_pt_w_hadronic": hist_pt_w_hadronic_aa_tautau_inel,
+            "hist_delta_phi_lep_met": hist_delta_phi_lep_met_aa_tautau_inel,
+            "hist_mt_w_leptonic": hist_mt_w_leptonic_aa_tautau_inel,
+            "hist_ht_total": hist_ht_total_aa_tautau_inel,
+            "hist_delta_phi_jj": hist_delta_phi_jj_aa_tautau_inel,
+            "hist_delta_phi_wl_wh": hist_delta_phi_wl_wh_aa_tautau_inel,
+            "hist_delta_eta_wl_wh": hist_delta_eta_wl_wh_aa_tautau_inel,
+            "hist_m_jj": hist_m_jj_aa_tautau_inel,
+            "hist_m_lvjj": hist_m_lvjj_aa_tautau_inel
         },
         "inclusive_ttbar": {
             "hist_lepton_pt": hist_lepton_pt_inclusive_ttbar,

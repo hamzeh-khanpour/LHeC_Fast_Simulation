@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 
 # Parameters
-BDT_THRESHOLD = 0.212  # ← Ideally retrieved from optimize_bdt_cut.py
+BDT_THRESHOLD = 0.374  # ← Ideally retrieved from optimize_bdt_cut.py
 
 # Load dataset
 df = pd.read_csv("ml_input_from_histograms_FM2.csv")
@@ -34,7 +34,7 @@ print(f"💘 Events surviving BDT > {BDT_THRESHOLD}: {len(df_selected)}")
 
 # Features to plot
 features_to_plot = [
-    "lepton_pt", "missing_et", "leading_jet_pt", "m_w_leptonic"
+    "lepton_pt", "missing_et", "leading_jet_pt", "m_w_leptonic", "m_w_hadronic", "m_lvjj", "ht_total", "mt_w_leptonic"
 ]
 
 # Plot before/after cut using event weights
@@ -43,9 +43,9 @@ for feature in features_to_plot:
 
     # Raw distributions
     plt.hist(df[df["label"] == 1][feature], bins=50, weights=df[df["label"] == 1]["weight"],
-             density=True, alpha=0.4, label="Signal (raw)")
+             density=True, alpha=0.4, label="Signal")
     plt.hist(df[df["label"] == 0][feature], bins=50, weights=df[df["label"] == 0]["weight"],
-             density=True, alpha=0.4, label="Background (raw)")
+             density=True, alpha=0.4, label="Background")
 
     # After BDT cut
     plt.hist(df_selected[df_selected["label"] == 1][feature], bins=50,
@@ -61,7 +61,7 @@ for feature in features_to_plot:
     plt.legend()
     plt.grid(True, linestyle="--", alpha=0.5)
     plt.tight_layout()
-    plt.savefig(f"{feature}_bdt_cut_comparison.pdf")
+    plt.savefig(f"{feature}_bdt_cut_comparison_FM2.pdf")
     plt.show()
 
 

@@ -85,7 +85,7 @@ for obs in observables:
     plt.legend(fontsize=9, loc="upper right", frameon=True)
     plt.grid(True, linestyle="--", alpha=0.5)
 
-    filename = f"{obs}_FM2_vs_backgrounds.png".replace("/", "_")
+    filename = f"{obs}_FM2_vs_backgrounds_FM2.png".replace("/", "_")
     plt.savefig(os.path.join(output_dir, filename))
     plt.close()
     print(f"✅ Saved: {filename}")
