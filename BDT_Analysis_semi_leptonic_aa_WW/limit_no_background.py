@@ -4,106 +4,59 @@
 # ================================================================================
 
 import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import poisson
 from scipy.optimize import root_scalar
+import matplotlib.pyplot as plt
 
-# -----------------------------
-# Inputs (Update if needed)
-# -----------------------------
-luminosity_fb = 1000.0  # Integrated luminosity in fb^-1
-eff_sig = 0.1405        # Total signal efficiency = preselection × ML
-sigma_sig_fb = 0.0173508 * 1000.0  # SM signal cross-section (FM2 = 0) [fb]
-s95_bayesian = 3.0       # Bayesian Poisson upper limit at 95% CL, assuming n_obs = 0
+# --- Inputs ---
+luminosity_fb = 100.0
+delta_sys = 0.10  # 10% systematic uncertainty
 
-# -----------------------------
-# Cross section as function of FM2 [TeV^-4]
-# -----------------------------
+signal_efficiency = 0.1405  # Example from your latest BDT output
+background_efficiency  = 0.1305
+
+sigma_sm_fb = 1.538327e+01 * background_efficiency # SM cross section in fb
+
+# --- Cross-section function (in fb) ---
 def sigma_fm2_fb(fm2):
-    a = -1.318084e-02
-    b = 7.832913e-04
-    c = 1.491861e+01
-    return a * fm2 + b * fm2**2 + c  # [fb]
+    a = -1.464725e-02
+    b = 8.929319e-03
+    c = 1.538327e+01
+    return a * fm2 + b * fm2**2 + c
 
-# -----------------------------
-# Compute signal yield for a given FM2
-# -----------------------------
-def get_signal_events(fm2):
-    return sigma_fm2_fb(fm2) * eff_sig * luminosity_fb
+# --- Derived ---
+n_sm = luminosity_fb * sigma_sm_fb
+delta_stat = 1.0 / np.sqrt(n_sm)
+delta_tot = np.sqrt(delta_stat**2 + delta_sys**2)
 
-# -----------------------------
-# Profile likelihood definition
-# -----------------------------
-def q_mu(fm2):
-    s = get_signal_events(fm2)
-    b = 0.0  # no-background assumption
-    n_obs = 0  # observed events
-    lam = s + b
-    if lam <= 0:
-        return np.inf
-    return -2.0 * (poisson.logpmf(n_obs, lam) - poisson.logpmf(n_obs, b + 1e-6))
+# --- χ² test function ---
+def chi2_stat(fm2):
+    sigma_bsm = sigma_fm2_fb(fm2) * signal_efficiency
+    return ((sigma_sm_fb - sigma_bsm) / (sigma_sm_fb * delta_tot)) ** 2
 
-# -----------------------------
-# Attempt profile likelihood limit
-# -----------------------------
-def scan_profile_likelihood():
-    print("\n🔎 Attempting profile likelihood limit...")
-    def q_target(fm2): return q_mu(fm2) - 3.84
-    try:
-        upper = root_scalar(q_target, bracket=(0.01, 50), method="brentq").root
-        print(f"✅ Profile Likelihood 95% CL Limit on FM2: fM2 < {upper:.4f} [TeV⁻⁴]")
-        return upper
-    except Exception as e:
-        print("❌ Profile likelihood failed:", e)
-        return None
+# --- Find limits where χ² = 3.84 ---
+def chi2_diff(fm2):
+    return chi2_stat(fm2) - 3.84
 
-# -----------------------------
-# Bayesian inversion
-# -----------------------------
-def invert_sigma(s_target):
-    def func(fm2):
-        return sigma_fm2_fb(fm2) * eff_sig * luminosity_fb - s_target
-    try:
-        result = root_scalar(func, bracket=(0.001, 500), method="brentq")
-        return result.root if result.converged else None
-    except Exception as e:
-        print("⚠️ Bayesian inversion failed:", e)
-        return None
+# Scan around fm2 = 0
+result_lower = root_scalar(chi2_diff, bracket=[-50, 0.0001], method='brentq')
+result_upper = root_scalar(chi2_diff, bracket=[0.0001, 50], method='brentq')
 
-# -----------------------------
-# Run
-# -----------------------------
-print("\n===================================")
-print("      No-Background Limit Setting")
-print("===================================")
-print(f"SM Background Yield (aa→WW): {0.0149219 * 1000 * 0.1405 * 1000:.2f}")
-print(f"Signal Efficiency × Luminosity: {eff_sig:.4f} × {luminosity_fb} fb⁻¹")
+# --- Output ---
+print("========= χ² Limit Setting at 95% CL =========")
+print(f"Luminosity: {luminosity_fb} fb⁻¹")
+print(f"SM cross section: {sigma_sm_fb:.4f} fb")
+print(f"Stat. error: {delta_stat:.4f}, Total rel. error: {delta_tot:.4f}")
+print(f"95% CL Exclusion Range for fM2: {result_lower.root:.3f} to {result_upper.root:.3f} [TeV⁻⁴]")
 
-# Try profile likelihood
-fm2_limit_profile = scan_profile_likelihood()
+# --- Optional: Plot χ² curve ---
+fm2_vals = np.linspace(-50, 50, 200)
+chi2_vals = [chi2_stat(fm2) for fm2 in fm2_vals]
 
-# Try Bayesian cut-and-count if needed
-fm2_limit_bayes = invert_sigma(s95_bayesian)
-if fm2_limit_bayes:
-    print(f"📏 Bayesian 95% CL Upper Limit on FM2: fM2 < {fm2_limit_bayes:.4f} [TeV⁻⁴]")
-
-# -----------------------------
-# Plot likelihood scan
-# -----------------------------
-fm2_vals = np.linspace(0.01, 50, 200)
-q_vals = [q_mu(f) for f in fm2_vals]
-
-plt.figure(figsize=(8, 6))
-plt.plot(fm2_vals, q_vals, label=r"$q(f_{M2}/\Lambda^4)$")
-plt.axhline(3.84, color='red', linestyle='--', label="95% CL threshold")
-if fm2_limit_profile:
-    plt.axvline(fm2_limit_profile, color='gray', linestyle=':', label=f'Limit: {fm2_limit_profile:.2f}')
-plt.xlabel(r"$f_{M2}/\Lambda^4$ [$\mathrm{TeV}^{-4}$]")
-plt.ylabel(r"$q(f_{M2}/\Lambda^4)$")
-plt.title("Profile Likelihood Scan (No Background)")
+plt.plot(fm2_vals, chi2_vals, label=r"$\chi^2(f_{M2})$")
+plt.axhline(3.84, color='red', linestyle='--', label='95% CL Threshold')
+plt.xlabel(r"$f_{M2} / \Lambda^4\ [\mathrm{TeV}^{-4}]$")
+plt.ylabel(r"$\chi^2$")
 plt.legend()
 plt.grid(True)
-plt.tight_layout()
-plt.savefig("limit_no_background_likelihood_scan.pdf")
+plt.title(r"Profile $\chi^2$ for $f_{M2}$ at 95% CL")
 plt.show()
-
