@@ -17,7 +17,7 @@ luminosity_fb = 100.0  # Target luminosity
 # Cross sections (pb)
 #signal_cross_section_fb = 0.015395800000000001 * 1000.0  #FM0
 #signal_cross_section_fb = 0.015587299999999998 * 1000.0  #FM1
-signal_cross_section_fb = 0.022850099999999998 * 1000.0  #FM2
+signal_cross_section_fb = 0.0173508 * 1000.0    # 0.022850099999999998 * 1000.0  #FM2
 #signal_cross_section_fb = 0.017148100000000000 * 1000.0  #FM3
 
 background_cross_sections_fb = {

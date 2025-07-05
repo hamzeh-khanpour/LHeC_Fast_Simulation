@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import xgboost as xgb
 
 # Parameters
-BDT_THRESHOLD = 0.374  # ← Ideally retrieved from optimize_bdt_cut.py
+BDT_THRESHOLD = 0.253  # ← Ideally retrieved from optimize_bdt_cut.py
 
 # Load dataset
 df = pd.read_csv("ml_input_from_histograms_FM2.csv")
