@@ -1,3 +1,10 @@
+
+# to calculate limits for 1000 fb⁻¹ and assuming ‘observed’ x-secs and no backgrounds
+# Luminosity scenario: Projected sensitivity at an integrated luminosity of 𝐿=1000 fb−1 (LHeC-scale).
+# Observed cross section (“Asimov data”): Take the SM prediction as the observed measurement
+# No backgrounds: Pretend your measurement is background-free. That makes the statistics purely Poisson on the signal yield and gives an optimistic / best-case limit.
+
+
 import math
 
 def q_asimov(f, L, a, b, c):
@@ -62,13 +69,16 @@ def fisher_approx_95(L, a, c):
 # ---- Example with your numbers ----
 if __name__ == "__main__":
     # L in fb^-1; a,b,c in fb (f in TeV^-4)
-    L = 1000.0
+    L =  1000.0
     a = -0.014647       # fb / (TeV^-4)
     b =  0.00089293     # fb / (TeV^-4)^2
-    c = 15.3833         # fb
+    c =  15.3833         # fb
 
     f_lo, f_hi = asimov_limits_95(L, a, b, c)
     f95_fisher = fisher_approx_95(L, a, c)
 
     print(f"Two-sided 95% CL (Asimov): f in [{f_lo:.3f}, +{f_hi:.3f}] TeV^-4")
     print(f"Fisher symmetric approx:  |f|_95 ≈ {f95_fisher:.3f} TeV^-4")
+
+
+

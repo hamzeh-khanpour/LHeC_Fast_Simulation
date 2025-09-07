@@ -1,3 +1,11 @@
+
+
+# to calculate limits for 1000 fb⁻¹ and assuming ‘observed’ x-secs and no backgrounds
+# Luminosity scenario: Projected sensitivity at an integrated luminosity of 𝐿=1000 fb−1 (LHeC-scale).
+# Observed cross section (“Asimov data”): Take the SM prediction as the observed measurement
+# No backgrounds: Pretend your measurement is background-free. That makes the statistics purely Poisson on the signal yield and gives an optimistic / best-case limit.
+
+
 import math
 import numpy as np
 import matplotlib.pyplot as plt
@@ -37,7 +45,7 @@ def asimov_limits_95(L, a, b, c):
 # --- Physics parameters (your fit results) ---
 a = -0.014647     # fb / (TeV^-4)
 b =  0.00089293   # fb / (TeV^-4)^2
-c = 15.3833       # fb
+c =  15.3833       # fb
 
 # --- Scan over luminosity ---
 L_values = np.logspace(1, 4, 40)  # from 10 to 10000 fb^-1

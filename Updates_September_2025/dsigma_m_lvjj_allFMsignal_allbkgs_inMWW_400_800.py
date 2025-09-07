@@ -382,7 +382,7 @@ def process_file(
             if jet_centrality > -10000.0:   #   2.0:
                 selected_events_pre_jet_centrality += 1
 
-                if 65 < w_leptonic.M() < 95 and 65 < w_hadronic.M() < 95:
+                if 0.0 < w_leptonic.M() < 10000.0 and 0.0 < w_hadronic.M() < 10000.0:
                     selected_events_final += 1  # ✅ Count event only if it passed all previous cuts
 
 
@@ -2066,37 +2066,57 @@ plt.ylim(1e-6, 1e-2)
 
 
 
-THR = 400.0  # GeV
 
-print("\n=== σ(W_γγ > 400 GeV) from the plotted spectra ===")
-# Signals
+
+# =========================
+# Tail integrals & yields
+# =========================
+
+THRESHOLDS = [400.0, 500.0, 600.0, 800.0]  # GeV
+L_fb = 1000.0         # integrated luminosity in fb^-1
+Aeps = 1.0            # acceptance × efficiency (set if you want it)
+PB_TO_FB = 1e3        # 1 pb = 1000 fb
+
+def _row(bins, dsig, thresholds):
+    """Return σ(W>thr) in pb for all thresholds."""
+    return [integrate_tail(bins, dsig, thr) for thr in thresholds]
+
+# ---- print table header
+print("\n=== Fiducial tail cross sections from the plotted spectra ===")
+hdr = "sample".ljust(28) + "".join([f"W>{int(t):>4} GeV   " for t in THRESHOLDS])
+print(hdr)
+print("-" * len(hdr))
+
+# ---- SM background (γγ→WW)
+if "m_lvjj_bins" in background_dsigma_aa_ww:
+    bins_sm, dsig_sm = background_dsigma_aa_ww["m_lvjj_bins"]  # (axis, dσ/dW) in pb/GeV
+    row_sm = _row(bins_sm, dsig_sm, THRESHOLDS)
+    print("SM (γγ→WW)".ljust(28) + " ".join(f"{v:>10.4e}" for v in row_sm))
+
+# ---- Signals (e.g., FM2)
 for signal_name, dsigma_data in signal_dsigma.items():
-    mlvjj_bins, dsigma = dsigma_data["m_lvjj_bins"]   # (axis, dσ/dW) with units pb/GeV
-    sigma_tail = integrate_tail(mlvjj_bins, dsigma, THR)
-    print(f"[Signal] {signal_name:>20s}:  σ(W>400) = {sigma_tail:.3e} pb")
+    bins_sig, dsig_sig = dsigma_data["m_lvjj_bins"]
+    row_sig = _row(bins_sig, dsig_sig, THRESHOLDS)
+    print(signal_name.ljust(28) + " ".join(f"{v:>10.4e}" for v in row_sig))
 
-# Backgrounds you plot
-for label, dsigma_dict, color, style in background_styles:
-    mlvjj_bins, dsigma = dsigma_dict["m_lvjj_bins"]
-    if np.sum(dsigma) <= 0:
-        continue
-    sigma_tail = integrate_tail(mlvjj_bins, dsigma, THR)
-    print(f"[Bkg]    {label:>20s}:  σ(W>400) = {sigma_tail:.3e} pb")
+# ---- Event yields at L = 1000 fb^-1
+print(f"\n=== Expected event counts at L = {L_fb:.0f} fb^-1 (A×ε = {Aeps}) ===")
+if "m_lvjj_bins" in background_dsigma_aa_ww:
+    Ns = [L_fb * v * PB_TO_FB * Aeps for v in row_sm]
+    print("SM (γγ→WW)".ljust(28) + " ".join(f"N(W>{int(t):>3})={n:>10.1f}" for t, n in zip(THRESHOLDS, Ns)))
 
-# Optional: annotate the figure with a vertical line at the threshold
-plt.axvline(THR, linestyle=":", linewidth=2)
-
-
-
-
-L_fb = 1000.0                  # example: 1000 fb^-1
-Aeps = 1.0                     # acceptance × efficiency if you want to include it
-pb_to_fb = 1e3
 for signal_name, dsigma_data in signal_dsigma.items():
-    edges, y = dsigma_data["m_lvjj_bins"]
-    sig_tail_pb = integrate_tail(edges, y, THR)
-    N = L_fb * sig_tail_pb * pb_to_fb * Aeps
-    print(f"[Signal] {signal_name}: N(W>400) @ {L_fb:.0f} fb^-1 = {N:.1f}")
+    bins_sig, dsig_sig = dsigma_data["m_lvjj_bins"]
+    row_sig = _row(bins_sig, dsig_sig, THRESHOLDS)
+    Ns = [L_fb * v * PB_TO_FB * Aeps for v in row_sig]
+    print(signal_name.ljust(28) + " ".join(f"N(W>{int(t):>3})={n:>10.1f}" for t, n in zip(THRESHOLDS, Ns)))
+
+# ---- Optional: add vertical lines at each threshold on the plot
+for thr in THRESHOLDS:
+    plt.axvline(thr, linestyle=":", linewidth=2, alpha=0.6)
+
+
+
 
 
 
@@ -2108,7 +2128,7 @@ for signal_name, dsigma_data in signal_dsigma.items():
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/dsigma_m_lvjj_allFMsignal_allbkgs.pdf", dpi=600)
+plt.savefig("dsigma_m_lvjj_allFMsignal_allbkgs_inMWW_400_800.pdf", dpi=600)
 
 plt.show()
 
@@ -2168,7 +2188,7 @@ plt.ylim(1e-5, 0.2)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("/home/hamzeh-khanpour/Documents/GitHub/LHeC_Fast_Simulation/Pythia8_Delphes_semi_leptonic_allsignal_bkgs/normalized_dsigma_m_lvjj_allFMsignal_allbkgs.pdf", dpi=600)
+plt.savefig("/normalized_dsigma_m_lvjj_allFMsignal_allbkgs_inMWW_400_800.pdf", dpi=600)
 
 plt.show()
 
