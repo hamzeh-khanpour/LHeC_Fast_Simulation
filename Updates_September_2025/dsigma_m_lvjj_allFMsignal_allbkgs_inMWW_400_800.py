@@ -114,7 +114,7 @@ def process_file(
 
     # Create ExRootTreeReader object
     treeReader = ROOT.ExRootTreeReader(chain)
-    numberOfEntries  =  treeReader.GetEntries()
+    numberOfEntries  = treeReader.GetEntries()
 
     # Counters for efficiency calculation
     # ✅ Initialize selection counters
@@ -2072,7 +2072,7 @@ plt.ylim(1e-6, 1e-2)
 # Tail integrals & yields
 # =========================
 
-THRESHOLDS = [400.0, 500.0, 600.0, 800.0]  # GeV
+THRESHOLDS = [400.0, 500.0, 600.0, 700.0, 800.0]  # GeV
 L_fb = 1000.0         # integrated luminosity in fb^-1
 Aeps = 1.0            # acceptance × efficiency (set if you want it)
 PB_TO_FB = 1e3        # 1 pb = 1000 fb
@@ -2093,11 +2093,13 @@ if "m_lvjj_bins" in background_dsigma_aa_ww:
     row_sm = _row(bins_sm, dsig_sm, THRESHOLDS)
     print("SM (γγ→WW)".ljust(28) + " ".join(f"{v:>10.4e}" for v in row_sm))
 
+
 # ---- Signals (e.g., FM2)
 for signal_name, dsigma_data in signal_dsigma.items():
     bins_sig, dsig_sig = dsigma_data["m_lvjj_bins"]
     row_sig = _row(bins_sig, dsig_sig, THRESHOLDS)
     print(signal_name.ljust(28) + " ".join(f"{v:>10.4e}" for v in row_sig))
+
 
 # ---- Event yields at L = 1000 fb^-1
 print(f"\n=== Expected event counts at L = {L_fb:.0f} fb^-1 (A×ε = {Aeps}) ===")
@@ -2105,19 +2107,17 @@ if "m_lvjj_bins" in background_dsigma_aa_ww:
     Ns = [L_fb * v * PB_TO_FB * Aeps for v in row_sm]
     print("SM (γγ→WW)".ljust(28) + " ".join(f"N(W>{int(t):>3})={n:>10.1f}" for t, n in zip(THRESHOLDS, Ns)))
 
+
 for signal_name, dsigma_data in signal_dsigma.items():
     bins_sig, dsig_sig = dsigma_data["m_lvjj_bins"]
     row_sig = _row(bins_sig, dsig_sig, THRESHOLDS)
     Ns = [L_fb * v * PB_TO_FB * Aeps for v in row_sig]
     print(signal_name.ljust(28) + " ".join(f"N(W>{int(t):>3})={n:>10.1f}" for t, n in zip(THRESHOLDS, Ns)))
 
+
 # ---- Optional: add vertical lines at each threshold on the plot
 for thr in THRESHOLDS:
-    plt.axvline(thr, linestyle=":", linewidth=2, alpha=0.6)
-
-
-
-
+    plt.axvline(thr, linestyle=":", linewidth=4, alpha=0.6)
 
 
 
@@ -2188,7 +2188,7 @@ plt.ylim(1e-5, 0.2)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
-plt.savefig("/normalized_dsigma_m_lvjj_allFMsignal_allbkgs_inMWW_400_800.pdf", dpi=600)
+plt.savefig("normalized_dsigma_m_lvjj_allFMsignal_allbkgs_inMWW_400_800.pdf", dpi=600)
 
 plt.show()
 
