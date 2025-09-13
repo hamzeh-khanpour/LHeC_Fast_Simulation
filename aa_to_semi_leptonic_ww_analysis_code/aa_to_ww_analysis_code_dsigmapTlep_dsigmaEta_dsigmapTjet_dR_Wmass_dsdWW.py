@@ -246,7 +246,7 @@ background_cross_section = 0.0149219    # pb     real : 0.0154074
 
 
 
-num_bins = 1000-165
+num_bins = 40
 
 pt_range_lepton = (0, 300)     # Range for lepton pT
 pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)

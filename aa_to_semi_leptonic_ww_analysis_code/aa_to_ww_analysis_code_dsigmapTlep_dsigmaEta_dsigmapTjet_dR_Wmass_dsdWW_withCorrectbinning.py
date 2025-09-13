@@ -261,7 +261,7 @@ m_w_hadronic_range = (1, 140)  # Range for the hadronic W boson mass
 m_w_leptonic_range = (1, 140)  # Range for the leptonic W boson mass
 
 # >>> ADD THESE LINES FOR RECO M_WW <<<
-m_w_hadronic_leptonic_range = (165, 1000)  # WW invariant mass; threshold ~ 2*mW up to ~LHeC √s_γγ
+m_w_hadronic_leptonic_range = (160, 1000)  # WW invariant mass; threshold ~ 2*mW up to ~LHeC √s_γγ
 
 
 
@@ -381,7 +381,7 @@ plt.xlabel(r"$M_{WW} \ \mathrm{[GeV]}$")
 plt.ylabel(r"$\frac{d\sigma}{dM_{WW}} \ \mathrm{[pb/GeV]}$")
 plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(0.000001, 0.01)
+plt.ylim(0.0000001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
