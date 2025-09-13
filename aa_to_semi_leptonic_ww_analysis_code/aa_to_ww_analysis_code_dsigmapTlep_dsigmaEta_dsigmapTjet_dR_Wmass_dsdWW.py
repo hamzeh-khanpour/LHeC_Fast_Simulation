@@ -378,14 +378,6 @@ m_w_hadronic_leptonic_bins_background, dsigma_background_m_w_hadronic_leptonic =
 
 
 
-# After calculate_dsigma(...) for M_WW in MG
-mww_edges_signal_0 = m_w_hadronic_leptonic_bins_signal_0
-mww_edges_signal_2 = m_w_hadronic_leptonic_bins_signal_2
-mww_edges_bkg      = m_w_hadronic_leptonic_bins_background
-
-mww_centers_signal_0 = mww_edges_signal_0 + 0.5 * bin_width_m_w_hadronic_leptonic
-mww_centers_signal_2 = mww_edges_signal_2 + 0.5 * bin_width_m_w_hadronic_leptonic
-mww_centers_bkg      = mww_edges_bkg      + 0.5 * bin_width_m_w_hadronic_leptonic
 
 
 
@@ -411,7 +403,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -431,7 +423,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_lepton.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -451,7 +443,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_leading_jet_pt.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -469,7 +461,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_delta_r.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -488,7 +480,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.000001, 1.0)
 plt.savefig("differential_cross_section_met.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -518,7 +510,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_eta_leading_jet.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -540,7 +532,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 #plt.text(0.5, 0.001, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$",  color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_leading_jet.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -573,7 +565,7 @@ plt.text(0.5, 1e-3, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_exp_centrality.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -593,11 +585,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 0.001, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_exp_centrality.pdf", dpi=600)
-plt.show()
-
-
-
-
+#plt.show()
 
 
 
@@ -627,7 +615,7 @@ plt.text(0.9, 0.06, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_jet_centrality.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -650,7 +638,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 0.001, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_jet_centrality.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -677,7 +665,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_subleading_jet.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -723,7 +711,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("normalized_cross_section_m_w_hadronic.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -742,7 +730,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_hadronic.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -774,7 +762,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("normalized_cross_section_m_w_leptonic.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -793,7 +781,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_leptonic.pdf", dpi=600)
-plt.show()
+#plt.show()
 
 
 
@@ -809,8 +797,6 @@ sb = np.sum(dsigma_background_m_w_hadronic_leptonic)
 dsigma_signal_m_w_hadronic_leptonic_0_norm = dsigma_signal_m_w_hadronic_leptonic_0 / s0 if s0 > 0 else dsigma_signal_m_w_hadronic_leptonic_0
 dsigma_signal_m_w_hadronic_leptonic_2_norm = dsigma_signal_m_w_hadronic_leptonic_2 / s2 if s2 > 0 else dsigma_signal_m_w_hadronic_leptonic_2
 dsigma_background_m_w_hadronic_leptonic_norm = dsigma_background_m_w_hadronic_leptonic / sb if sb > 0 else dsigma_background_m_w_hadronic_leptonic
-
-
 
 
 
@@ -833,23 +819,18 @@ plt.show()
 
 
 
-
-
-
-
 # --------------------------------------------
 # Plot the differential cross-sections for Reconstructed WW Invariant Mass (M_WW)
-plt.step(mww_centers_signal_0, dsigma_signal_m_w_hadronic_leptonic_0, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : Signal ($W^+W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
-plt.step(mww_centers_signal_2, dsigma_signal_m_w_hadronic_leptonic_2, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : Signal ($W^+W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
-plt.step(mww_centers_bkg, dsigma_background_m_w_hadronic_leptonic, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : SM background ($W^+W^-$)", color="blue", linewidth=3)
+plt.step(m_w_hadronic_leptonic_bins_signal_0, dsigma_signal_m_w_hadronic_leptonic_0, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \\Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_hadronic_leptonic_bins_signal_2, dsigma_signal_m_w_hadronic_leptonic_2, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \\Lambda^4$)", color="green", linewidth=3)
+plt.step(m_w_hadronic_leptonic_bins_background, dsigma_background_m_w_hadronic_leptonic, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 
-plt.xlabel(r"$M_{WW}\ \mathrm{[GeV]}$")
-plt.ylabel(r"$\frac{d\sigma}{dM_{WW}}\ \mathrm{[pb/GeV]}$")
-plt.title(r"$e^- p \to e^- W^+W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2\ \mathrm{TeV}$", fontsize=24)
+
+plt.xlabel(r"$M_{WW} \ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dM_{WW}} \ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
 plt.yscale("log")
-plt.ylim(1e-6, 1e-2)
-# Optional, to match a 400–800 window used elsewhere:
-# plt.xlim(400, 800)
+plt.ylim(0.000001, 0.01)
 plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
