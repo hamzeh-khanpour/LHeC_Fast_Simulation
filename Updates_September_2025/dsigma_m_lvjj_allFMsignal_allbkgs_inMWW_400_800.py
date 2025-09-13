@@ -382,7 +382,7 @@ def process_file(
             if jet_centrality > -10000.0:   #   2.0:
                 selected_events_pre_jet_centrality += 1
 
-                if 0.0 < w_leptonic.M() < 10000.0 and 0.0 < w_hadronic.M() < 10000.0:
+                if 65.0 < w_leptonic.M() < 95.0 and 65.0 < w_hadronic.M() < 95.0:
                     selected_events_final += 1  # ✅ Count event only if it passed all previous cuts
 
 
