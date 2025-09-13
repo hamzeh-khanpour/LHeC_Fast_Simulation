@@ -246,7 +246,7 @@ background_cross_section = 0.0149219    # pb     real : 0.0154074
 
 
 
-num_bins = 40
+num_bins = 1000-165
 
 pt_range_lepton = (0, 300)     # Range for lepton pT
 pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)
@@ -403,7 +403,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.00001, 0.01)
 plt.savefig("differential_cross_section_pt.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -423,7 +423,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_lepton.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -443,7 +443,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_leading_jet_pt.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -461,7 +461,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_delta_r.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -480,7 +480,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.ylim(0.000001, 1.0)
 plt.savefig("differential_cross_section_met.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -510,7 +510,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_eta_leading_jet.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -532,7 +532,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 #plt.text(0.5, 0.001, r"$C_{\ell} = \frac{\eta_{\ell} - \frac{\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}}{2}}{\Delta \eta_{jj}}$",  color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_leading_jet.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -565,7 +565,7 @@ plt.text(0.5, 1e-3, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_exp_centrality.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -585,7 +585,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 0.001, r"$C_{\ell}^{\mathrm{exp}} = e^{-|C_{\ell}|}$", color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_exp_centrality.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -615,7 +615,7 @@ plt.text(0.9, 0.06, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\
 # Save and display the plot
 plt.tight_layout()
 plt.savefig("normalized_distribution_jet_centrality.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -638,12 +638,7 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.text(0.5, 0.001, r"$C_{\mathrm{jets}} = \frac{|\eta_{\mathrm{jet1}} + \eta_{\mathrm{jet2}}|}{2}$", color="black")
 plt.tight_layout()
 plt.savefig("differential_cross_section_jet_centrality.pdf", dpi=600)
-#plt.show()
-
-
-
-
-
+plt.show()
 
 
 
@@ -665,9 +660,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_eta_subleading_jet.pdf", dpi=600)
-#plt.show()
-
-
+plt.show()
 
 
 
@@ -682,9 +675,6 @@ plt.savefig("differential_cross_section_eta_subleading_jet.pdf", dpi=600)
 #dsigma_signal_m_w_hadronic_0_norm = normalize_distribution(m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0)
 #dsigma_signal_m_w_hadronic_2_norm = normalize_distribution(m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2)
 #dsigma_background_m_w_hadronic_norm = normalize_distribution(m_w_hadronic_bins_background, dsigma_background_m_w_hadronic)
-
-
-
 
 
 
@@ -711,7 +701,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("normalized_cross_section_m_w_hadronic.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -730,11 +720,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_hadronic.pdf", dpi=600)
-#plt.show()
-
-
-
-
+plt.show()
 
 
 
@@ -762,7 +748,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("normalized_cross_section_m_w_leptonic.pdf", dpi=600)
-#plt.show()
+plt.show()
 
 
 
@@ -781,9 +767,7 @@ plt.legend()
 plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_leptonic.pdf", dpi=600)
-#plt.show()
-
-
+plt.show()
 
 
 
