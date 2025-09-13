@@ -49,6 +49,9 @@ def parse_lhe_file(file_name):
     m_w_hadronic_values = []  # Hadronic W boson mass (W → jj)
     m_w_leptonic_values = []  # Leptonic W boson mass (W → lν)
 
+    m_w_hadronic_leptonic_values = []  # WW invariant mass
+
+
     with open(file_name, "r") as file:
         in_event = False
 
@@ -105,6 +108,11 @@ def parse_lhe_file(file_name):
                     w_leptonic = leptons[0] + neutrino_vec
                     m_w_leptonic_values.append(w_leptonic.M())  # Store mass
 
+                # --- M_WW (reco) ---
+                if w_hadronic is not None and w_leptonic is not None:
+                    w_hadronic_leptonic = w_hadronic + w_leptonic
+                    m_w_hadronic_leptonic_values.append(w_hadronic_leptonic.M())
+
                 # Compute the exponential centrality for each lepton
                 for lepton in leptons:
                     exp_centrality = np.exp(-lepton.Eta()) / np.cosh(lepton.Eta())
@@ -158,7 +166,8 @@ def parse_lhe_file(file_name):
 
     return (pt_leptons, eta_leptons, pt_leading_jet, delta_r_values,
             missing_transverse_energy, centrality_values, exp_centrality_values,
-            jet_centrality_values, delta_eta_jj_values, m_w_hadronic_values, m_w_leptonic_values)
+            jet_centrality_values, delta_eta_jj_values, m_w_hadronic_values, m_w_leptonic_values, m_w_hadronic_leptonic_values)
+
 
 
 
@@ -188,17 +197,21 @@ background_file = "/home/hamzeh-khanpour/MG5_aMC_v3_6_3/aa_ww_semi_leptonic_SM_N
 
 
 # Parse signal and background files, including Delta R, MET, centrality, exp_centrality, jet_centrality, and W masses (m_w_hadronic, m_w_leptonic)
+# Signal FM0
 (pt_leptons_signal_0, eta_leptons_signal_0, pt_leading_jet_signal_0, delta_r_signal_0,
  met_signal_0, centrality_signal_0, exp_centrality_signal_0, jet_centrality_signal_0, delta_eta_jj_signal_0,
- m_w_hadronic_signal_0, m_w_leptonic_signal_0) = parse_lhe_file(signal_file_0)
+ m_w_hadronic_signal_0, m_w_leptonic_signal_0, m_w_hadronic_leptonic_signal_0) = parse_lhe_file(signal_file_0)
 
+# Signal FM2
 (pt_leptons_signal_2, eta_leptons_signal_2, pt_leading_jet_signal_2, delta_r_signal_2,
  met_signal_2, centrality_signal_2, exp_centrality_signal_2, jet_centrality_signal_2, delta_eta_jj_signal_2,
- m_w_hadronic_signal_2, m_w_leptonic_signal_2) = parse_lhe_file(signal_file_2)
+ m_w_hadronic_signal_2, m_w_leptonic_signal_2, m_w_hadronic_leptonic_signal_2) = parse_lhe_file(signal_file_2)
 
+# SM background
 (pt_leptons_background, eta_leptons_background, pt_leading_jet_background, delta_r_background,
  met_background, centrality_background, exp_centrality_background, jet_centrality_background, delta_eta_jj_background,
- m_w_hadronic_background, m_w_leptonic_background) = parse_lhe_file(background_file)
+ m_w_hadronic_background, m_w_leptonic_background, m_w_hadronic_leptonic_background) = parse_lhe_file(background_file)
+
 
 
 
@@ -233,9 +246,7 @@ background_cross_section = 0.0149219    # pb     real : 0.0154074
 
 
 
-num_bins = 50
-
-
+num_bins = 40
 
 pt_range_lepton = (0, 300)     # Range for lepton pT
 pt_range_jet = (0, 300)        # Range for leading jet pT (adjusted for higher jet momenta)
@@ -248,6 +259,10 @@ jet_centrality_range = (0, 6) # Centrality typically ranges of jet from 0 to 10
 delta_eta_jj_range  = (-10, 10)   # Pseudorapidity difference between jets from 0 to 5
 m_w_hadronic_range = (1, 140)  # Range for the hadronic W boson mass
 m_w_leptonic_range = (1, 140)  # Range for the leptonic W boson mass
+
+# >>> ADD THESE LINES FOR RECO M_WW <<<
+m_w_hadronic_leptonic_range = (165, 1000)  # WW invariant mass; threshold ~ 2*mW up to ~LHeC √s_γγ
+
 
 
 
@@ -265,6 +280,8 @@ bin_width_delta_eta_jj = (delta_eta_jj_range[1] - delta_eta_jj_range[0]) / num_b
 # Calculate bin widths for various distributions
 bin_width_m_w_hadronic = (m_w_hadronic_range[1] - m_w_hadronic_range[0]) / num_bins  # Bin width for M_W hadronic
 bin_width_m_w_leptonic = (m_w_leptonic_range[1] - m_w_leptonic_range[0]) / num_bins  # Bin width for M_W leptonic
+
+bin_width_m_w_hadronic_leptonic = (m_w_hadronic_leptonic_range[1] - m_w_hadronic_leptonic_range[0]) / num_bins
 
 
 
@@ -351,6 +368,24 @@ m_w_hadronic_bins_background, dsigma_background_m_w_hadronic = calculate_dsigma(
 m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0 = calculate_dsigma(m_w_leptonic_signal_0, signal_cross_section_0, bin_width_m_w_leptonic, m_w_leptonic_range)
 m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2 = calculate_dsigma(m_w_leptonic_signal_2, signal_cross_section_2, bin_width_m_w_leptonic, m_w_leptonic_range)
 m_w_leptonic_bins_background, dsigma_background_m_w_leptonic = calculate_dsigma(m_w_leptonic_background, background_cross_section, bin_width_m_w_leptonic, m_w_leptonic_range)
+
+
+
+# >>> ADD THESE LINES FOR RECO M_WW <<<
+m_w_hadronic_leptonic_bins_signal_0, dsigma_signal_m_w_hadronic_leptonic_0 = calculate_dsigma(    m_w_hadronic_leptonic_signal_0, signal_cross_section_0, bin_width_m_w_hadronic_leptonic, m_w_hadronic_leptonic_range)
+m_w_hadronic_leptonic_bins_signal_2, dsigma_signal_m_w_hadronic_leptonic_2 = calculate_dsigma(    m_w_hadronic_leptonic_signal_2, signal_cross_section_2, bin_width_m_w_hadronic_leptonic, m_w_hadronic_leptonic_range)
+m_w_hadronic_leptonic_bins_background, dsigma_background_m_w_hadronic_leptonic = calculate_dsigma(    m_w_hadronic_leptonic_background, background_cross_section, bin_width_m_w_hadronic_leptonic, m_w_hadronic_leptonic_range)
+
+
+
+# After calculate_dsigma(...) for M_WW in MG
+mww_edges_signal_0 = m_w_hadronic_leptonic_bins_signal_0
+mww_edges_signal_2 = m_w_hadronic_leptonic_bins_signal_2
+mww_edges_bkg      = m_w_hadronic_leptonic_bins_background
+
+mww_centers_signal_0 = mww_edges_signal_0 + 0.5 * bin_width_m_w_hadronic_leptonic
+mww_centers_signal_2 = mww_edges_signal_2 + 0.5 * bin_width_m_w_hadronic_leptonic
+mww_centers_bkg      = mww_edges_bkg      + 0.5 * bin_width_m_w_hadronic_leptonic
 
 
 
@@ -759,6 +794,68 @@ plt.grid(True, linestyle="--", alpha=0.6)
 plt.tight_layout()
 plt.savefig("differential_cross_section_m_w_leptonic.pdf", dpi=600)
 plt.show()
+
+
+
+
+
+
+
+# --- Normalize the reconstructed M_WW distributions ---
+s0 = np.sum(dsigma_signal_m_w_hadronic_leptonic_0)
+s2 = np.sum(dsigma_signal_m_w_hadronic_leptonic_2)
+sb = np.sum(dsigma_background_m_w_hadronic_leptonic)
+
+dsigma_signal_m_w_hadronic_leptonic_0_norm = dsigma_signal_m_w_hadronic_leptonic_0 / s0 if s0 > 0 else dsigma_signal_m_w_hadronic_leptonic_0
+dsigma_signal_m_w_hadronic_leptonic_2_norm = dsigma_signal_m_w_hadronic_leptonic_2 / s2 if s2 > 0 else dsigma_signal_m_w_hadronic_leptonic_2
+dsigma_background_m_w_hadronic_leptonic_norm = dsigma_background_m_w_hadronic_leptonic / sb if sb > 0 else dsigma_background_m_w_hadronic_leptonic
+
+
+
+
+
+
+# --------------------------------------------
+# Plot the normalized Reconstructed WW Invariant Mass (M_WW)
+plt.step(m_w_hadronic_leptonic_bins_signal_0, dsigma_signal_m_w_hadronic_leptonic_0_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_0} / \\Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_hadronic_leptonic_bins_signal_2, dsigma_signal_m_w_hadronic_leptonic_2_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : Signal ($w^+ w^-) [f_{M_2} / \\Lambda^4$)", color="green", linewidth=3)
+plt.step(m_w_hadronic_leptonic_bins_background, dsigma_background_m_w_hadronic_leptonic_norm, where="mid", alpha=0.7, label="LHeC@1.2 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
+plt.xlabel(r"$M_{WW} \ \mathrm{[GeV]}$")
+plt.ylabel("Normalized Distribution")
+plt.title(r"$e^- p \to e^- w^+ w^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2 TeV", fontsize=24)
+# plt.yscale("log")  # usually off for normalized shapes; keep commented like your leptonic plot
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("normalized_cross_section_m_ww_reco.pdf", dpi=600)
+plt.show()
+
+
+
+
+
+
+
+
+# --------------------------------------------
+# Plot the differential cross-sections for Reconstructed WW Invariant Mass (M_WW)
+plt.step(mww_centers_signal_0, dsigma_signal_m_w_hadronic_leptonic_0, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : Signal ($W^+W^-$) [$f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(mww_centers_signal_2, dsigma_signal_m_w_hadronic_leptonic_2, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : Signal ($W^+W^-$) [$f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
+plt.step(mww_centers_bkg, dsigma_background_m_w_hadronic_leptonic, where="mid", alpha=0.7, label=r"LHeC@1.2 TeV : SM background ($W^+W^-$)", color="blue", linewidth=3)
+
+plt.xlabel(r"$M_{WW}\ \mathrm{[GeV]}$")
+plt.ylabel(r"$\frac{d\sigma}{dM_{WW}}\ \mathrm{[pb/GeV]}$")
+plt.title(r"$e^- p \to e^- W^+W^- p \to e^- j j \ell \nu_{\ell} p$ : LHeC@1.2\ \mathrm{TeV}$", fontsize=24)
+plt.yscale("log")
+plt.ylim(1e-6, 1e-2)
+# Optional, to match a 400–800 window used elsewhere:
+# plt.xlim(400, 800)
+plt.legend()
+plt.grid(True, linestyle="--", alpha=0.6)
+plt.tight_layout()
+plt.savefig("differential_cross_section_m_ww_reco.pdf", dpi=600)
+plt.show()
+
 
 
 
