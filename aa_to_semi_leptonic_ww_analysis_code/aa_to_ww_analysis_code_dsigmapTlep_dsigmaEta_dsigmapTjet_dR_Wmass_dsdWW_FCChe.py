@@ -835,7 +835,7 @@ plt.show()
 
 
 # =============================================================================
-# Tail σ(MWW>W_cut) and 95% CL limits (counting, Asimov exact) using f=0, +10, −10
+# Tail σ(MWW>W_cut) and 95% CL limits (counting, Asimov exact) using f=0, +1, −1 for FCChe
 # =============================================================================
 
 import math
@@ -843,7 +843,7 @@ import numpy as np
 
 
 # --- Config
-THRESHOLDS = [400.0, 500.0, 600.0, 700.0, 800.0, 1000.0, 1200.0, 1400.0]  # GeV
+THRESHOLDS = [400.0, 500.0, 600.0, 700.0, 800.0, 900.0, 1000.0, 1200.0, 1400.0]  # GeV
 L_fb = 1000.0     # integrated luminosity in fb^-1
 Aeps = 1.0        # acceptance × efficiency
 PB_TO_FB = 1e3    # 1 pb = 1000 fb
@@ -928,8 +928,8 @@ def extract_AB(c, sp, sm, f0):
 
 # --- Tail σ rows for each cut (pb)
 row_sm = [integrate_tail_hist(dsigma_background_m_w_hadronic_leptonic, edges_mww, thr) for thr in THRESHOLDS]  # f=0
-row_p  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_0, edges_mww, thr)   for thr in THRESHOLDS]  # f=+10
-row_m  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_2, edges_mww, thr)   for thr in THRESHOLDS]  # f=−10
+row_p  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_0, edges_mww, thr)   for thr in THRESHOLDS]  # f=+1
+row_m  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_2, edges_mww, thr)   for thr in THRESHOLDS]  # f=−1
 
 
 
@@ -970,6 +970,8 @@ print(f"   Two-sided 95% CL: f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
 
 
 
+
+
 # =============================================================================
 # Multi-bin SHAPE likelihood in MWW (Asimov SM, no extra backgrounds)
 # Uses all bins between Wmin and Wmax (full spectrum if Wmin=0.0, Wmax=None)
@@ -978,7 +980,7 @@ import numpy as np
 import math
 
 # --- Choose which ranges you want to report (full + a few tails):
-SHAPE_CUTS = [(0.0, None), (400.0, None), (600.0, None), (800.0, None), (1000.0, None), (1200.0, None), (1400.0, None)]
+SHAPE_CUTS = [(400.0, None), (500.0, None), (600.0, None), (700.0, None), (800.0, None), (900.0, None), (1000.0, None), (1200.0, None), (1400.0, None)]
 
 
 
@@ -1083,8 +1085,8 @@ best_shape = None
 for (Wmin, Wmax) in SHAPE_CUTS:
     α, β, γ, widths = build_shape_coeffs(edges_mww,
                                          dsigma_background_m_w_hadronic_leptonic,
-                                         dsigma_signal_m_w_hadronic_leptonic_0,  # +10
-                                         dsigma_signal_m_w_hadronic_leptonic_2,  # -10
+                                         dsigma_signal_m_w_hadronic_leptonic_0,  # +1
+                                         dsigma_signal_m_w_hadronic_leptonic_2,  # -1
                                          f0=f0, Wmin=Wmin, Wmax=Wmax)
     if α.size == 0:
         continue
@@ -1099,10 +1101,38 @@ if best_shape:
     label, f_lo, f_hi, _ = best_shape
     print(f">> Best SHAPE window: {label}  →  f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
 
+
+
+
 # =============================================================================
 
 
 
+
+# --- Auto-scan Wmin for the shape likelihood
+Wmins = np.arange(0.0, float(edges_mww[-1]) - 1e-6, 50.0)  # 50 GeV steps; tune as you like
+best_shape = None
+for Wmin in Wmins:
+    α, β, γ, widths = build_shape_coeffs(edges_mww,
+                                         dsigma_background_m_w_hadronic_leptonic,
+                                         dsigma_signal_m_w_hadronic_leptonic_0,  # +1
+                                         dsigma_signal_m_w_hadronic_leptonic_2,  # -1
+                                         f0=f0, Wmin=Wmin, Wmax=None)
+    if α.size == 0:
+        continue
+    f_lo, f_hi = asimov_shape_interval(α, β, γ, widths, L_fb=L_fb, Aeps=Aeps, q_target=3.84)
+    width = f_hi - f_lo
+    if best_shape is None or width < best_shape[-1]:
+        best_shape = (Wmin, f_lo, f_hi, width)
+
+if best_shape:
+    Wmin_best, f_lo, f_hi, _ = best_shape
+    print(f"\n>> Best SHAPE threshold (auto-scan): W>{Wmin_best:.0f} GeV  →  f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
+
+
+
+# =============================================================================
+# =============================================================================
 
 
 

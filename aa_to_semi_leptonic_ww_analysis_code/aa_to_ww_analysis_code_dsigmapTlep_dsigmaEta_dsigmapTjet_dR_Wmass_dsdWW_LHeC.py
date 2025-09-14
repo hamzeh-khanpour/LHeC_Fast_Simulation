@@ -967,7 +967,7 @@ import numpy as np
 import math
 
 # --- Choose which ranges you want to report (full + a few tails):
-SHAPE_CUTS = [(0.0, None), (400.0, None), (600.0, None), (800.0, None), (1000.0, None), (1200.0, None), (1400.0, None)]
+SHAPE_CUTS = [(400.0, None), (500.0, None), (600.0, None), (700.0, None), (800.0, None)]
 
 
 
@@ -1092,6 +1092,25 @@ if best_shape:
 
 
 
+# --- Auto-scan Wmin for the shape likelihood
+Wmins = np.arange(0.0, float(edges_mww[-1]) - 1e-6, 50.0)  # 50 GeV steps; tune as you like
+best_shape = None
+for Wmin in Wmins:
+    α, β, γ, widths = build_shape_coeffs(edges_mww,
+                                         dsigma_background_m_w_hadronic_leptonic,
+                                         dsigma_signal_m_w_hadronic_leptonic_0,  # +10
+                                         dsigma_signal_m_w_hadronic_leptonic_2,  # -10
+                                         f0=f0, Wmin=Wmin, Wmax=None)
+    if α.size == 0:
+        continue
+    f_lo, f_hi = asimov_shape_interval(α, β, γ, widths, L_fb=L_fb, Aeps=Aeps, q_target=3.84)
+    width = f_hi - f_lo
+    if best_shape is None or width < best_shape[-1]:
+        best_shape = (Wmin, f_lo, f_hi, width)
+
+if best_shape:
+    Wmin_best, f_lo, f_hi, _ = best_shape
+    print(f"\n>> Best SHAPE threshold (auto-scan): W>{Wmin_best:.0f} GeV  →  f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
 
 
 
