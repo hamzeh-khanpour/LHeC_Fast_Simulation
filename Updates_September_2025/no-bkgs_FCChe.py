@@ -70,8 +70,8 @@ def fisher_approx_95(L, a, c):
 if __name__ == "__main__":
     # L in fb^-1; a,b,c in fb (f in TeV^-4)
     L =  1000.0
-    a = -1.237862e-01       # fb / (TeV^-4)
-    b =  7.018569e-01     # fb / (TeV^-4)^2
+    a = -1.237862e-01         # fb / (TeV^-4)
+    b =  7.018569e-01         # fb / (TeV^-4)^2
     c =  8.876950e+01         # fb
 
     f_lo, f_hi = asimov_limits_95(L, a, b, c)
