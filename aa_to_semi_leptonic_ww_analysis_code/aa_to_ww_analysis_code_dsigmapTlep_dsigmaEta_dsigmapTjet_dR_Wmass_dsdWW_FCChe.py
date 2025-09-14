@@ -828,89 +828,284 @@ plt.show()
 
 
 
-
-
-
-
-
-
 # =======================================================================
 
 
 
 
 
+# =============================================================================
+# Tail σ(MWW>W_cut) and 95% CL limits (counting, Asimov exact) using f=0, +10, −10
+# =============================================================================
 
-## Save data for pT lepton
-#np.savetxt("dsigma_signal_pt_0.txt", np.column_stack([pt_bins_signal_0, dsigma_signal_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
-#np.savetxt("dsigma_signal_pt_2.txt", np.column_stack([pt_bins_signal_2, dsigma_signal_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
-#np.savetxt("dsigma_background_pt.txt", np.column_stack([pt_bins_background, dsigma_background_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
-
-
-## Save data for eta lepton
-#np.savetxt("dsigma_signal_eta_0.txt", np.column_stack([eta_bins_signal_0, dsigma_signal_eta_0]), header="eta, dσ/deta [pb]")
-#np.savetxt("dsigma_signal_eta_2.txt", np.column_stack([eta_bins_signal_2, dsigma_signal_eta_2]), header="eta, dσ/deta [pb]")
-#np.savetxt("dsigma_background_eta.txt", np.column_stack([eta_bins_background, dsigma_background_eta]), header="eta, dσ/deta [pb]")
+import math
+import numpy as np
 
 
-## Save data for leading jet pT
-#np.savetxt("dsigma_signal_leading_jet_pt_0.txt", np.column_stack([pt_jet_bins_signal_0, dsigma_signal_jet_pt_0]), header="pT [GeV], dσ/dpT [pb/GeV]")
-#np.savetxt("dsigma_signal_leading_jet_pt_2.txt", np.column_stack([pt_jet_bins_signal_2, dsigma_signal_jet_pt_2]), header="pT [GeV], dσ/dpT [pb/GeV]")
-#np.savetxt("dsigma_background_leading_jet_pt.txt", np.column_stack([pt_jet_bins_background, dsigma_background_jet_pt]), header="pT [GeV], dσ/dpT [pb/GeV]")
+# --- Config
+THRESHOLDS = [400.0, 500.0, 600.0, 700.0, 800.0, 1000.0, 1200.0, 1400.0]  # GeV
+L_fb = 1000.0     # integrated luminosity in fb^-1
+Aeps = 1.0        # acceptance × efficiency
+PB_TO_FB = 1e3    # 1 pb = 1000 fb
+f0 = 1.0         # TeV^-4  (your MG couplings are ±1)
 
 
-## Save data for Delta R
-#np.savetxt("dsigma_signal_delta_r_0.txt", np.column_stack([delta_r_bins_signal_0, dsigma_signal_delta_r_0]), header="Delta R, dσ/d(Delta R) [pb]")
-#np.savetxt("dsigma_signal_delta_r_2.txt", np.column_stack([delta_r_bins_signal_2, dsigma_signal_delta_r_2]), header="Delta R, dσ/d(Delta R) [pb]")
-#np.savetxt("dsigma_background_delta_r.txt", np.column_stack([delta_r_bins_background, dsigma_background_delta_r]), header="Delta R, dσ/d(Delta R) [pb]")
+# --- Build the bin edges for MWW from your (range, nbins)
+edges_mww = np.linspace(m_w_hadronic_leptonic_range[0], m_w_hadronic_leptonic_range[1], num_bins + 1)
 
 
-## Save data for Missing Transverse Energy (MET)
-#np.savetxt("dsigma_signal_met_0.txt", np.column_stack([met_bins_signal_0, dsigma_signal_met_0]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
-#np.savetxt("dsigma_signal_met_2.txt", np.column_stack([met_bins_signal_2, dsigma_signal_met_2]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
-#np.savetxt("dsigma_background_met.txt", np.column_stack([met_bins_background, dsigma_background_met]), header="MET [GeV], dσ/d(MET) [pb/GeV]")
+def integrate_tail_hist(y, edges, thr):
+    """Integrate a density histogram y (pb/GeV) above threshold thr using bin edges."""
+    total = 0.0
+    for i in range(len(y)):
+        lo, hi = edges[i], edges[i+1]
+        if hi <= thr:
+            continue
+        width = hi - lo
+        if lo < thr < hi:
+            total += y[i] * (hi - thr)
+        else:
+            total += y[i] * width
+    return float(total)  # pb
 
 
-## Save data for Lepton Centrality
-#np.savetxt("dsigma_signal_centrality_0.txt", np.column_stack([centrality_bins_signal_0, dsigma_signal_centrality_0]), header="C_l, dσ/d(C_l) [pb]")
-#np.savetxt("dsigma_signal_centrality_2.txt", np.column_stack([centrality_bins_signal_2, dsigma_signal_centrality_2]), header="C_l, dσ/d(C_l) [pb]")
-#np.savetxt("dsigma_background_centrality.txt", np.column_stack([centrality_bins_background, dsigma_background_centrality]), header="C_l, dσ/d(C_l) [pb]")
+def q_asimov(mu, mu0):
+    """One-bin Asimov test statistic (no nuisances)."""
+    if mu <= 0 or mu0 <= 0:
+        return float("inf")
+    return 2.0 * (mu - mu0 + mu0 * math.log(mu0 / mu))
 
 
-## Save data for Exponential Lepton Centrality (exp_centrality)
-#np.savetxt("dsigma_signal_exp_centrality_0.txt", np.column_stack([exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
-#np.savetxt("dsigma_signal_exp_centrality_2.txt", np.column_stack([exp_centrality_bins_signal_2, dsigma_signal_exp_centrality_2]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
-#np.savetxt("dsigma_background_exp_centrality.txt", np.column_stack([exp_centrality_bins_background, dsigma_background_exp_centrality]), header="C_l_exp, dσ/d(C_l_exp) [pb]")
+def interval_asimov_exact(c, A, B, L_fb, Aeps, q_target=3.84, f_scan=300.0):
+    """
+    Solve q(f)=q_target for two-sided 95% CL via bracketing+bisection.
+    σ(f)=c + A f + B f^2  (pb);  μ(f) = L_fb * Aeps * σ(f) * 1000.
+    """
+    def qf(f):
+        sig = max(c + A*f + B*f*f, 1e-18)
+        mu  = L_fb * Aeps * sig * PB_TO_FB
+        mu0 = L_fb * Aeps * c   * PB_TO_FB
+        return q_asimov(mu, mu0)
+
+    # Right root (f >= 0)
+    flo, fhi, step = 0.0, 0.0, 0.1
+    while True:
+        fhi = flo + step
+        if qf(fhi) >= q_target or fhi >= f_scan:
+            break
+        step *= 1.8
+    for _ in range(80):
+        mid = 0.5*(flo + fhi)
+        if qf(mid) < q_target: flo = mid
+        else:                  fhi = mid
+    f_plus = 0.5*(flo + fhi)
+
+    # Left root (f <= 0)
+    fhi, flo, step = 0.0, 0.0, -0.1
+    while True:
+        flo = fhi + step
+        if qf(flo) >= q_target or abs(flo) >= f_scan:
+            break
+        step *= 1.8
+    for _ in range(80):
+        mid = 0.5*(flo + fhi)
+        if qf(mid) < q_target: fhi = mid
+        else:                  flo = mid
+    f_minus = 0.5*(flo + fhi)
+
+    return f_minus, f_plus
 
 
-## Save data for Jet Centrality
-#np.savetxt("dsigma_signal_jet_centrality_0.txt", np.column_stack([jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0]), header="C_j, dσ/d(C_j) [pb]")
-#np.savetxt("dsigma_signal_jet_centrality_2.txt", np.column_stack([jet_centrality_bins_signal_2, dsigma_signal_jet_centrality_2]), header="C_j, dσ/d(C_j) [pb]")
-#np.savetxt("dsigma_background_jet_centrality.txt", np.column_stack([jet_centrality_bins_background, dsigma_background_jet_centrality]), header="C_j, dσ/d(C_j) [pb]")
+def extract_AB(c, sp, sm, f0):
+    """
+    From tail cross sections at f=0, +f0, −f0 (pb), build:
+      σ(f) = c + A f + B f^2
+    """
+    A = (sp - sm) / (2.0 * f0)
+    B = (sp + sm - 2.0 * c) / (2.0 * f0 * f0)
+    return A, B
+
+
+# --- Tail σ rows for each cut (pb)
+row_sm = [integrate_tail_hist(dsigma_background_m_w_hadronic_leptonic, edges_mww, thr) for thr in THRESHOLDS]  # f=0
+row_p  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_0, edges_mww, thr)   for thr in THRESHOLDS]  # f=+10
+row_m  = [integrate_tail_hist(dsigma_signal_m_w_hadronic_leptonic_2, edges_mww, thr)   for thr in THRESHOLDS]  # f=−10
 
 
 
-## Save data for Pseudorapidity Difference Between Jets (Δηjj)
-#np.savetxt("dsigma_signal_delta_eta_jj_0.txt", np.column_stack([delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
-#np.savetxt("dsigma_signal_delta_eta_jj_2.txt", np.column_stack([delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
-#np.savetxt("dsigma_background_delta_eta_jj.txt", np.column_stack([delta_eta_jj_bins_background, dsigma_background_delta_eta_jj]), header="Δη_jj, dσ/d(Δη_jj) [pb]")
+# --- Pretty print the tail σ and expected counts
+print("\n=== σ(MWW > W_cut) from LHE-level spectra (pb) ===")
+hdr = "cut  ".ljust(8) + "σ_SM      σ(+1)    σ(−1)    ".ljust(32) + "N_SM@1000fb  N(+1)@1000fb  N(−1)@1000fb"
+print(hdr)
+print("-"*len(hdr))
+for thr, c, sp, sm in zip(THRESHOLDS, row_sm, row_p, row_m):
+    N_c  = L_fb * PB_TO_FB * Aeps * c
+    N_sp = L_fb * PB_TO_FB * Aeps * sp
+    N_sm = L_fb * PB_TO_FB * Aeps * sm
+    print(f"W>{int(thr):<4} {c:9.3e} {sp:9.3e} {sm:9.3e}   {N_c:12.1f}   {N_sp:12.1f}    {N_sm:12.1f}")
+
+
+
+# --- Limits per cut; choose best (narrowest) interval
+print("\n=== 95% CL (two-sided, Asimov SM) on f (TeV^-4), per cut and best ===")
+print("cut   A[pb/TeV^4]       B[pb/TeV^8]        interval [f−, f+]  ")
+best = None
+for thr, c, sp, sm in zip(THRESHOLDS, row_sm, row_p, row_m):
+    A, B = extract_AB(c, sp, sm, f0)
+    f_lo, f_hi = interval_asimov_exact(c, A, B, L_fb=L_fb, Aeps=Aeps, q_target=3.84)
+    width = f_hi - f_lo
+    print(f"W>{int(thr):<4} {A:14.3e}  {B:14.3e}   [{f_lo:7.3g}, {f_hi:7.3g}]")
+    if (best is None) or (width < best[-1]):
+        best = (thr, f_lo, f_hi, A, B, c, width)
+
+
+
+thr_best, f_lo, f_hi, A_best, B_best, c_best, _ = best
+print(f"\n>> Best cut: W > {thr_best:.0f} GeV")
+print(f"   σ_tail(f) = c + A f + B f^2 with c={c_best:.4e} pb, A={A_best:.4e} pb/TeV^4, B={B_best:.4e} pb/TeV^8")
+print(f"   Two-sided 95% CL: f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
+
+# =============================================================================
+
+
+
+
+# =============================================================================
+# Multi-bin SHAPE likelihood in MWW (Asimov SM, no extra backgrounds)
+# Uses all bins between Wmin and Wmax (full spectrum if Wmin=0.0, Wmax=None)
+# =============================================================================
+import numpy as np
+import math
+
+# --- Choose which ranges you want to report (full + a few tails):
+SHAPE_CUTS = [(0.0, None), (400.0, None), (600.0, None), (800.0, None), (1000.0, None), (1200.0, None), (1400.0, None)]
+
+
+
+# Build MWW bin edges from your config
+edges_mww = np.linspace(m_w_hadronic_leptonic_range[0],
+                        m_w_hadronic_leptonic_range[1],
+                        num_bins + 1)
+
+def _split_first_bin_if_needed(edges, y, Wmin):
+    """If Wmin cuts through the first used bin, scale that bin's width proportionally."""
+    lo = edges[:-1]; hi = edges[1:]
+    mask = hi > Wmin
+    if not np.any(mask):
+        return np.array([]), np.array([])
+    widths = hi - lo
+    widths = widths[mask].copy()
+    ysel   = np.asarray(y)[mask].copy()
+    # partial coverage on the very first selected bin
+    i0 = np.argmax(mask)  # index in full arrays of first selected bin
+    if lo[i0] < Wmin < hi[i0]:
+        frac = (hi[i0] - Wmin) / (hi[i0] - lo[i0])
+        widths[0] *= frac  # keep density the same, reduce width
+    return ysel, widths
+
+
+
+def build_shape_coeffs(edges, y_sm, y_p, y_m, f0, Wmin=0.0, Wmax=None):
+    """Return per-bin α,β,γ (pb/GeV) and widths (GeV) in the chosen MWW window."""
+    if Wmax is None:
+        Wmax = edges[-1]
+    lo = edges[:-1]; hi = edges[1:]
+    # pre-mask by window, then handle first-partial-bin correction
+    mask_window = (hi > Wmin) & (lo < Wmax)
+    edges_w = np.r_[lo[mask_window], hi[mask_window][-1]]  # local edges (not used except for widths)
+    # take subarrays then correct first-bin width if partial
+    α_full = np.asarray(y_sm)[mask_window]
+    β_full = (np.asarray(y_p)[mask_window] - np.asarray(y_m)[mask_window]) / (2.0 * f0)
+    γ_full = (np.asarray(y_p)[mask_window] + np.asarray(y_m)[mask_window] - 2.0*np.asarray(y_sm)[mask_window]) / (2.0 * f0 * f0)
+
+    widths_full = (hi - lo)[mask_window].copy()
+    # correct first bin if Wmin cuts inside
+    i0 = np.argmax(mask_window)  # first used bin index in full histogram
+    if lo[i0] < Wmin < hi[i0]:
+        frac = (hi[i0] - Wmin) / (hi[i0] - lo[i0])
+        widths_full[0] *= frac
+
+    # clip densities to avoid negative μ from tiny MC fluctuations
+    α = np.clip(α_full, 1e-18, None)
+    β = β_full.copy()
+    γ = γ_full.copy()
+    return α, β, γ, widths_full
+
+
+
+def asimov_shape_interval(α, β, γ, widths, L_fb, Aeps, q_target=3.84, f_scan=1e3):
+    """
+    Multi-bin Asimov q(f) = 2 sum_i [ μ_i(f) - μ_i(0) + μ_i(0) ln( μ_i(0) / μ_i(f) ) ]
+    with μ_i(f) = L*Aε*1000 * (α_i + β_i f + γ_i f^2) * ΔW_i.
+    Returns two-sided 95% CL [f-, f+].
+    """
+    const = L_fb * Aeps * 1000.0
+    n0 = const * α * widths  # Asimov observed (SM only)
+
+    def q_of(f):
+        dens = α + β*f + γ*f*f
+        dens = np.clip(dens, 1e-18, None)
+        mu   = const * dens * widths
+        return 2.0 * np.sum(mu - n0 + n0 * np.log(n0 / mu))
+
+    # --- right root (f >= 0)
+    flo, fhi, step = 0.0, 0.0, 0.1
+    while True:
+        fhi = flo + step
+        if q_of(fhi) >= q_target or fhi >= f_scan:
+            break
+        step *= 1.8
+    for _ in range(80):
+        mid = 0.5*(flo+fhi)
+        if q_of(mid) < q_target: flo = mid
+        else: fhi = mid
+    f_plus = 0.5*(flo+fhi)
+
+    # --- left root (f <= 0)
+    fhi, flo, step = 0.0, 0.0, -0.1
+    while True:
+        flo = fhi + step
+        if q_of(flo) >= q_target or abs(flo) >= f_scan:
+            break
+        step *= 1.8
+    for _ in range(80):
+        mid = 0.5*(flo+fhi)
+        if q_of(mid) < q_target: fhi = mid
+        else: flo = mid
+    f_minus = 0.5*(flo+fhi)
+    return f_minus, f_plus
+
+
+
+# --- Run shape limits for your requested windows
+print("\n=== SHAPE likelihood limits in MWW (Asimov SM, two-sided 95% CL) ===")
+best_shape = None
+for (Wmin, Wmax) in SHAPE_CUTS:
+    α, β, γ, widths = build_shape_coeffs(edges_mww,
+                                         dsigma_background_m_w_hadronic_leptonic,
+                                         dsigma_signal_m_w_hadronic_leptonic_0,  # +10
+                                         dsigma_signal_m_w_hadronic_leptonic_2,  # -10
+                                         f0=f0, Wmin=Wmin, Wmax=Wmax)
+    if α.size == 0:
+        continue
+    f_lo, f_hi = asimov_shape_interval(α, β, γ, widths, L_fb=L_fb, Aeps=Aeps, q_target=3.84)
+    width = f_hi - f_lo
+    label = f"W>{Wmin:.0f} GeV" if Wmax is None else f"{Wmin:.0f}<W<{Wmax:.0f} GeV"
+    print(f"{label:>14}:  f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
+    if best_shape is None or width < best_shape[-1]:
+        best_shape = (label, f_lo, f_hi, width)
+
+if best_shape:
+    label, f_lo, f_hi, _ = best_shape
+    print(f">> Best SHAPE window: {label}  →  f ∈ [{f_lo:.3g}, {f_hi:.3g}] TeV^-4")
+
+# =============================================================================
 
 
 
 
 
 
-## Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
-#np.savetxt("dsigma_signal_m_w_hadronic_0.txt",   np.column_stack([m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-#np.savetxt("dsigma_signal_m_w_hadronic_2.txt",   np.column_stack([m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-#np.savetxt("dsigma_background_m_w_hadronic.txt", np.column_stack([m_w_hadronic_bins_background, dsigma_background_m_w_hadronic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-
-
-
-## Save data for Hadronic W Boson Invariant Mass Distribution (M_W^{jj})
-#np.savetxt("dsigma_signal_m_w_leptonic_0.txt",   np.column_stack([m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-#np.savetxt("dsigma_signal_m_w_leptonic_2.txt",   np.column_stack([m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
-#np.savetxt("dsigma_background_m_w_leptonic.txt", np.column_stack([m_w_leptonic_bins_background, dsigma_background_m_w_leptonic]), header="M_W^{jj} [GeV]   dσ/dM_W^{jj} [pb/GeV]", fmt="%.6e")
 
 
 
