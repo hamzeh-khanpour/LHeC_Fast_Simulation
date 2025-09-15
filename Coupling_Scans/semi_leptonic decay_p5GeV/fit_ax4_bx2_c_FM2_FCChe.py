@@ -35,7 +35,7 @@ popt, pcov = curve_fit(symmetric_poly, fm2_scaled, xsec_vals)
 a, b, c = popt
 
 # Create fit curve
-x_fit = np.linspace(-1100, 1100, 500)
+x_fit = np.linspace(-11, 11, 500)
 y_fit = symmetric_poly(x_fit, *popt)
 
 # Plot

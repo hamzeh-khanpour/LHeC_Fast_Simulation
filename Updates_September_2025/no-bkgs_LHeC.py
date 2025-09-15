@@ -34,14 +34,14 @@ def _limit_one_side(L, a, b, c, q_target=3.84, side="+"):
         if q >= q_target or math.isinf(q):
             # bracket between f_prev (q < target) and f (q >= target or inf)
             lo, hi = (min(f_prev, f), max(f_prev, f))
-            for _ in range(200):
+            for _ in range(500):    # was 200
                 mid = 0.5 * (lo + hi)
                 qmid = q_asimov(mid, L, a, b, c)
                 if qmid < q_target:
                     lo = mid
                 else:
                     hi = mid
-                if abs(hi - lo) < 1e-6:
+                if abs(hi - lo) < 1e-10:   # was -6
                     break
             return 0.5 * (lo + hi)
         f_prev = f
@@ -70,9 +70,9 @@ def fisher_approx_95(L, a, c):
 if __name__ == "__main__":
     # L in fb^-1; a,b,c in fb (f in TeV^-4)
     L =  1000.0
-    a = -0.014647       # fb / (TeV^-4)
-    b =  0.00089293     # fb / (TeV^-4)^2
-    c =  15.3833         # fb
+    a = -1.484792e-02       # fb / (TeV^-4)
+    b =  8.921383e-04     # fb / (TeV^-4)^2
+    c =  1.540316e+01         # fb
 
     f_lo, f_hi = asimov_limits_95(L, a, b, c)
     f95_fisher = fisher_approx_95(L, a, c)
