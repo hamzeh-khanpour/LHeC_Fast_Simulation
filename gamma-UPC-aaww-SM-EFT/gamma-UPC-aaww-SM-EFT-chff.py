@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 # DEFAULT INPUT FILES (edit here)
 # -------------------------------
 DEFAULT_FILES = [
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_01/gamma-UPC-aaww-SM-chff.lhe", # SM chff
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_02/gamma-UPC-aaww-EFT.lhe",     # EFT FM2 = 1 TeV^-4
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_01/gamma-UPC-aaww-SM-edff.lhe", # SM edff
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_01/gamma-UPC-aaww-SM-chff.lhe",      # SM chff
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_02/gamma-UPC-aaww-EFT-chff.lhe",     # EFT FM2 = 1 TeV^-4
 ]
 
 # Histogram settings (edit if needed)
@@ -135,14 +134,22 @@ def main():
                    header="M_WW[GeV], dSigma/dM[pb/GeV]", comments='')
         print(f"[OK] {fpath}: {len(MWW)} events with W+W-, wrote {out_csv}")
 
+
+    ax = plt.gca()
+    if LOG_Y:
+        ax.set_yscale('log')
+        ax.set_ylim(1e-8, 1e-3)
+
+
+
     plt.xlabel(r"$W_{\gamma\gamma}=M_{WW}\ \mathrm{[GeV]}$")
     plt.ylabel(r"$\mathrm{d}\sigma/\mathrm{d}M_{WW}\ \mathrm{[pb/GeV]}$")
     if LOG_Y: plt.yscale('log')
     plt.legend()
     plt.tight_layout()
-    plt.savefig("gamma-UPC-aaww-SM-EFT.png", dpi=200)
-    plt.savefig("gamma-UPC-aaww-SM-EFT.pdf")
-    print("Wrote gamma-UPC-aaww-SM-EFT.(png|pdf)")
+    plt.savefig("gamma-UPC-aaww-SM-EFT-chff.png", dpi=200)
+    plt.savefig("gamma-UPC-aaww-SM-EFT-chff.pdf")
+    print("Wrote gamma-UPC-aaww-SM-EFT-chff.(png|pdf)")
 
 if __name__ == "__main__":
     main()
