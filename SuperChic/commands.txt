@@ -1,0 +1,8 @@
+source /cvmfs/sft.cern.ch/lcg/views/LCG_106/x86_64-el9-gcc13-opt/setup.sh
+
+export LHAPDF_DATA_PATH=/afs/cern.ch/user/h/hakhanpo/.local/share/SuperChic/SF:${LHAPDF_DATA_PATH}
+
+
+./bin/init      < inputs/ww_el_13TeV_muWplus.DAT
+
+./bin/superchic      < inputs/ww_el_13TeV_muWplus.DAT
