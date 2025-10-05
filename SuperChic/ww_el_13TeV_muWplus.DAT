@@ -45,7 +45,7 @@
 ******************************* Unweighted events **************************************
 ****************************************************************************************
 .true.       ! [genunw] : Generate unweighted events
-100000           ! [nev] : Number of events ( < 1000000 recommended)
+10000           ! [nev] : Number of events ( < 1000000 recommended)
 'lhe'	     ! [erec] : Event record format ('hepmc','lhe','hepevt')
 .false.	     ! [readwt] : Set to true to read in pre-calculated maxium weight below
 0d0          ! [wtmax] : Maximum weight
@@ -56,7 +56,7 @@
 10d0          ! [ymax]
 160d0          ! [mmin]
 3000d0          ! [mmax]
-.true.        ! [gencuts] : Generate cuts below
+.false.        ! [gencuts] : Generate cuts below     Mohem  no cuts
 .true.        ! [scorr] : Include spin correlations
 .true.	      ! [fwidth] : Include finite width 
 ****************************************************************************************

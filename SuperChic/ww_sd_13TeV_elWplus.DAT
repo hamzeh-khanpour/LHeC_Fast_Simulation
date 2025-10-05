@@ -11,12 +11,12 @@
 ****************************************************************************************
 55      !  [proc] : Process number (see manual for labelling)
 'prot'  ! [beam] : Beam type ('prot', 'ion', 'ionp' or 'el')
-'ww_el_13TeV_elWplus'          ! [outtg]
+'ww_sd_13TeV_elWplus'          ! [outtg]
 .true.  !  [sfaci] : Include soft survival effects
 ****************************************************************************************
 ************************* Dissociation parameters for PI  ******************************
 ****************************************************************************************
-'el'    !  [diff] : elastic ('el'), single ('sd','sda','sdb') and double ('dd') dissociation. NB - modes other than 'el' only available for PI lepton pair production!
+'sd'    !  [diff] : elastic ('el'), single ('sd','sda','sdb') and double ('dd') dissociation. NB - modes other than 'el' only available for PI lepton pair production!
 ****************************************************************************************
 208d0   !  [an] : Ion mass number
 82d0    !  [az] : Ion atomic number
