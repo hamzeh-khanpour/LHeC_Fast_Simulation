@@ -6,3 +6,13 @@ export LHAPDF_DATA_PATH=/afs/cern.ch/user/h/hakhanpo/.local/share/SuperChic/SF:$
 ./bin/init      < inputs/ww_el_13TeV_muWplus.DAT
 
 ./bin/superchic      < inputs/ww_el_13TeV_muWplus.DAT
+
+
+
+on LapTop
+
+cmake -S . -B BUILD -DCMAKE_INSTALL_PREFIX=$HOME/.local
+
+cmake --build BUILD -j
+
+cmake --install BUILD
