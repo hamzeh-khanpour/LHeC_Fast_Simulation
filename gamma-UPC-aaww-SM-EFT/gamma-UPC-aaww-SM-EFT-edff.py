@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 # DEFAULT INPUT FILES (edit here)
 # -------------------------------
 DEFAULT_FILES = [
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_03/gamma-UPC-aaww-SM-edff.lhe",      # SM edff
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_04/gamma-UPC-aaww-EFT-edff.lhe",     # EFT FM2 = 1 TeV^-4 edff
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_01/gamma-UPC-aaww-SM-edff.lhe",      # SM edff
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_02/gamma-UPC-aaww-EFT-edff.lhe",     # EFT FM2 = 1 TeV^-4 edff
 ]
 
 # Histogram settings (edit if needed)
