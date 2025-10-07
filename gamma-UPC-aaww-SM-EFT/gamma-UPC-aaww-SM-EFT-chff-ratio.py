@@ -8,8 +8,8 @@ from matplotlib.gridspec import GridSpec
 # DEFAULT INPUT FILES (edit here)
 # -------------------------------
 DEFAULT_FILES = [
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_01/gamma-UPC-aaww-SM-chff.lhe",
-    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_02/gamma-UPC-aaww-EFT-chff.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_05/gamma-UPC-aaww-SM-chff.lhe",
+    "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/gamma-UPC-aaww-SM-EFT/Events/run_06/gamma-UPC-aaww-EFT-chff.lhe",
 ]
 
 # Histogram settings
