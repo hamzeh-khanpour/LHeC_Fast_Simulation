@@ -1,155 +1,308 @@
 #!/usr/bin/env python3
-import os, sys, gzip, math, re
+import argparse
+import gzip
+import math
+import os
+import sys
+from typing import List, Tuple, Dict
+
 import numpy as np
 import matplotlib.pyplot as plt
+import csv
 
-# -------------------------------
-# DEFAULT INPUT FILES (edit here)
-# -------------------------------
-DEFAULT_FILES = [
-    "/home/hamzeh-khanpour/SuperChic_1/BUILD/evrecs/evrecww_el_13TeV_elWplus.dat",      # SM edff
-    "/home/hamzeh-khanpour/SuperChic_1/BUILD/evrecs/evrecww_sd_13TeV_elWplus.dat",     # EFT FM2 = 1 TeV^-4 edff
-]
 
-# Histogram settings (edit if needed)
-MMIN   = 160.0
-MMAX   = 5000.0
-NBINS  = 60
-LOG_Y  = True
+def open_maybe_gzip(path):
+    if path.endswith('.gz'):
+        return gzip.open(path, 'rt')
+    return open(path, 'r')
 
-# -------------------------------
 
-def open_any(path):
-    return gzip.open(path, 'rt') if path.endswith('.gz') else open(path, 'rt')
-
-def parse_sigma_nevents(lhe_path):
-    sigma_pb = None
-    nevents = None
-    with open_any(lhe_path) as f:
-        for line in f:
-            if '<MGGenerationInfo>' in line:
+def parse_init_block(lines_iter) -> Tuple[float, float]:
+    """
+    Parse the <init> block to get total cross section in pb (XSECUP) and error (XERRUP).
+    SuperChic LHE writes:
+      <init>
+        2212 2212 ... [beams line]
+        XSECUP  XERRUP  XMAXUP  LPRUP
+      </init>
+    Returns (xsec_pb, xerr_pb)
+    """
+    # Expect first numeric line (beams), then second numeric line with xsec.
+    # We'll scan up to 10 lines to find two lines with >= 4 numbers.
+    numeric_lines = []
+    for _ in range(20):
+        try:
+            line = next(lines_iter)
+        except StopIteration:
+            break
+        line = line.strip()
+        if line.startswith('</init>'):
+            break
+        if not line or line.startswith('<'):
+            continue
+        parts = line.split()
+        # Count how many parts parse as float
+        ok = True
+        floats = []
+        for p in parts:
+            try:
+                floats.append(float(p.replace('D', 'E').replace('d', 'e')))
+            except Exception:
+                ok = False
                 break
-        for line in f:
-            if '</MGGenerationInfo>' in line:
+        if ok and len(floats) >= 4:
+            numeric_lines.append(floats)
+            if len(numeric_lines) >= 2:
                 break
-            if 'Integrated weight (pb)' in line:
-                m = re.search(r'Integrated weight \(pb\)\s*:\s*([0-9Ee+\-\.]+)', line)
-                if m: sigma_pb = float(m.group(1))
-            if 'Number of Events' in line:
-                m = re.search(r'Number of Events\s*:\s*([0-9]+)', line)
-                if m: nevents = int(m.group(1))
-    if sigma_pb is None or nevents is None:
-        # Fallback scan (rarely needed)
-        with open_any(lhe_path) as f:
-            for line in f:
-                if sigma_pb is None and 'Integrated weight (pb)' in line:
-                    m = re.search(r'([0-9Ee+\-\.]+)', line)
-                    if m: sigma_pb = float(m.group(1))
-                if nevents is None and 'Number of Events' in line:
-                    m = re.search(r'([0-9]+)', line)
-                    if m: nevents = int(m.group(1))
-                if sigma_pb is not None and nevents is not None:
-                    break
-    if sigma_pb is None or nevents is None:
-        raise RuntimeError(f"Could not read sigma/nevents from {lhe_path}")
-    return sigma_pb, nevents
+    if len(numeric_lines) < 2:
+        raise ValueError("Could not parse <init> block for cross section.")
+    xsec_pb = numeric_lines[1][0]
+    xerr_pb = numeric_lines[1][1]
+    return xsec_pb, xerr_pb
 
-def parse_MWW(lhe_path):
-    MWW = []
-    with open_any(lhe_path) as f:
-        in_evt = False
-        wplus = None
-        wminus = None
-        for line in f:
+
+def invariant_mass(p4a, p4b) -> float:
+    Ea, pxa, pya, pza = p4a
+    Eb, pxb, pyb, pzb = p4b
+    E = Ea + Eb
+    px = pxa + pxb
+    py = pya + pyb
+    pz = pza + pzb
+    m2 = E*E - (px*px + py*py + pz*pz)
+    return math.sqrt(max(m2, 0.0))
+
+
+def parse_event_block(lines_iter) -> Tuple[int, float, List[Dict]]:
+    """
+    Parse one <event> block.
+    Returns (nup, xwgtup, particles)
+    'particles' is a list of dicts with keys:
+      id, status, moth1, moth2, col1, col2, px, py, pz, E, m
+    """
+    # Header line
+    header = None
+    for _ in range(10):
+        line = next(lines_iter).strip()
+        if line and not line.startswith('<'):
+            header = line
+            break
+    if header is None:
+        raise ValueError("Malformed <event> header.")
+    h = header.split()
+    if len(h) < 6:
+        raise ValueError("Unexpected <event> header format: " + header)
+    try:
+        nup = int(float(h[0]))
+        xwgtup = float(h[2].replace('D', 'E').replace('d', 'e'))
+    except Exception as e:
+        raise ValueError(f"Failed to parse NUP/XWGTUP from header: {header}") from e
+
+    # Particle lines
+    particles = []
+    for _ in range(nup):
+        line = next(lines_iter).strip()
+        # Skip blank lines
+        while not line:
+            line = next(lines_iter).strip()
+        parts = line.split()
+        # Expected >= 13 columns, but SuperChic has at least 11 physics columns + extras.
+        if len(parts) < 11:
+            raise ValueError("Unexpected particle line: " + line)
+        # Columns: IDUP ISTUP MOTH1 MOTH2 ICOL1 ICOL2 PX PY PZ E M ...
+        def f(x): return float(x.replace('D', 'E').replace('d', 'e'))
+        pid = int(parts[0])
+        status = int(parts[1])
+        moth1 = int(parts[2])
+        moth2 = int(parts[3])
+        col1 = int(parts[4])
+        col2 = int(parts[5])
+        px = f(parts[6])
+        py = f(parts[7])
+        pz = f(parts[8])
+        E  = f(parts[9])
+        m  = f(parts[10])
+        particles.append({
+            'id': pid, 'status': status, 'moth1': moth1, 'moth2': moth2,
+            'col1': col1, 'col2': col2, 'px': px, 'py': py, 'pz': pz, 'E': E, 'm': m
+        })
+    # Seek to </event>
+    for _ in range(1000):
+        line = next(lines_iter)
+        if line.strip().startswith('</event>'):
+            break
+    return nup, xwgtup, particles
+
+
+def auto_label(path: str) -> str:
+    b = os.path.basename(path)
+    # Strip common "evrec" prefix and extension
+    if b.lower().startswith('evrec'):
+        b = b[5:]
+    if b.lower().endswith('.dat'):
+        b = b[:-4]
+    if b.lower().endswith('.lhe'):
+        b = b[:-4]
+    return b
+
+
+def parse_lhe(filepath: str, m_source: str = 'status2') -> Dict:
+    """
+    Parse a SuperChic LHE file.
+    m_source: 'status2' (prefer W with ISTUP==2), or 'last' (take last two Ws).
+    Returns dict with keys:
+      'file', 'xsec_pb', 'xerr_pb', 'nevents', 'mww', 'weights_raw', 'sumw'
+    """
+    xsec_pb = None
+    xerr_pb = None
+    mww = []
+    evt_weights = []
+    sumw = 0.0
+    nevents = 0
+
+    with open_maybe_gzip(filepath) as f:
+        lines = iter(f)
+        for line in lines:
             s = line.strip()
-            if s == '<event>':
-                in_evt = True; wplus = None; wminus = None
-                continue
-            if s == '</event>':
-                if wplus is not None and wminus is not None:
-                    E  = wplus[0] + wminus[0]
-                    px = wplus[1] + wminus[1]
-                    py = wplus[2] + wminus[2]
-                    pz = wplus[3] + wminus[3]
-                    m2 = max(E*E - (px*px + py*py + pz*pz), 0.0)
-                    MWW.append(math.sqrt(m2))
-                in_evt = False
-                continue
-            if not in_evt or not s or (s[0] not in '-0123456789'):
-                continue
-            cols = s.split()
-            if len(cols) < 10:
-                continue
-            pdg  = int(cols[0]); stat = int(cols[1])
-            px   = float(cols[6]); py  = float(cols[7])
-            pz   = float(cols[8]); E   = float(cols[9])
-            if stat == 1 and pdg == 24:
-                wplus  = [E, px, py, pz]
-            elif stat == 1 and pdg == -24:
-                wminus = [E, px, py, pz]
-    return np.array(MWW, dtype=float)
+            if s.startswith('<init>'):
+                xsec_pb, xerr_pb = parse_init_block(lines)
+            elif s.startswith('<event>'):
+                nevents += 1
+                nup, xwgtup, parts = parse_event_block(lines)
+                sumw += xwgtup
+                # pick W bosons
+                ws = [p for p in parts if abs(p['id']) == 24]
+                if not ws or len(ws) < 2:
+                    # No explicit Ws? Skip MWW for this event
+                    evt_weights.append(xwgtup)
+                    continue
+                if m_source == 'status2':
+                    ws2 = [p for p in ws if p['status'] == 2]
+                    if len(ws2) >= 2:
+                        ws = ws2[:2]
+                    else:
+                        ws = ws[-2:]
+                else:
+                    ws = ws[-2:]
+                p4a = (ws[0]['E'], ws[0]['px'], ws[0]['py'], ws[0]['pz'])
+                p4b = (ws[1]['E'], ws[1]['px'], ws[1]['py'], ws[1]['pz'])
+                m = invariant_mass(p4a, p4b)
+                mww.append(m)
+                evt_weights.append(xwgtup)
 
-def dsigma_hist(MWW, sigma_pb, nevents, mmin=MMIN, mmax=MMAX, nbins=NBINS):
-    counts, edges = np.histogram(MWW, bins=nbins, range=(mmin, mmax))
-    widths = np.diff(edges)
-    factor = (sigma_pb / float(nevents))  # pb per event
-    dsig = counts * factor / widths       # pb/GeV
-    centers = 0.5*(edges[:-1] + edges[1:])
-    return centers, dsig, edges
+    if xsec_pb is None:
+        raise RuntimeError(f"Did not find <init> block cross section in {filepath}")
 
-def auto_label(path):
-    base = os.path.basename(path)
-    for tag in ['iww','edff','chff','luxqed','lhapdf']:
-        if tag in base.lower():
-            return f"{tag.upper()} ({base})"
-    return base
+    return {
+        'file': filepath,
+        'xsec_pb': xsec_pb,
+        'xerr_pb': xerr_pb,
+        'nevents': nevents,
+        'mww': np.array(mww, dtype=float),
+        'weights_raw': np.array(evt_weights, dtype=float),
+        'sumw': float(sumw)
+    }
+
+
+def make_histogram(masses, weights_fb, bins):
+    hist, edges = np.histogram(masses, bins=bins, weights=weights_fb)
+    centers = 0.5 * (edges[:-1] + edges[1:])
+    widths = (edges[1:] - edges[:-1])
+    # differential xsec in fb/GeV
+    with np.errstate(divide='ignore', invalid='ignore'):
+        diff = np.where(widths > 0, hist / widths, 0.0)
+    return centers, diff, edges, hist, widths
+
 
 def main():
-    # Use CLI files if provided, else defaults
-    files = sys.argv[1:] if len(sys.argv) > 1 else DEFAULT_FILES
+    parser = argparse.ArgumentParser(description="Compare SuperChic LHE files (M_WW spectrum & cross sections).")
+    parser.add_argument('files', nargs='*', help="LHE files (.dat or .lhe, plain or .gz).")
+    parser.add_argument('--bins', type=int, default=60, help="Number of M_WW bins (default: 60).")
+    parser.add_argument('--mmin', type=float, default=160.0, help="Min M_WW (GeV). Default 160.")
+    parser.add_argument('--mmax', type=float, default=3000.0, help="Max M_WW (GeV). Default 3000.")
+    parser.add_argument('--out', default='compare_MWW', help="Output prefix for plots (default: compare_MWW).")
+    parser.add_argument('--source', default='status2', choices=['status2','last'], help="How to pick Ws (default: status2).")
+    args = parser.parse_args()
 
-    # Basic existence check
-    missing = [f for f in files if not os.path.isfile(f)]
-    if missing:
-        print("[ERROR] Missing files:")
-        for m in missing:
-            print("   ", m)
-        print("\nEdit DEFAULT_FILES at the top of this script or pass paths on the command line.")
-        sys.exit(1)
+    # If no files passed, try common names in cwd
+    files = args.files
+    if not files:
+        candidates = [
+            'evrecww_el_13TeV_elWplus.dat',
+            'evrecww_sd_13TeV_elWplus.dat',
+            os.path.join('evrecs', 'evrecww_el_13TeV_elWplus.dat'),
+            os.path.join('evrecs', 'evrecww_sd_13TeV_elWplus.dat'),
+        ]
+        files = [c for c in candidates if os.path.isfile(c)]
+        if not files:
+            print("No files given and none found in defaults; pass paths on the command line.", file=sys.stderr)
+            sys.exit(1)
 
-    plt.figure(figsize=(8,6))
+    parsed = []
     for fpath in files:
-        sigma_pb, nevents = parse_sigma_nevents(fpath)
-        MWW = parse_MWW(fpath)
-        if len(MWW) == 0:
-            print(f"[WARN] No W+W- found in {fpath}")
-            continue
-        x, y, edges = dsigma_hist(MWW, sigma_pb, nevents)
-        label = auto_label(fpath) + f" (σ={sigma_pb:.4g} pb, N={nevents})"
-        plt.step(x, y, where='mid', label=label)
-        # Write CSV next to input
-        csv = np.column_stack([x, y])
-        out_csv = os.path.splitext(fpath)[0] + "_dSigmadM.csv"
-        np.savetxt(out_csv, csv, delimiter=",",
-                   header="M_WW[GeV], dSigma/dM[pb/GeV]", comments='')
-        print(f"[OK] {fpath}: {len(MWW)} events with W+W-, wrote {out_csv}")
+        try:
+            rec = parse_lhe(fpath, m_source=args.source)
+            parsed.append(rec)
+        except Exception as e:
+            print(f"[WARN] Failed to parse {fpath}: {e}", file=sys.stderr)
 
+    if not parsed:
+        print("No valid LHE files parsed.", file=sys.stderr)
+        sys.exit(2)
 
+    # Prepare bins
+    bins = np.linspace(args.mmin, args.mmax, args.bins + 1)
 
-    ax = plt.gca()
-    if LOG_Y:
-        ax.set_yscale('log')
-        ax.set_ylim(1e-8, 1e-3)
+    # Plot
+    plt.figure(figsize=(8, 5.5))
+    total_sigma_fb = 0.0
 
+    for rec in parsed:
+        xsec_pb = rec['xsec_pb']
+        xerr_pb = rec['xerr_pb']
+        nevents = rec['nevents']
+        mww = rec['mww']
+        raww = rec['weights_raw']
+        sumw = rec['sumw'] if rec['sumw'] > 0 else len(raww)
 
-    plt.xlabel(r"$W_{\gamma\gamma}=M_{WW}\ \mathrm{[GeV]}$")
-    plt.ylabel(r"$\mathrm{d}\sigma/\mathrm{d}M_{WW}\ \mathrm{[pb/GeV]}$")
-    if LOG_Y: plt.yscale('log')
+        # Normalize weights to total xsec
+        xsec_fb = xsec_pb * 1e3  # pb -> fb
+        total_sigma_fb += xsec_fb
+        # Per-event weights in fb
+        scale = xsec_fb / sumw if sumw > 0 else 0.0
+        weights_fb = raww * scale
+
+        # Histogram
+        centers, diff, edges, hist, widths = make_histogram(mww, weights_fb, bins)
+
+        # Save CSV per file
+        csv_name = os.path.splitext(os.path.basename(rec['file']))[0] + "_MWW.csv"
+        with open(csv_name, 'w', newline='') as csvfile:
+            w = csv.writer(csvfile)
+            w.writerow(['bin_left', 'bin_right', 'bin_center', 'differential_xsec_fb_per_GeV', 'bin_integral_fb'])
+            for i in range(len(centers)):
+                w.writerow([edges[i], edges[i+1], centers[i], diff[i], hist[i]])
+
+        label = f"{auto_label(rec['file'])} (σ={xsec_fb:.3f} fb, N={nevents})"
+        plt.step(centers, diff, where='mid', label=label)
+
+        print(f"File: {rec['file']}")
+        print(f"  σ = {xsec_pb:.6e} pb = {xsec_fb:.6f} fb  (err {xerr_pb:.6e} pb)")
+        print(f"  N events = {nevents}, sum(XWGTUP) = {sumw:.6e}")
+        print(f"  CSV written: {csv_name}")
+
+    plt.yscale('log')
+    plt.xlabel(r"$M_{WW}$  [GeV]")
+    plt.ylabel(r"$\mathrm{d}\sigma/\mathrm{d}M_{WW}$  [fb/GeV]")
+    plt.title("SuperChic γγ → W⁺W⁻)")
     plt.legend()
     plt.tight_layout()
-    plt.savefig("gamma-UPC-aaww-SM-EFT-edff.png", dpi=200)
-    plt.savefig("gamma-UPC-aaww-SM-EFT-edff.pdf")
-    print("Wrote gamma-UPC-aaww-SM-EFT-edff.(png|pdf)")
+    png = args.out + ".png"
+    pdf = args.out + ".pdf"
+    plt.savefig(png, dpi=140)
+    plt.savefig(pdf)
+    print(f"\nSaved plots: {png}, {pdf}")
+    print(f"Sum of σ over inputs = {total_sigma_fb:.6f} fb")
+
 
 if __name__ == "__main__":
     main()
