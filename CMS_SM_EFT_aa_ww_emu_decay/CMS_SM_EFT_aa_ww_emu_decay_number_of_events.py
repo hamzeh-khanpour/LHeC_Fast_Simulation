@@ -1,11 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import gzip
-import io
 import math
-import os
 import re
-import sys
 from typing import Dict, List, Tuple, Optional
 
 import numpy as np
@@ -134,7 +131,6 @@ PDG_E = {11, -11}
 PDG_MU = {13, -13}
 PDG_NU = {12, 14, 16, -12, -14, -16}
 PDG_JET_PARTONS = {1,2,3,4, -1,-2,-3,-4, 21}
-# NEW: leptons + (e,mu) neutrinos for M_WW reconstruction
 PDG_LEPNU_EMU = {11, -11, 13, -13, 12, -12, 14, -14}
 
 def parse_lhe_events(path: str):
@@ -158,7 +154,7 @@ def parse_lhe_events(path: str):
                     particles = []
                     for row in rows:
                         cols = row.strip().split()
-                        if len(cols) < 13:  # needs 13 cols
+                        if len(cols) < 13:
                             continue
                         try:
                             pid = int(cols[0]); status = int(cols[1])
@@ -235,21 +231,39 @@ def cms_fiducial_pass(e, mu, pmiss, event_particles,
 # -----------------------------
 
 def make_hist(data: List[float], weights: List[float], bins: int, rng: Tuple[float, float]):
+    """Return (centers, dsig, edges).  'dsig' is pb / unit (bin width)."""
     hist, edges = np.histogram(np.array(data), bins=bins, range=rng, weights=np.array(weights))
     widths = np.diff(edges)
     dsig = np.divide(hist, widths, out=np.zeros_like(hist, dtype=float), where=widths>0)
     centers = 0.5 * (edges[:-1] + edges[1:])
     return centers, dsig, edges
 
-# UPDATED: add linestyle control (SM dashed, EFT solid by default)
+def _convert_for_mode(y_dsig, edges, mode: str, lumi_fb: float):
+    """Convert dsig/dX to plotting array based on mode.
+       - 'dsig': return dsig/dX (pb/unit)
+       - 'counts': return expected events = (dsig * width [pb]) * (lumi_fb * 1e3 [pb^-1])
+    """
+    if mode == "counts":
+        widths = np.diff(edges)
+        sigma_bin_pb = y_dsig * widths
+        events = sigma_bin_pb * (lumi_fb * 1e3)  # 1 fb^-1 = 1e3 pb^-1
+        return events
+    return y_dsig
+
 def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
                       logy: bool, sm_label: str, eft_label: str,
-                      sm_ls: str="--", eft_ls: str="-"):
+                      sm_ls: str="--", eft_ls: str="-",
+                      mode: str="dsig", lumi_fb: float=138.0):
+    y_sm_plot  = _convert_for_mode(y_sm,  edges, mode, lumi_fb)
+    y_eft_plot = _convert_for_mode(y_eft, edges, mode, lumi_fb)
+
     plt.figure()
-    plt.step(edges[:-1], y_sm, where="post", label=sm_label, linewidth=1.8, linestyle=sm_ls)
-    plt.step(edges[:-1], y_eft, where="post", label=eft_label, linewidth=1.8, linestyle=eft_ls)
+    plt.step(edges[:-1], y_sm_plot,  where="post", label=sm_label,  linewidth=1.8, linestyle=sm_ls)
+    plt.step(edges[:-1], y_eft_plot, where="post", label=eft_label, linewidth=1.8, linestyle=eft_ls)
     plt.xlabel(xlabel)
-    plt.ylabel(r"d$\sigma$/dX  [pb / unit]")
+    plt.ylabel("Events" if mode == "counts" else r"d$\sigma$/dX  [pb / unit]")
+    if mode == "counts":
+        plt.title(f"Expected yields ggww@CMS@13TeV@L={lumi_fb:g}fb$^{{-1}}$")
     if logy:
         plt.yscale("log")
     plt.legend()
@@ -261,10 +275,14 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
 
     with open(f"{out_prefix}.csv", "w", newline="") as cf:
         w = csv.writer(cf)
-        w.writerow(["bin_center", "SM_dsig", "EFT_dsig"])
-        for i in range(len(x)):
-            w.writerow([f"{x[i]:.6g}", f"{y_sm[i]:.6g}", f"{y_eft[i]:.6g}"])
-
+        if mode == "counts":
+            w.writerow(["bin_lower_edge", "SM_events", "EFT_events"])
+            for i in range(len(x)):
+                w.writerow([f"{edges[i]:.6g}", f"{y_sm_plot[i]:.6g}", f"{y_eft_plot[i]:.6g}"])
+        else:
+            w.writerow(["bin_center", "SM_dsig", "EFT_dsig"])
+            for i in range(len(x)):
+                w.writerow([f"{x[i]:.6g}", f"{y_sm[i]:.6g}", f"{y_eft[i]:.6g}"])
 
 # -----------------------------
 # One-sample analysis
@@ -273,7 +291,6 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
 def analyze_one_sample(path: str,
                        bins_e_mu=50, rng_e_mu=(0.0, 500.0),
                        bins_emu=50, rng_emu=(0.0, 600.0),
-                       # NEW: M_WW binning controls
                        bins_mww=50, rng_mww=(160.0, 4000.0),
                        cms_fiducial=False,
                        fiducial_params=None):
@@ -286,7 +303,6 @@ def analyze_one_sample(path: str,
 
     pt_e_vals, pt_mu_vals, pt_emu_vals = [], [], []
     wts_e, wts_mu, wts_emu = [], [], []
-    # NEW: storage for M_WW
     mww_vals, wts_mww = [], []
 
     n_total = 0
@@ -305,7 +321,6 @@ def analyze_one_sample(path: str,
             continue
         n_pass += 1
 
-        # pT observables
         pe = pT(e["px"], e["py"])
         pm = pT(mu["px"], mu["py"])
         pemu = math.hypot(e["px"] + mu["px"], e["py"] + mu["py"])
@@ -314,23 +329,20 @@ def analyze_one_sample(path: str,
         pt_mu_vals.append(pm);    wts_mu.append(w)
         pt_emu_vals.append(pemu); wts_emu.append(w)
 
-        # NEW: M_WW from status==1 leptons and (e,mu) neutrinos
         Ex = Ey = Ez = EE = 0.0
         for p in ev:
             if p["status"] == 1 and p["id"] in PDG_LEPNU_EMU:
                 Ex += p["px"]; Ey += p["py"]; Ez += p["pz"]; EE += p["E"]
         m2 = EE*EE - (Ex*Ex + Ey*Ey + Ez*Ez)
-        if m2 < 0.0:  # numerical safety
+        if m2 < 0.0:
             m2 = 0.0
         mww = math.sqrt(m2)
         if mww > 0.0:
-            mww_vals.append(mww)
-            wts_mww.append(w)
+            mww_vals.append(mww); wts_mww.append(w)
 
     c_e,   dsig_e,   edges_e   = make_hist(pt_e_vals,  wts_e,   bins=bins_e_mu, rng=rng_e_mu)
     c_mu,  dsig_mu,  edges_mu  = make_hist(pt_mu_vals, wts_mu,  bins=bins_e_mu, rng=rng_e_mu)
     c_emu, dsig_emu, edges_emu = make_hist(pt_emu_vals,wts_emu, bins=bins_emu,  rng=rng_emu)
-    # NEW: M_WW histogram
     c_mww, dsig_mww, edges_mww = make_hist(mww_vals,   wts_mww, bins=bins_mww, rng=rng_mww)
 
     return {
@@ -343,25 +355,22 @@ def analyze_one_sample(path: str,
             "e":    (c_e,    dsig_e,    edges_e),
             "mu":   (c_mu,   dsig_mu,   edges_mu),
             "emu":  (c_emu,  dsig_emu,  edges_emu),
-            "mww":  (c_mww,  dsig_mww,  edges_mww),  # NEW
+            "mww":  (c_mww,  dsig_mww,  edges_mww),
         }
     }
-
-
 
 # -----------------------------
 # CLI / main
 # -----------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="Compare SM vs EFT pT spectra + M_WW from LHE files (aa->WW->eμ).")
+    ap = argparse.ArgumentParser(description="Compare SM vs EFT spectra from LHE (aa->WW->eμ). Produces dσ/dX or event yields.")
     ap.add_argument("sm_lhe", help="SM LHE path (.lhe or .lhe.gz)")
     ap.add_argument("eft_lhe", help="EFT LHE path (.lhe or .lhe.gz)")
     ap.add_argument("--bins-e", type=int, default=50, help="bins for pT(e±) and pT(μ±)")
     ap.add_argument("--range-e", type=float, nargs=2, default=(0.0, 500.0), help="min max for pT(e±)/pT(μ±) GeV")
     ap.add_argument("--bins-emu", type=int, default=50, help="bins for pT(eμ)")
     ap.add_argument("--range-emu", type=float, nargs=2, default=(0.0, 600.0), help="min max for pT(eμ) GeV")
-    # NEW: M_WW binning
     ap.add_argument("--bins-mww", type=int, default=50, help="bins for M_WW")
     ap.add_argument("--range-mww", type=float, nargs=2, default=(160.0, 4000.0), help="min max for M_WW [GeV]")
     ap.add_argument("--logy", action=argparse.BooleanOptionalAction, default=True, help="log-scale y")
@@ -372,6 +381,13 @@ def main():
     ap.add_argument("--dR-min", type=float, default=0.4, help="ΔR(e,μ) min")
     ap.add_argument("--jet-pt-veto", type=float, default=30.0, help="jet veto pT (GeV)")
     ap.add_argument("--jet-eta-veto", type=float, default=4.7, help="jet veto |eta| max")
+
+    # NEW: switch to plot Event yields instead of dsig/dX
+    ap.add_argument("--yield-mode", choices=["dsig", "counts"], default="dsig",
+                    help="Plot dsig/dX (pb/unit) or expected event counts (requires lumi).")
+    ap.add_argument("--lumi-fb", type=float, default=138.0,
+                    help="Integrated luminosity in fb^-1 for --yield-mode counts.")
+
     args = ap.parse_args()
 
     fid = {
@@ -426,26 +442,26 @@ def main():
     (_,    y_mu_eft, _)      = res_eft["hists"]["mu"]
     (x_em, y_em_sm, emedges) = res_sm["hists"]["emu"]
     (_,    y_em_eft, _)      = res_eft["hists"]["emu"]
-    # NEW: M_WW
     (x_mww, y_mww_sm, mww_edges) = res_sm["hists"]["mww"]
     (_,     y_mww_eft, _ )       = res_eft["hists"]["mww"]
 
-    # Save plots + CSVs (SM dashed, EFT solid)
-    save_plot_and_csv(x_e,   y_e_sm,   y_e_eft,   eedges,   "pt_e_compare_SM_vs_EFT",
+    # Save plots + CSVs (SM dashed, EFT solid). Mode controls y-values.
+    mode = args.yield_mode
+    Lfb  = args.lumi_fb
+    save_plot_and_csv(x_e,   y_e_sm,   y_e_eft,   eedges,   "pt_e_compare_SM_vs_EFT_number_of_events",
                       r"$p_T(e^\pm)$ [GeV]",  args.logy, label(res_sm["meta"], "SM"),  label(res_eft["meta"], "EFT"),
-                      sm_ls="--", eft_ls="-")
-    save_plot_and_csv(x_mu,  y_mu_sm,  y_mu_eft,  muedges,  "pt_mu_compare_SM_vs_EFT",
+                      sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb)
+    save_plot_and_csv(x_mu,  y_mu_sm,  y_mu_eft,  muedges,  "pt_mu_compare_SM_vs_EFT_number_of_events",
                       r"$p_T(\mu^\pm)$ [GeV]", args.logy, label(res_sm["meta"], "SM"),  label(res_eft["meta"], "EFT"),
-                      sm_ls="--", eft_ls="-")
-    save_plot_and_csv(x_em,  y_em_sm,  y_em_eft,  emedges,  "pt_emu_compare_SM_vs_EFT",
+                      sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb)
+    save_plot_and_csv(x_em,  y_em_sm,  y_em_eft,  emedges,  "pt_emu_compare_SM_vs_EFT_number_of_events",
                       r"$p_T(e\mu)$ [GeV]",    args.logy, label(res_sm["meta"], "SM"),  label(res_eft["meta"], "EFT"),
-                      sm_ls="--", eft_ls="-")
-    # NEW: M_WW spectrum
-    save_plot_and_csv(x_mww, y_mww_sm, y_mww_eft, mww_edges, "mww_compare_SM_vs_EFT",
+                      sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb)
+    save_plot_and_csv(x_mww, y_mww_sm, y_mww_eft, mww_edges, "mww_compare_SM_vs_EFT_number_of_events",
                       r"$M_{WW}$ [GeV]",       args.logy, label(res_sm["meta"], "SM"),  label(res_eft["meta"], "EFT"),
-                      sm_ls="--", eft_ls="-")
+                      sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb)
 
-    # Quick textual ratio
+    # Quick textual ratio (total cross sections)
     sm = res_sm["sigma_pb"] or 0.0
     eft = res_eft["sigma_pb"] or 0.0
     if sm > 0:
