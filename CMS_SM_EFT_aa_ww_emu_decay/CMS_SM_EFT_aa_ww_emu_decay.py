@@ -12,9 +12,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
+
+
 # -----------------------------
 # LHE parsing utilities
 # -----------------------------
+
+
 
 RE_HEADER = re.compile(r"<header>(.*?)</header>", re.DOTALL | re.MULTILINE)
 RE_MGRUNCARD = re.compile(r"<MGRunCard>\s*<!\[CDATA\[(.*?)\]\]>\s*</MGRunCard>", re.DOTALL | re.MULTILINE)
@@ -126,9 +130,13 @@ def parse_header_metadata(text: str) -> Dict[str, object]:
         "eft_couplings": eft_nonzero,
     }
 
+
+
 # -----------------------------
 # Event-level parsing
 # -----------------------------
+
+
 
 PDG_E = {11, -11}
 PDG_MU = {13, -13}
@@ -391,6 +399,7 @@ def main():
     (_,    y_mu_eft, _)      = res_eft["hists"]["mu"]
     (x_em, y_em_sm, emedges) = res_sm["hists"]["emu"]
     (_,    y_em_eft, _)      = res_eft["hists"]["emu"]
+
 
     # Save plots + CSVs
     save_plot_and_csv(x_e,  y_e_sm,  y_e_eft,  eedges,  "pt_e_compare_SM_vs_EFT",   r"$p_T(e^\pm)$ [GeV]",  args.logy, label(res_sm["meta"], "SM"), label(res_eft["meta"], "EFT"))
