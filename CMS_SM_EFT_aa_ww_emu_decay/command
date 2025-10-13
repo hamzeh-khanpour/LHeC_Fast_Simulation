@@ -1,1 +1,10 @@
 python CMS_SM_EFT_aa_ww_emu_decay.py   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_SM_aa_ww_emu_decay/Events/run_01/CMS_SM_aa_ww_emu_decay.lhe   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_EFT_aa_ww_emu_decay/Events/run_01/CMS_EFT_aa_ww_emu_decay.lhe --bins-mww 60 --range-mww 160 1000  --bins-e 60 --range-e 0 200 --bins-emu 60 --range-emu 0 200  --logy --cms-fiducial
+
+
+
+
+python CMS_SM_EFT_aa_ww_emu_decay.py   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_SM_aa_ww_emu_decay/Events/run_01/CMS_SM_aa_ww_emu_decay_EL.lhe   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_EFT_aa_ww_emu_decay/Events/run_01/CMS_EFT_aa_ww_emu_decay_EL.lhe  --bins-mww 60 --range-mww 160 2000  --bins-e 60 --range-e 0 400 --bins-emu 60 --range-emu 0 400 --logy
+
+
+
+python CMS_SM_EFT_aa_ww_emu_decay_number_of_events.py   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_SM_aa_ww_emu_decay/Events/run_01/CMS_SM_aa_ww_emu_decay_EL.lhe   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_aQGC_aa_ww_emu_decay/Events/run_01/CMS_aQGC_aa_ww_emu_decay.lhe  --bins-mww 60 --range-mww 160 1000  --bins-e 60 --range-e 0 200 --bins-emu 60 --range-emu 0 200 --yield-mode counts --lumi-fb 138 --no-logy

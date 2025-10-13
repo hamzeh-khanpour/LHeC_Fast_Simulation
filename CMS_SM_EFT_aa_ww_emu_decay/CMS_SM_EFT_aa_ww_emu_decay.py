@@ -249,7 +249,7 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     plt.step(edges[:-1], y_sm, where="post", label=sm_label, linewidth=1.8, linestyle=sm_ls)
     plt.step(edges[:-1], y_eft, where="post", label=eft_label, linewidth=1.8, linestyle=eft_ls)
     plt.xlabel(xlabel)
-    plt.ylabel(r"d$\sigma$/dX  [pb / unit]")
+    plt.ylabel(r"d$\sigma$/dX  [pb / GeV]")
     if logy:
         plt.yscale("log")
     plt.legend()

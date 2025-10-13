@@ -263,7 +263,7 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     plt.xlabel(xlabel)
     plt.ylabel("Events" if mode == "counts" else r"d$\sigma$/dX  [pb / unit]")
     if mode == "counts":
-        plt.title(f"Expected yields ggww@CMS@13TeV@L={lumi_fb:g}fb$^{{-1}}$")
+        plt.title(f"EL-EL : $\gamma$ $\gamma$@CMS@13TeV@L={lumi_fb:g}fb$^{{-1}}$")
     if logy:
         plt.yscale("log")
     plt.legend()

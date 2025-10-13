@@ -1,0 +1,9 @@
+hamzeh-khanpour@hamzeh-khanpour-HP-ENVY-Laptop-16-h1xxx:~/Documents/GitHub/LHeC_Fast_Simulation/CMS_SM_EFT_aa_ww_emu_decay$ python CMS_SM_EFT_aa_ww_emu_decay_number_of_events.py   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_SM_aa_ww_emu_decay/Events/run_01/CMS_SM_aa_ww_emu_decay_EL.lhe   /home/hamzeh-khanpour/MG5_aMC_v3_6_4/CMS_EFT_aa_ww_emu_decay/Events/run_01/CMS_EFT_aa_ww_emu_decay_EL.lhe  --bins-mww 60 --range-mww 160 1000  --bins-e 60 --range-e 0 200 --bins-emu 16 --range-emu 0 160 --yield-mode counts --lumi-fb 138 --no-logy --cms-fiducial
+== SM ==
+sigma_pb: 0.0014813399999999998 | nevents: 1000000 | beams: (2, 2) Ebeam(GeV): (6500.0, 6500.0) | pdlabel: chff | cuts: ptl≥10.0 GeV, |eta|≤3.0, drll≥0.4 ; ptl1min=10.0, ptl2min=10.0 | model: SM_LM0123_UFO NP: 0
+  Events: total=1000000, pass=450147, sigma_tot=0.0014813399999999998 pb, sigma_fid=0.00066682075698 pb
+== EFT ==
+sigma_pb: 0.00160668 | nevents: 1000000 | beams: (2, 2) Ebeam(GeV): (6500.0, 6500.0) | pdlabel: chff | cuts: ptl≥10.0 GeV, |eta|≤3.0, drll≥0.4 ; ptl1min=10.0, ptl2min=10.0 | model: SM_LM0123_UFO NP: 1
+  EFT nonzero: FM2=1e-12
+  Events: total=1000000, pass=483252, sigma_tot=0.00160668 pb, sigma_fid=0.0007764313233600001 pb
+[Summary] EFT total σ is 8.46% higher than SM (0.00160668 pb vs 0.00148134 pb).
