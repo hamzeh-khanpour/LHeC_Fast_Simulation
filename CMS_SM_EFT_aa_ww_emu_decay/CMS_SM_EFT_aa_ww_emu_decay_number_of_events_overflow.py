@@ -9,7 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
-# module-level flag to control "overflow" annotation only on the pT(eμ) panel
+# module-level flag used only to annotate "overflow" on the pT(eμ) panel
 _OVERFLOW_LASTBIN_EMU = False
 
 # -----------------------------
@@ -91,8 +91,10 @@ def parse_header_metadata(text: str) -> Dict[str, object]:
     ptl2min = _find_float(r"^\s*([0-9Ee\+\-\.]+)\s*=\s*ptl2min", run)
 
     np_from_proc = _find_int(r"NP\s*=\s*([0-9]+)", proc)
+    model_tag = None
+    if re.search(r"\bSM_LM0123_UFO\b", proc) or re.search(r"\bSM_LM0123_UFO\b", header_all):
+        model_tag = "SM_LM0123_UFO"
 
-    # EFT nonzero entries (if any)
     eft_nonzero = []
     m_ano = re.search(r"Block\s+anoinputs(.*?)(?:\n\n|###################################|Block|\Z)", slha, re.DOTALL | re.IGNORECASE)
     if m_ano:
@@ -120,7 +122,8 @@ def parse_header_metadata(text: str) -> Dict[str, object]:
         "pdlabel": pdlabel,
         "ptl_GeV": ptl, "etal_max": etal, "drll_min": drll,
         "ptl1min_GeV": ptl1min, "ptl2min_GeV": ptl2min,
-        "NP": np_from_proc, "eft_couplings": eft_nonzero,
+        "NP": np_from_proc, "model": model_tag,
+        "eft_couplings": eft_nonzero,
     }
 
 # -----------------------------
@@ -250,7 +253,7 @@ def _step_with_last_plateau(edges, y):
 def make_hist(data: List[float], weights: List[float], bins: int, rng: Tuple[float, float],
               overflow_lastbin: bool = False):
     """Return (centers, dsig, edges).  'dsig' is pb / unit (bin width).
-       If overflow_lastbin=True, all entries > max(range) go into the last bin."""
+       If overflow_lastbin=True, entries > max(range) are merged into the last bin *before* width division."""
     if overflow_lastbin:
         hist, edges = _hist_with_overflow_lastbin(data, weights, bins, rng)
     else:
@@ -263,7 +266,8 @@ def make_hist(data: List[float], weights: List[float], bins: int, rng: Tuple[flo
 def _convert_for_mode(y_dsig, edges, mode: str, lumi_fb: float):
     """Convert dsig/dX to plotting array based on mode.
        - 'dsig': return dsig/dX (pb/unit)
-       - 'counts': return expected events = (dsig * width [pb]) * (lumi_fb * 1e3 [pb^-1])"""
+       - 'counts': return expected events = (dsig * width [pb]) * (lumi_fb * 1e3 [pb^-1])
+    """
     if mode == "counts":
         widths = np.diff(edges)
         sigma_bin_pb = y_dsig * widths
@@ -279,7 +283,7 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     y_eft_plot = _convert_for_mode(y_eft, edges, mode, lumi_fb)
 
     plt.figure()
-    # draw with last plateau included (prevents vertical spike at the last bin)
+    # draw with the final plateau so the last bin is a horizontal top (CMS style)
     x_sm,  y_sm2  = _step_with_last_plateau(edges, y_sm_plot)
     x_eft, y_eft2 = _step_with_last_plateau(edges, y_eft_plot)
     plt.step(x_sm,  y_sm2,  where="post", label=sm_label,  linewidth=1.8, linestyle=sm_ls)
@@ -287,22 +291,21 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     plt.xlabel(xlabel)
     plt.ylabel("Events" if mode == "counts" else r"d$\sigma$/dX  [pb / unit]")
     if mode == "counts":
-        plt.title(f"EL-EL : $\\gamma$ $\\gamma$@CMS@13TeV@L={lumi_fb:g}fb$^{{-1}}$")
+        plt.title(f"EL-EL : $\gamma$ $\gamma$@CMS@13TeV@L={lumi_fb:g}fb$^{{-1}}$")
     if logy:
         plt.yscale("log")
     plt.legend()
     plt.grid(True, which="both", alpha=0.3)
-    # add a small "overflow" tag only for the pT(eμ) panel and only when folding is enabled
+    # Only annotate 'overflow' on the pT(eμ) panel when overflow folding is enabled
     if _OVERFLOW_LASTBIN_EMU and ("e\\mu" in xlabel):
         ax = plt.gca()
         ymax = ax.get_ylim()[1]
-        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=12)
+        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=20)
     plt.tight_layout()
     for ext in ("png", "pdf"):
         plt.savefig(f"{out_prefix}.{ext}")
     plt.close()
 
-    # save CSV (unchanged format)
     with open(f"{out_prefix}.csv", "w", newline="") as cf:
         w = csv.writer(cf)
         if mode == "counts":
@@ -344,11 +347,27 @@ def analyze_one_sample(path: str,
         if e is None or mu is None:
             continue
         pmiss = build_pmiss(ev)
+
+
         passes = True
         if cms_fiducial:
-            passes = cms_fiducial_pass(e, mu, pmiss, ev, **(fiducial_params or {}))
+    # Pass ONLY the kwargs that cms_fiducial_pass actually accepts
+            fid_args = {}
+            if fiducial_params:
+                for k in ("lead_pt", "sublead_pt", "eta_max", "dR_min", "jet_pt_veto", "jet_eta_veto"):
+                    if k in fiducial_params:
+                      fid_args[k] = fiducial_params[k]
+            passes = cms_fiducial_pass(e, mu, pmiss, ev, **fid_args)
         if not passes:
             continue
+
+        #passes = True
+        #if cms_fiducial:
+            #passes = cms_fiducial_pass(e, mu, pmiss, ev, **(fiducial_params or {}))
+        #if not passes:
+            #continue
+
+
         n_pass += 1
 
         pe = pT(e["px"], e["py"])
@@ -373,7 +392,7 @@ def analyze_one_sample(path: str,
     overflow_emu = (fiducial_params or {}).get("_overflow_emu", False)
     c_e,   dsig_e,   edges_e   = make_hist(pt_e_vals,  wts_e,   bins=bins_e_mu, rng=rng_e_mu)
     c_mu,  dsig_mu,  edges_mu  = make_hist(pt_mu_vals, wts_mu,  bins=bins_e_mu, rng=rng_e_mu)
-    c_emu, dsig_emu, edges_emu = make_hist(pt_emu_vals,wts_emu, bins=bins_emu,  rng=rng_emu,
+    c_emu, dsig_emu, edges_emu = make_hist(pt_emu_vals, wts_emu, bins=bins_emu, rng=rng_emu,
                                            overflow_lastbin=overflow_emu)
     c_mww, dsig_mww, edges_mww = make_hist(mww_vals,   wts_mww, bins=bins_mww, rng=rng_mww)
 
@@ -414,18 +433,18 @@ def main():
     ap.add_argument("--jet-pt-veto", type=float, default=30.0, help="jet veto pT (GeV)")
     ap.add_argument("--jet-eta-veto", type=float, default=4.7, help="jet veto |eta| max")
 
+    # NEW: switch to plot Event yields instead of dsig/dX
     ap.add_argument("--yield-mode", choices=["dsig", "counts"], default="dsig",
                     help="Plot dsig/dX (pb/unit) or expected event counts (requires lumi).")
     ap.add_argument("--lumi-fb", type=float, default=138.0,
                     help="Integrated luminosity in fb^-1 for --yield-mode counts.")
-
-    # Overflow folding flag (default False to preserve original behaviour)
+    # New flag: keep default False to preserve original behaviour
     ap.add_argument("--overflow-lastbin-emu", action=argparse.BooleanOptionalAction, default=False,
                     help="Fold pT(eμ) overflow (> max range) into the last visible bin (default: off).")
 
     args = ap.parse_args()
 
-    # expose flag for annotation (keeps function signatures unchanged)
+    # expose CLI flag for plot annotation without changing signatures
     global _OVERFLOW_LASTBIN_EMU
     _OVERFLOW_LASTBIN_EMU = args.overflow_lastbin_emu
 
@@ -437,7 +456,7 @@ def main():
         "jet_pt_veto": args.jet_pt_veto,
         "jet_eta_veto": args.jet_eta_veto,
     }
-    # pass the private switch down without altering signatures
+    # pass a private switch without altering public signatures
     fid["_overflow_emu"] = args.overflow_lastbin_emu
 
     res_sm = analyze_one_sample(
@@ -470,7 +489,7 @@ def main():
               "| pdlabel:", m.get("pdlabel"),
               "| cuts:", f"ptl≥{m.get('ptl_GeV')} GeV, |eta|≤{m.get('etal_max')}, drll≥{m.get('drll_min')} ;"
                          f" ptl1min={m.get('ptl1min_GeV')}, ptl2min={m.get('ptl2min_GeV')}",
-              "| NP:", m.get("NP"))
+              "| model:", m.get("model"), "NP:", m.get("NP"))
         if m.get("eft_couplings"):
             print("  EFT nonzero:", ", ".join([f"{n}={v:g}" for n,v in m["eft_couplings"]]))
         print(f"  Events: total={R['n_total']}, pass={R['n_pass']}, "
