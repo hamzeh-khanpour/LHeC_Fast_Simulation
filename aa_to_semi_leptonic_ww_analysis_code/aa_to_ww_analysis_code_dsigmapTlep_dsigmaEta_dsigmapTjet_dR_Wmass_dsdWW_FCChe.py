@@ -404,7 +404,7 @@ plt.show()
 # Plot the differential cross-sections for eta
 #plt.figure(figsize=(10, 8))
 
-plt.step(eta_bins_signal_0, dsigma_signal_eta_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(eta_bins_signal_0, dsigma_signal_eta_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(eta_bins_signal_2, dsigma_signal_eta_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(eta_bins_background, dsigma_background_eta, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\eta^{\ell}$")
@@ -424,7 +424,7 @@ plt.show()
 # Plot the differential cross-sections for leading jet pT
 #plt.figure(figsize=(10, 8))
 
-plt.step(pt_jet_bins_signal_0, dsigma_signal_jet_pt_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4=+1$]", color="red", linewidth=3)
+plt.step(pt_jet_bins_signal_0, dsigma_signal_jet_pt_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4=+1$]", color="red", linewidth=3)
 plt.step(pt_jet_bins_signal_2, dsigma_signal_jet_pt_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4=-1$]", color="green", linewidth=3)
 plt.step(pt_jet_bins_background, dsigma_background_jet_pt, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$p_T^{\mathrm{leading~jet}} \ \mathrm{[GeV]}$")
@@ -442,7 +442,7 @@ plt.show()
 
 
 # Plot Delta R differential cross-section
-plt.step(delta_r_bins_signal_0, dsigma_signal_delta_r_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(delta_r_bins_signal_0, dsigma_signal_delta_r_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(delta_r_bins_signal_2, dsigma_signal_delta_r_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(delta_r_bins_background, dsigma_background_delta_r, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\Delta R(\ell, \mathrm{leading~jet})$")
@@ -461,7 +461,7 @@ plt.show()
 
 
 # Plot the differential cross-sections for Missing Transverse Energy (MET)
-plt.step(met_bins_signal_0, dsigma_signal_met_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4=+1$]", color="red", linewidth=3)
+plt.step(met_bins_signal_0, dsigma_signal_met_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4=+1$]", color="red", linewidth=3)
 plt.step(met_bins_signal_2, dsigma_signal_met_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4=-1$]", color="green", linewidth=3)
 plt.step(met_bins_background, dsigma_background_met, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\mathrm{MET} \ \mathrm{[GeV]}$")
@@ -487,7 +487,7 @@ dsigma_signal_centrality_2_norm = dsigma_signal_centrality_2 / np.sum(dsigma_sig
 dsigma_background_centrality_norm = dsigma_background_centrality / np.sum(dsigma_background_centrality)
 
 # Plot the normalized distributions for Lepton Centrality
-plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 # Axis labels and title
@@ -511,7 +511,7 @@ plt.show()
 
 
 # Plot the differential cross-sections for Lepton Centrality
-plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(centrality_bins_signal_0, dsigma_signal_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(centrality_bins_signal_2, dsigma_signal_centrality_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(centrality_bins_background, dsigma_background_centrality, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\eta_{leading \; jet}$")
@@ -542,7 +542,7 @@ dsigma_background_exp_centrality_norm = dsigma_background_exp_centrality / np.su
 
 
 # Plot the normalized distributions for Exponential Lepton Centrality
-plt.step(exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(exp_centrality_bins_signal_2, dsigma_signal_exp_centrality_2_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(exp_centrality_bins_background, dsigma_background_exp_centrality_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 # Axis labels and title
@@ -564,7 +564,7 @@ plt.show()
 
 
 # Plot the differential cross-sections for Exponential Lepton Centrality (exp_centrality)
-plt.step(exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$]", color="red", linewidth=3)
+plt.step(exp_centrality_bins_signal_0, dsigma_signal_exp_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="red", linewidth=3)
 plt.step(exp_centrality_bins_signal_2, dsigma_signal_exp_centrality_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$]", color="green", linewidth=3)
 plt.step(exp_centrality_bins_background, dsigma_background_exp_centrality, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$C_{\ell}^{\mathrm{exp}}$")
@@ -592,7 +592,7 @@ dsigma_signal_jet_centrality_2_norm = dsigma_signal_jet_centrality_2 / np.sum(ds
 dsigma_background_jet_centrality_norm = dsigma_background_jet_centrality / np.sum(dsigma_background_jet_centrality)
 
 # Plot the normalized distributions for Jet Centrality
-plt.step(jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(jet_centrality_bins_signal_2, dsigma_signal_jet_centrality_2_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(jet_centrality_bins_background, dsigma_background_jet_centrality_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 # Axis labels and title
@@ -617,7 +617,7 @@ plt.show()
 
 
 # Plot the differential cross-sections for Jet Centrality
-plt.step(jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(jet_centrality_bins_signal_0, dsigma_signal_jet_centrality_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(jet_centrality_bins_signal_2, dsigma_signal_jet_centrality_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(jet_centrality_bins_background, dsigma_background_jet_centrality, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$C_{\mathrm{jets}}$")
@@ -641,7 +641,7 @@ plt.show()
 
 
 # Plot the differential cross-sections for Pseudorapidity Difference Between Jets (Δηjj)
-plt.step(delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(delta_eta_jj_bins_signal_0, dsigma_signal_delta_eta_jj_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(delta_eta_jj_bins_signal_2, dsigma_signal_delta_eta_jj_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(delta_eta_jj_bins_background, dsigma_background_delta_eta_jj, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$\eta_{subleading \; jet}$")
@@ -682,7 +682,7 @@ dsigma_background_m_w_hadronic_norm = dsigma_background_m_w_hadronic / np.sum(ds
 # Plot the normalized Hadronic W Boson Mass (M_W^jj)
 #plt.figure(figsize=(10, 8))
 
-plt.step(m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(m_w_hadronic_bins_background, dsigma_background_m_w_hadronic_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$M_W^{jj} \ \mathrm{[GeV]}$")
@@ -701,7 +701,7 @@ plt.show()
 
 # --------------------------------------------
 # Plot the differential cross-sections for Hadronic W Boson Mass (M_W^jj)
-plt.step(m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_hadronic_bins_signal_0, dsigma_signal_m_w_hadronic_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(m_w_hadronic_bins_signal_2, dsigma_signal_m_w_hadronic_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(m_w_hadronic_bins_background, dsigma_background_m_w_hadronic, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$M_W^{jj} \ \mathrm{[GeV]}$")
@@ -732,7 +732,7 @@ dsigma_background_m_w_leptonic_norm = dsigma_background_m_w_leptonic / np.sum(ds
 # --------------------------------------------
 # Plot the normalized Leptonic W Boson Mass (M_W^ℓν)
 #plt.figure(figsize=(10, 8))
-plt.step(m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(m_w_leptonic_bins_background, dsigma_background_m_w_leptonic_norm, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
@@ -751,7 +751,7 @@ plt.show()
 
 # --------------------------------------------
 # Plot the differential cross-sections for Leptonic W Boson Mass (M_W^ℓν)
-plt.step(m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_0} / \Lambda^4$)", color="red", linewidth=3)
+plt.step(m_w_leptonic_bins_signal_0, dsigma_signal_m_w_leptonic_0, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="red", linewidth=3)
 plt.step(m_w_leptonic_bins_signal_2, dsigma_signal_m_w_leptonic_2, where="mid", alpha=0.7, label="FCChe@3.5 TeV : Signal ($w^+ w^-) [f_{M_2} / \Lambda^4$)", color="green", linewidth=3)
 plt.step(m_w_leptonic_bins_background, dsigma_background_m_w_leptonic, where="mid", alpha=0.7, label="FCChe@3.5 TeV : SM background ($w^+ w^-$)", color="blue", linewidth=3)
 plt.xlabel(r"$M_W^{\ell\nu_{\ell}} \ \mathrm{[GeV]}$")
