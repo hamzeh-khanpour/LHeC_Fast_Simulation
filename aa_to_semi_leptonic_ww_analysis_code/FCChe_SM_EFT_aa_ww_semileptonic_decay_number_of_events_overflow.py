@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-LHeC one-lepton + two-jet analysis with 'overflow -> last bin' folding.
+FCChe one-lepton + two-jet analysis with 'overflow -> last bin' folding.
 
 - Inputs: two LHE files (SM, EFT)
 - Observables: pT(lepton), pT(j1), pT(j2)
 - Outputs: step plots (+ 'overflow' tag when enabled) and CSVs that match the plots
-- Default yield mode: counts @ LHeC lumi = 1000 fb^-1
+- Default yield mode: counts @ FCChe lumi = 1000 fb^-1
 """
 
 import argparse
@@ -223,7 +223,7 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
         plt.yscale("log")
     plt.legend()
     plt.grid(True, which="both", alpha=0.3)
-    plt.title(rf"EL–EL: $\gamma\gamma$ @ LHeC @ 1.2 TeV @ $L={lumi_fb:g}\,\mathrm{{fb}}^{{-1}}$")
+    plt.title(rf"EL–EL: $\gamma\gamma$ @ FCChe @ 1.2 TeV @ $L={lumi_fb:g}\,\mathrm{{fb}}^{{-1}}$")
 
     if annotate_overflow:
         ax = plt.gca()
@@ -314,7 +314,7 @@ def analyze_one_sample(path: str,
 # -----------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="LHeC (γγ→WW→ℓ jj) spectra with overflow folding.")
+    ap = argparse.ArgumentParser(description="FCChe (γγ→WW→ℓ jj) spectra with overflow folding.")
     ap.add_argument("sm_lhe",  help="SM LHE path (.lhe or .lhe.gz)")
     ap.add_argument("eft_lhe", help="EFT LHE path (.lhe or .lhe.gz)")
 
@@ -405,26 +405,26 @@ def main():
     _, y_j1_eft,  _ = hist_with_edges(j1_vals_eft,  j1_w_eft,  e_j1,  args.overflow_lastbin_j1)
     _, y_j2_eft,  _ = hist_with_edges(j2_vals_eft,  j2_w_eft,  e_j2,  args.overflow_lastbin_j2)
 
-    # plot + CSV (counts by default @ LHeC lumi)
+    # plot + CSV (counts by default @ FCChe lumi)
     mode = args.yield_mode
     Lfb  = args.lumi_fb
 
     save_plot_and_csv(c_lep, y_lep_sm, y_lep_eft, e_lep,
-                      "pt_lepton_LHeC_SM_vs_EFT",
+                      "pt_lepton_FCChe_SM_vs_EFT",
                       r"$p_T(\ell)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_lep)
 
     save_plot_and_csv(c_j1, y_j1_sm, y_j1_eft, e_j1,
-                      "pt_j1_LHeC_SM_vs_EFT",
+                      "pt_j1_FCChe_SM_vs_EFT",
                       r"$p_T(j_1)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_j1)
 
     save_plot_and_csv(c_j2, y_j2_sm, y_j2_eft, e_j2,
-                      "pt_j2_LHeC_SM_vs_EFT",
+                      "pt_j2_FCChe_SM_vs_EFT",
                       r"$p_T(j_2)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
