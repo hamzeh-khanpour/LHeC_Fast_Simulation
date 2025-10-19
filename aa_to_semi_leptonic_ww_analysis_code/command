@@ -13,3 +13,10 @@ python LHeC_SM_EFT_aa_ww_semileptonic_decay_number_of_events_overflow.py \
 
 
 python FCChe_SM_EFT_aa_ww_semileptonic_decay_number_of_events_overflow.py   "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/aa_ww_semi_leptonic_SM_NP_0_FMi_0_FCChe/Events/run_01/aa_ww_semi_leptonic_SM_NP_0_FMi_0_FCChe.lhe"   "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/aa_ww_semi_leptonic_NP_1_FM2_FCChe/Events/run_02/aa_ww_semi_leptonic_NP_1_FM2_FCChe_1.lhe"   --bins-lep 16 --range-lep 0 160 --bins-j 16 --range-j 0 160   --yield-mode counts --lumi-fb 100 --logy --overflow-lastbin-all --no-use-per-event-weights
+
+
+
+python LHeC_SM_EFT_aa_ww_semileptonic_decay_number_of_events_overflow_dsigma_dpT.py   "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/LHeC_SM_aa_ww_semi_leptonic/Events/run_01/LHeC_SM_aa_ww_semi_leptonic.lhe"   "/home/hamzeh-khanpour/MG5_aMC_v3_6_4/LHeC_EFT_aa_ww_semi_leptonic/Events/run_01/LHeC_EFT_aa_ww_semi_leptonic.lhe"   --bins-lep 16 --range-lep 0 160 --bins-j 16 --range-j 0 160   --yield-mode dsig --logy --overflow-lastbin-all
+
+
+

@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 """
-FCChe one-lepton + two-jet analysis with 'overflow -> last bin' folding.
+LHeC one-lepton + two-jet analysis with 'overflow -> last bin' folding.
 
 - Inputs: two LHE files (SM, EFT)
 - Observables: pT(lepton), pT(j1), pT(j2)
 - Outputs: step plots (+ 'overflow' tag when enabled) and CSVs that match the plots
-- Default yield mode: counts @ FCChe lumi = 1000 fb^-1
+- Default yield mode: counts @ LHeC lumi = 1000 fb^-1
+
+Now also produces EFT/SM ratio plots with per-bin uncertainties (from sumw^2),
+and supports plotting in dsig/dX (pb/unit) via --yield-mode dsig.
 """
 
 import argparse
@@ -17,16 +20,6 @@ from typing import Dict, List, Tuple, Optional
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
-
-
-# Matplotlib configuration for publication-quality plots
-import mplhep as hep
-
-hep.style.use("CMS")
-
-#fig, ax = plt.subplots(figsize=(12.0, 10.0))
-plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
-
 
 # -----------------------------
 # LHE header parsing
@@ -170,7 +163,7 @@ def get_sorted_jets(event_particles) -> List[dict]:
     return jets
 
 # -----------------------------
-# Histogram helpers
+# Histogram helpers (with errors)
 # -----------------------------
 
 def _hist_with_overflow_lastbin(data, weights, bins, rng):
@@ -184,6 +177,17 @@ def _hist_with_overflow_lastbin(data, weights, bins, rng):
         hist[-1] += wts[~mask_in].sum()
     return hist, edges
 
+def _hist_with_overflow_lastbin_sumw2(data, weights, bins, rng):
+    """Same as above, but for sum of weights squared."""
+    w2 = np.asarray(weights, dtype=float)**2
+    arr = np.asarray(data, dtype=float)
+    lo, hi = float(rng[0]), float(rng[1])
+    mask_in = arr <= hi
+    h2, edges = np.histogram(arr[mask_in], bins=bins, range=(lo, hi), weights=w2[mask_in])
+    if h2.size:
+        h2[-1] += w2[~mask_in].sum()
+    return h2, edges
+
 def _step_with_last_plateau(edges, y):
     """Return (x,y) so the final bin is drawn as a plateau (not a spike)."""
     x = np.r_[edges[:-1], edges[-1]]
@@ -192,16 +196,27 @@ def _step_with_last_plateau(edges, y):
 
 def make_hist(data: List[float], weights: List[float], bins: int, rng: Tuple[float, float],
               overflow_lastbin: bool = False):
-    """Return (centers, dsig, edges).  'dsig' is pb / unit (bin width).
-       If overflow_lastbin=True, entries > max(range) are merged into the last bin *before* width division."""
+    """Return (centers, dsig, edges, dsig_err).
+
+    dsig is pb / unit (bin width). If overflow_lastbin=True, entries > max(range)
+    are merged into the last bin *before* width division. Errors are sqrt(sumw^2)/width.
+    """
+    arr = np.asarray(data, dtype=float)
+    wts = np.asarray(weights, dtype=float)
+
     if overflow_lastbin:
-        hist, edges = _hist_with_overflow_lastbin(data, weights, bins, rng)
+        hist, edges = _hist_with_overflow_lastbin(arr, wts, bins, rng)
+        sumw2, _    = _hist_with_overflow_lastbin_sumw2(arr, wts, bins, rng)
     else:
-        hist, edges = np.histogram(np.array(data), bins=bins, range=rng, weights=np.array(weights))
+        hist, edges = np.histogram(arr, bins=bins, range=rng, weights=wts)
+        sumw2, _    = np.histogram(arr, bins=bins, range=rng, weights=wts**2)
+
     widths = np.diff(edges)
-    dsig = np.divide(hist, widths, out=np.zeros_like(hist, dtype=float), where=widths>0)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        dsig     = np.divide(hist,  widths, out=np.zeros_like(hist,  dtype=float), where=widths>0)
+        dsig_err = np.divide(np.sqrt(sumw2), widths, out=np.zeros_like(sumw2, dtype=float), where=widths>0)
     centers = 0.5 * (edges[:-1] + edges[1:])
-    return centers, dsig, edges
+    return centers, dsig, edges, dsig_err
 
 def _convert_for_mode(y_dsig, edges, mode: str, lumi_fb: float):
     """Convert dsig/dX to plotting array based on mode.
@@ -225,20 +240,20 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     plt.figure()
     x_sm,  y_sm2  = _step_with_last_plateau(edges, y_sm_plot)
     x_eft, y_eft2 = _step_with_last_plateau(edges, y_eft_plot)
-    plt.step(x_sm,  y_sm2,  where="post", label=sm_label,  linewidth=3, linestyle=sm_ls)
-    plt.step(x_eft, y_eft2, where="post", label=eft_label, linewidth=3, linestyle=eft_ls)
+    plt.step(x_sm,  y_sm2,  where="post", label=sm_label,  linewidth=1.8, linestyle=sm_ls)
+    plt.step(x_eft, y_eft2, where="post", label=eft_label, linewidth=1.8, linestyle=eft_ls)
     plt.xlabel(xlabel)
     plt.ylabel("Events" if mode == "counts" else r"d$\sigma$/dX  [pb / unit]")
     if logy:
         plt.yscale("log")
     plt.legend()
     plt.grid(True, which="both", alpha=0.3)
-    plt.title(rf"EL–EL: $\gamma\gamma$ @ FCChe @ 1.2 TeV @ $L={lumi_fb:g}\,\mathrm{{fb}}^{{-1}}$")
+    plt.title(rf"EL–EL: $\gamma\gamma$ @ LHeC @ 1.2 TeV @ $L={lumi_fb:g}\,\mathrm{{fb}}^{{-1}}$")
 
     if annotate_overflow:
         ax = plt.gca()
         ymax = ax.get_ylim()[1]
-        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=30)
+        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=18)
 
     plt.tight_layout()
     for ext in ("png", "pdf"):
@@ -255,6 +270,57 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
             w.writerow(["bin_center", "SM_dsig", "EFT_dsig"])
             for i in range(len(x)):
                 w.writerow([f"{x[i]:.6g}", f"{y_sm[i]:.6g}", f"{y_eft[i]:.6g}"])
+
+def _ratio_and_err(num, den, err_num, err_den):
+    """Return (ratio, ratio_err) with uncorrelated error propagation; NaN-safe."""
+    num = np.asarray(num, dtype=float)
+    den = np.asarray(den, dtype=float)
+    en  = np.asarray(err_num, dtype=float)
+    ed  = np.asarray(err_den, dtype=float)
+    R = np.full_like(num, np.nan, dtype=float)
+    dR = np.full_like(num, np.nan, dtype=float)
+    mask = (den > 0) & np.isfinite(num) & np.isfinite(den)
+    R[mask] = num[mask] / den[mask]
+    # var(R) ≈ R^2[(en/num)^2 + (ed/den)^2]  with guards for num>0
+    m2 = mask & (num > 0)
+    dR[m2] = R[m2] * np.sqrt( (en[m2]/num[m2])**2 + (ed[m2]/den[m2])**2 )
+    return R, dR
+
+def save_ratio_plot_csv(centers, edges, y_sm, y_eft, err_sm, err_eft,
+                        out_prefix: str, xlabel: str, mode: str, lumi_fb: float):
+    """Save EFT/SM ratio with error bars, and a companion CSV.
+       The same unit conversion as the main plot is applied to both y and err.
+    """
+    y_sm_p   = _convert_for_mode(y_sm,   edges, mode, lumi_fb)
+    y_eft_p  = _convert_for_mode(y_eft,  edges, mode, lumi_fb)
+    err_sm_p = _convert_for_mode(err_sm, edges, mode, lumi_fb)
+    err_eft_p= _convert_for_mode(err_eft,edges, mode, lumi_fb)
+
+    ratio, ratio_err = _ratio_and_err(y_eft_p, y_sm_p, err_eft_p, err_sm_p)
+
+    # Plot
+    plt.figure()
+    plt.errorbar(centers, ratio, yerr=ratio_err, fmt="o", capsize=2, ms=3)
+    plt.axhline(1.0, color="k", lw=1, alpha=0.5)
+    plt.grid(True, which="both", alpha=0.3)
+    plt.xlabel(xlabel)
+    plt.ylabel("EFT / SM")
+    plt.title("Ratio with 1σ uncertainties")
+    # Keep linear y for ratios
+    plt.tight_layout()
+    for ext in ("png", "pdf"):
+        plt.savefig(f"{out_prefix}.{ext}")
+    plt.close()
+
+    # CSV
+    with open(f"{out_prefix}.csv", "w", newline="") as cf:
+        w = csv.writer(cf)
+        w.writerow(["bin_center", "ratio_EFT_over_SM", "ratio_err", "SM_value", "EFT_value"])
+        for i in range(len(centers)):
+            w.writerow([f"{centers[i]:.6g}",
+                        f"{ratio[i]:.6g}" if np.isfinite(ratio[i]) else "nan",
+                        f"{ratio_err[i]:.6g}" if np.isfinite(ratio_err[i]) else "nan",
+                        f"{y_sm_p[i]:.6g}", f"{y_eft_p[i]:.6g}"])
 
 # -------------------------------------------------
 # Last-bin (overflow-inclusive) quick report helper
@@ -324,7 +390,7 @@ def analyze_one_sample(path: str,
 # -----------------------------
 
 def main():
-    ap = argparse.ArgumentParser(description="FCChe (γγ→WW→ℓ jj) spectra with overflow folding.")
+    ap = argparse.ArgumentParser(description="LHeC (γγ→WW→ℓ jj) spectra with overflow folding.")
     ap.add_argument("sm_lhe",  help="SM LHE path (.lhe or .lhe.gz)")
     ap.add_argument("eft_lhe", help="EFT LHE path (.lhe or .lhe.gz)")
 
@@ -345,7 +411,7 @@ def main():
     ap.add_argument("--use-per-event-weights", action=argparse.BooleanOptionalAction, default=True,
                     help="Use XWGTUP per-event weights when available (fallback to σ/nevt).")
 
-    # overflow controls (default ON as requested)
+    # overflow controls (default ON)
     ap.add_argument("--overflow-lastbin-lep", action=argparse.BooleanOptionalAction, default=True,
                     help="Fold pT(lepton) overflow into last bin and annotate (default: on).")
     ap.add_argument("--overflow-lastbin-j1",  action=argparse.BooleanOptionalAction, default=True,
@@ -393,52 +459,59 @@ def main():
     (lep_vals_sm, lep_w_sm, nb_lep, rng_lep) = sm["data"]["lep"]
     (j1_vals_sm,  j1_w_sm,  nb_j,   rng_j)   = sm["data"]["j1"]
     (j2_vals_sm,  j2_w_sm,  _,      _)       = sm["data"]["j2"]
-    c_lep, y_lep_sm, e_lep = make_hist(lep_vals_sm, lep_w_sm, nb_lep, rng_lep,
-                                       overflow_lastbin=args.overflow_lastbin_lep)
-    c_j1,  y_j1_sm,  e_j1  = make_hist(j1_vals_sm,  j1_w_sm,  nb_j,   rng_j,
-                                       overflow_lastbin=args.overflow_lastbin_j1)
-    c_j2,  y_j2_sm,  e_j2  = make_hist(j2_vals_sm,  j2_w_sm,  nb_j,   rng_j,
-                                       overflow_lastbin=args.overflow_lastbin_j2)
+    c_lep, y_lep_sm, e_lep, err_lep_sm = make_hist(lep_vals_sm, lep_w_sm, nb_lep, rng_lep,
+                                                   overflow_lastbin=args.overflow_lastbin_lep)
+    c_j1,  y_j1_sm,  e_j1,  err_j1_sm  = make_hist(j1_vals_sm,  j1_w_sm,  nb_j,   rng_j,
+                                                   overflow_lastbin=args.overflow_lastbin_j1)
+    c_j2,  y_j2_sm,  e_j2,  err_j2_sm  = make_hist(j2_vals_sm,  j2_w_sm,  nb_j,   rng_j,
+                                                   overflow_lastbin=args.overflow_lastbin_j2)
 
     # build histos (EFT) with identical binning (re-histogram EFT into SM edges)
     (lep_vals_eft, lep_w_eft, _, _) = eft["data"]["lep"]
     (j1_vals_eft,  j1_w_eft,  _, _) = eft["data"]["j1"]
     (j2_vals_eft,  j2_w_eft,  _, _) = eft["data"]["j2"]
 
-    # re-hist using same edges to guarantee identical binning
     def hist_with_edges(values, weights, edges, overflow_lastbin):
         lo, hi = edges[0], edges[-1]
         bins = len(edges) - 1
         return make_hist(values, weights, bins, (lo, hi), overflow_lastbin=overflow_lastbin)
 
-    _, y_lep_eft, _ = hist_with_edges(lep_vals_eft, lep_w_eft, e_lep, args.overflow_lastbin_lep)
-    _, y_j1_eft,  _ = hist_with_edges(j1_vals_eft,  j1_w_eft,  e_j1,  args.overflow_lastbin_j1)
-    _, y_j2_eft,  _ = hist_with_edges(j2_vals_eft,  j2_w_eft,  e_j2,  args.overflow_lastbin_j2)
+    _, y_lep_eft, _, err_lep_eft = hist_with_edges(lep_vals_eft, lep_w_eft, e_lep, args.overflow_lastbin_lep)
+    _, y_j1_eft,  _, err_j1_eft  = hist_with_edges(j1_vals_eft,  j1_w_eft,  e_j1,  args.overflow_lastbin_j1)
+    _, y_j2_eft,  _, err_j2_eft  = hist_with_edges(j2_vals_eft,  j2_w_eft,  e_j2,  args.overflow_lastbin_j2)
 
-    # plot + CSV (counts by default @ FCChe lumi)
+    # plot + CSV (counts by default @ LHeC lumi)
     mode = args.yield_mode
     Lfb  = args.lumi_fb
 
     save_plot_and_csv(c_lep, y_lep_sm, y_lep_eft, e_lep,
-                      "pt_lepton_FCChe_SM_vs_EFT",
+                      "pt_lepton_LHeC_SM_vs_EFT",
                       r"$p_T(\ell)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_lep)
 
     save_plot_and_csv(c_j1, y_j1_sm, y_j1_eft, e_j1,
-                      "pt_j1_FCChe_SM_vs_EFT",
-                      r"$p_T(j_1^{leading})$ [GeV]",
+                      "pt_j1_LHeC_SM_vs_EFT",
+                      r"$p_T(j_1)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_j1)
 
     save_plot_and_csv(c_j2, y_j2_sm, y_j2_eft, e_j2,
-                      "pt_j2_FCChe_SM_vs_EFT",
-                      r"$p_T(j_2^{sub-leading})$ [GeV]",
+                      "pt_j2_LHeC_SM_vs_EFT",
+                      r"$p_T(j_2)$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_j2)
+
+    # ratio plots (EFT/SM) with uncertainties
+    save_ratio_plot_csv(c_lep, e_lep, y_lep_sm, y_lep_eft, err_lep_sm, err_lep_eft,
+                        "pt_lepton_LHeC_SM_vs_EFT_ratio", r"$p_T(\ell)$ [GeV]", mode, Lfb)
+    save_ratio_plot_csv(c_j1,  e_j1,  y_j1_sm,  y_j1_eft,  err_j1_sm,  err_j1_eft,
+                        "pt_j1_LHeC_SM_vs_EFT_ratio",     r"$p_T(j_1)$ [GeV]", mode, Lfb)
+    save_ratio_plot_csv(c_j2,  e_j2,  y_j2_sm,  y_j2_eft,  err_j2_sm,  err_j2_eft,
+                        "pt_j2_LHeC_SM_vs_EFT_ratio",     r"$p_T(j_2)$ [GeV]", mode, Lfb)
 
     # after each plot: print last-bin (overflow-inclusive) summary
     _report_last_bin("pT(j1)", e_j1, y_j1_sm, y_j1_eft, mode, Lfb)

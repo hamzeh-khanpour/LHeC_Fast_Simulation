@@ -18,6 +18,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 
+
+# Matplotlib configuration for publication-quality plots
+import mplhep as hep
+
+hep.style.use("CMS")
+
+#fig, ax = plt.subplots(figsize=(12.0, 10.0))
+plt.subplots_adjust(left=0.15, right=0.95, bottom=0.12, top=0.95)
+
+
 # -----------------------------
 # LHE header parsing
 # -----------------------------
@@ -215,8 +225,8 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     plt.figure()
     x_sm,  y_sm2  = _step_with_last_plateau(edges, y_sm_plot)
     x_eft, y_eft2 = _step_with_last_plateau(edges, y_eft_plot)
-    plt.step(x_sm,  y_sm2,  where="post", label=sm_label,  linewidth=1.8, linestyle=sm_ls)
-    plt.step(x_eft, y_eft2, where="post", label=eft_label, linewidth=1.8, linestyle=eft_ls)
+    plt.step(x_sm,  y_sm2,  where="post", label=sm_label,  linewidth=3, linestyle=sm_ls)
+    plt.step(x_eft, y_eft2, where="post", label=eft_label, linewidth=3, linestyle=eft_ls)
     plt.xlabel(xlabel)
     plt.ylabel("Events" if mode == "counts" else r"d$\sigma$/dX  [pb / unit]")
     if logy:
@@ -228,7 +238,7 @@ def save_plot_and_csv(x, y_sm, y_eft, edges, out_prefix: str, xlabel: str,
     if annotate_overflow:
         ax = plt.gca()
         ymax = ax.get_ylim()[1]
-        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=18)
+        ax.text(edges[-1], 0.95*ymax, "overflow", rotation=90, va="top", ha="right", fontsize=30)
 
     plt.tight_layout()
     for ext in ("png", "pdf"):
@@ -418,14 +428,14 @@ def main():
 
     save_plot_and_csv(c_j1, y_j1_sm, y_j1_eft, e_j1,
                       "pt_j1_LHeC_SM_vs_EFT",
-                      r"$p_T(j_1)$ [GeV]",
+                      r"$p_T(j_1^{leading})$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_j1)
 
     save_plot_and_csv(c_j2, y_j2_sm, y_j2_eft, e_j2,
                       "pt_j2_LHeC_SM_vs_EFT",
-                      r"$p_T(j_2)$ [GeV]",
+                      r"$p_T(j_2^{sub-leading})$ [GeV]",
                       args.logy, label(sm["meta"], "SM"), label(eft["meta"], "EFT"),
                       sm_ls="--", eft_ls="-", mode=mode, lumi_fb=Lfb,
                       annotate_overflow=args.overflow_lastbin_j2)
